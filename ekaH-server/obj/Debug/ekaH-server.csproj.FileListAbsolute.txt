@@ -1,0 +1,84 @@
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\ApplicationInsights.config
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\csc.exe
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\vbc.exe
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\VBCSCompiler.exe
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\ekaH-server.dll.config
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\ekaH-server.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\ekaH-server.pdb
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.Agent.Intercept.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.DependencyCollector.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.PerfCounterCollector.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.ServerTelemetryChannel.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.Web.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.WindowsServer.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.ApplicationInsights.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Newtonsoft.Json.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\System.Net.Http.Formatting.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\System.Web.Http.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\System.Web.Http.WebHost.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.DependencyCollector.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.ServerTelemetryChannel.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.Web.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.AI.WindowsServer.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.ApplicationInsights.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\Newtonsoft.Json.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\System.Net.Http.Formatting.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\System.Web.Http.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\bin\System.Web.Http.WebHost.xml
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\obj\Debug\ekaH-server.csprojResolveAssemblyReference.cache
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\obj\Debug\ekaH-server.dll
+C:\Users\sujil\Dropbox\school\Spring 2017\dot net\ekaH-server\ekaH-server\obj\Debug\ekaH-server.pdb
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\csc.exe
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\vbc.exe
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\VBCSCompiler.exe
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\ApplicationInsights.config
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\ekaH-server.dll.config
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\ekaH-server.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\ekaH-server.pdb
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.Agent.Intercept.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.DependencyCollector.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.PerfCounterCollector.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.ServerTelemetryChannel.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.Web.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.WindowsServer.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.ApplicationInsights.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\MySql.Data.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Newtonsoft.Json.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\System.Net.Http.Formatting.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\System.Web.Http.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\System.Web.Http.WebHost.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.DependencyCollector.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.ServerTelemetryChannel.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.Web.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.AI.WindowsServer.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.ApplicationInsights.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\MySql.Data.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\Newtonsoft.Json.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\System.Net.Http.Formatting.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\System.Web.Http.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\bin\System.Web.Http.WebHost.xml
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\obj\Debug\ekaH-server.csprojResolveAssemblyReference.cache
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\obj\Debug\ekaH-server.dll
+C:\Users\sujil\Desktop\ekaH\ekaH-server\ekaH-server\obj\Debug\ekaH-server.pdb
