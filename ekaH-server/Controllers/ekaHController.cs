@@ -29,12 +29,16 @@ namespace ekaH_server.Controllers
 
         // POST: api/ekaH/login
         [ActionName("login")]
-        public string Post([FromBody] LogInInfo providedInfo)
+        public Boolean Post([FromBody] LogInInfo providedInfo)
         {
+            DBConnection database = DBConnection.getInstance();
 
-            UserAuthentication uAuth = new UserAuthentication();
-
-            return "hello";
+            if (UserAuthentication.verifyUser(database, providedInfo)) 
+            {
+                return true;
+            }
+            
+            return false;
         }
 
         

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MySql.Data;
+using ekaH_server.Models;
+using System.Windows.Forms;
 
 namespace ekaH_server.App_DBHandler
 {
@@ -10,22 +12,35 @@ namespace ekaH_server.App_DBHandler
     {
         // Private variable for database connection
         private MySql.Data.MySqlClient.MySqlConnection connection;
-        private string connectionDetail = "server=127.0.0.1;uid=root;pswd=nepal;database=ekah";
-
+        
         public UserAuthentication()
         {
-            try
-            {
-                connection = new MySql.Data.MySqlClient.MySqlConnection();
-                connection.ConnectionString = connectionDetail;
-                connection.Open();
+            
+        }
 
-                Console.WriteLine("DB Connection req");
-            }
-            catch(MySql.Data.MySqlClient.MySqlException ex)
+        public static Boolean verifyUser(DBConnection db, LogInInfo logInDetail)
+        {
+            int tempMemType = logInDetail.isStudent ? 1 : 0;
+
+            MySql.Data.MySqlClient.MySqlDataReader dataReader = null;
+
+            string reqQuery = "select * from authentication where email='" + logInDetail.userEmail + "' and " +
+                "member_type=" + tempMemType + " and pswd='" + logInDetail.pswd + "';";
+
+            //MessageBox.Show(reqQuery);
+
+            MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(reqQuery, db.getConnection());
+            dataReader = cmd.ExecuteReader();
+
+            if (dataReader.Read())
             {
-                // Handles the MySQL connection exception here.
-                Console.WriteLine("DB Connection failed");
+
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
        

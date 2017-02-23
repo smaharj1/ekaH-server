@@ -20,16 +20,8 @@ namespace ekaH_server.Models
             pswd = password;
         }
         */
-
-        public string getEmail()
-        {
-            return userEmail;
-        }
-
-        public Boolean getIsStudent()
-        {
-            return isStudent;
-        }
+        
+        
 
     }
 }
