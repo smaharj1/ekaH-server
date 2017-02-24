@@ -11,37 +11,52 @@ namespace ekaH_server.App_DBHandler
     public class UserAuthentication
     {
         // Private variable for database connection
-        private MySql.Data.MySqlClient.MySqlConnection connection;
         
         public UserAuthentication()
         {
             
         }
 
-        public static Boolean verifyUser(DBConnection db, LogInInfo logInDetail)
+        public string verifyUserExists(DBConnection db, LogInInfo logInDetail)
         {
             int tempMemType = logInDetail.isStudent ? 1 : 0;
 
             MySql.Data.MySqlClient.MySqlDataReader dataReader = null;
 
-            string reqQuery = "select * from authentication where email='" + logInDetail.userEmail + "' and " +
-                "member_type=" + tempMemType + " and pswd='" + logInDetail.pswd + "';";
+            string reqQuery = "select * from authentication where email='" + logInDetail.userEmail + "';";
 
+            string response;
             //MessageBox.Show(reqQuery);
-
-            MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(reqQuery, db.getConnection());
-            dataReader = cmd.ExecuteReader();
-
-            if (dataReader.Read())
+            try
             {
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(reqQuery, db.getConnection());
+                dataReader = cmd.ExecuteReader();
 
-
-                return true;
+                if (dataReader.Read())
+                {
+                    bool dbData = dataReader.GetValue(1).ToString() == "1" ? true : false;
+                    if (logInDetail.pswd == dataReader.GetValue(2).ToString() && logInDetail.isStudent == dbData)
+                    {
+                        response = "success";
+                    }
+                    else
+                    {
+                        response = Error.getInstance().getStringError(ErrorList.LOGIN_WRONG_PASSWORD);
+                    }
+                }
+                else
+                {
+                    response= Error.getInstance().getStringError(ErrorList.LOGIN_NO_USER);
+                }
             }
-            else
+            catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-                return false;
+                response= Error.getInstance().getStringError(ErrorList.DATABASE_EXCEPTION);
             }
+
+            dataReader.Dispose();
+            return response;
+            
         }
        
     }

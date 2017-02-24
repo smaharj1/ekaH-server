@@ -26,20 +26,38 @@ namespace ekaH_server.Controllers
 
         // GET: api/ekaH/person
 
-
-        // POST: api/ekaH/login
+        /*
+         * POST: api/ekaH/login
+         * It handles if the user tries to log in. If it is true, it should return true. Else,
+         * return the error message.
+         * */
         [ActionName("login")]
-        public Boolean Post([FromBody] LogInInfo providedInfo)
+        public Dictionary<string, string> Post([FromBody] LogInInfo providedInfo)
         {
             DBConnection database = DBConnection.getInstance();
+            UserAuthentication uauth = new UserAuthentication();
 
-            if (UserAuthentication.verifyUser(database, providedInfo)) 
+            string response;
+
+            response = uauth.verifyUserExists(database, providedInfo);
+
+            Dictionary<string, string> res = new Dictionary<string, string>();
+
+            if (response == "success")
             {
-                return true;
+                res.Add("result", "true");
             }
-            
-            return false;
+            else
+            {
+                res.Add("result", "false");
+                res.Add("message", response);
+            }
+
+            return res;
+            //return response;
         }
+
+
 
         
 
