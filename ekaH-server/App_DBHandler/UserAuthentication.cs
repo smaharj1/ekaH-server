@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using MySql.Data;
 using ekaH_server.Models;
+using ekaH_server.Models.UserAuth;
 using System.Windows.Forms;
 
 namespace ekaH_server.App_DBHandler
@@ -17,7 +18,7 @@ namespace ekaH_server.App_DBHandler
             
         }
 
-        public string verifyUserExists(DBConnection db, LogInInfo logInDetail)
+        public static ErrorList verifyUserExists(DBConnection db, LogInInfo logInDetail)
         {
             int tempMemType = logInDetail.isStudent ? 1 : 0;
 
@@ -25,7 +26,8 @@ namespace ekaH_server.App_DBHandler
 
             string reqQuery = "select * from authentication where email='" + logInDetail.userEmail + "';";
 
-            string response;
+            //string response;
+            ErrorList result;
             //MessageBox.Show(reqQuery);
             try
             {
@@ -37,26 +39,64 @@ namespace ekaH_server.App_DBHandler
                     bool dbData = dataReader.GetValue(1).ToString() == "1" ? true : false;
                     if (logInDetail.pswd == dataReader.GetValue(2).ToString() && logInDetail.isStudent == dbData)
                     {
-                        response = "success";
+                        result = ErrorList.SUCCESS;
                     }
                     else
                     {
-                        response = Error.getInstance().getStringError(ErrorList.LOGIN_WRONG_PASSWORD);
+                        result = ErrorList.LOGIN_WRONG_PASSWORD;
                     }
                 }
                 else
                 {
-                    response= Error.getInstance().getStringError(ErrorList.LOGIN_NO_USER);
+                    result = ErrorList.LOGIN_NO_USER;
                 }
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-                response= Error.getInstance().getStringError(ErrorList.DATABASE_EXCEPTION);
+                result= ErrorList.DATABASE_EXCEPTION;
             }
 
             dataReader.Dispose();
-            return response;
+
+            return result;
             
+        }
+
+
+        public static ErrorList registerUser(DBConnection database, RegisterInfo registerDetail)
+        {
+            int tempMemType = registerDetail.isStudent ? 1 : 0;
+            string reqQuery;
+            ErrorList result;
+
+            reqQuery = "insert into authentication values('" + registerDetail.userEmail + "', " + tempMemType + ", '" + registerDetail.pswd + "');";
+
+            if (registerDetail.isStudent)
+            {
+                reqQuery += "insert into student_info(firstName, lastName, email, graduationYear) values('" +
+                    registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', " + registerDetail.extraInfo + ");";
+
+            }
+            else
+            {
+                reqQuery += "insert into student_info(firstName, lastName, email, department) values('" +
+                    registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', " + registerDetail.extraInfo + ");";
+            }
+
+            try
+            {
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(reqQuery, database.getConnection());
+                cmd.ExecuteNonQuery();
+
+                result = ErrorList.SUCCESS;
+            }
+            catch(MySql.Data.MySqlClient.MySqlException ex)
+            {
+                result = ErrorList.DATABASE_EXCEPTION;
+            }
+            
+
+            return result;
         }
        
     }

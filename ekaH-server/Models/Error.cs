@@ -11,7 +11,8 @@ namespace ekaH_server.Models
         LOGIN_NO_USER,
         LOGIN_WRONG_PASSWORD,
         DATABASE_EXCEPTION,
-        SUCCESS
+        SUCCESS,
+        REGISTER_USER_EXISTS
     }
 
     public class Error
@@ -32,6 +33,8 @@ namespace ekaH_server.Models
             errorDict.Add(ErrorList.LOGIN_NO_USER, "User was not found in the database \n Please enter again");
             errorDict.Add(ErrorList.LOGIN_WRONG_PASSWORD, "The password entered is wrong");
             errorDict.Add(ErrorList.DATABASE_EXCEPTION, "Database seems to be givin some problem");
+            errorDict.Add(ErrorList.REGISTER_USER_EXISTS, "The email that you are trying to sign up with already exists. Please try with a different email");
+            errorDict.Add(ErrorList.SUCCESS, "success");
         }
 
         public static Error getInstance()

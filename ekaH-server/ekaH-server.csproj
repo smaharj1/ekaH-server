@@ -125,7 +125,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Error.cs" />
-    <Compile Include="Models\LogInInfo.cs" />
+    <Compile Include="Models\UserAuth\LogInInfo.cs" />
+    <Compile Include="Models\UserAuth\RegisterInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
