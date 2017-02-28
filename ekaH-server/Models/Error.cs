@@ -12,7 +12,8 @@ namespace ekaH_server.Models
         LOGIN_WRONG_PASSWORD,
         DATABASE_EXCEPTION,
         SUCCESS,
-        REGISTER_USER_EXISTS
+        REGISTER_USER_EXISTS,
+        USER_TYPE_ERROR
     }
 
     public class Error
@@ -35,6 +36,7 @@ namespace ekaH_server.Models
             errorDict.Add(ErrorList.DATABASE_EXCEPTION, "Database seems to be givin some problem");
             errorDict.Add(ErrorList.REGISTER_USER_EXISTS, "The email that you are trying to sign up with already exists. Please try with a different email");
             errorDict.Add(ErrorList.SUCCESS, "success");
+            errorDict.Add(ErrorList.USER_TYPE_ERROR, "The type you mentioned is incorrect. \n Please try again.");
         }
 
         public static Error getInstance()

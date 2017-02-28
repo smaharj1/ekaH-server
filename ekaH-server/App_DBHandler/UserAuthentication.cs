@@ -37,9 +37,17 @@ namespace ekaH_server.App_DBHandler
                 if (dataReader.Read())
                 {
                     bool dbData = dataReader.GetValue(1).ToString() == "1" ? true : false;
-                    if (logInDetail.pswd == dataReader.GetValue(2).ToString() && logInDetail.isStudent == dbData)
+                    if (logInDetail.pswd == dataReader.GetValue(2).ToString())
                     {
-                        result = ErrorList.SUCCESS;
+                        if (logInDetail.isStudent == dbData)
+                        {
+                            result = ErrorList.SUCCESS;
+
+                        }
+                        else
+                        {
+                            result = ErrorList.USER_TYPE_ERROR;
+                        }
                     }
                     else
                     {
@@ -79,8 +87,8 @@ namespace ekaH_server.App_DBHandler
             }
             else
             {
-                reqQuery += "insert into student_info(firstName, lastName, email, department) values('" +
-                    registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', " + registerDetail.extraInfo + ");";
+                reqQuery += "insert into professor_info(firstName, lastName, email, department) values('" +
+                    registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', '" + registerDetail.extraInfo + "');";
             }
 
             try
