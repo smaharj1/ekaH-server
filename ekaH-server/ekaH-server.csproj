@@ -120,7 +120,8 @@
     <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\UserAuthentication.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\ekaHController.cs" />
+    <Compile Include="Controllers\authController.cs" />
+    <Compile Include="Controllers\userController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

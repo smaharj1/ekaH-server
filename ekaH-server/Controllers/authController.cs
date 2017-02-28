@@ -10,7 +10,7 @@ using ekaH_server.Models.UserAuth;
 
 namespace ekaH_server.Controllers
 {
-    public class ekaHController : ApiController
+    public class authController : ApiController
     {
         // GET: api/ekaH
         public IEnumerable<string> Get()
