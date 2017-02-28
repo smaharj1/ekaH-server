@@ -33,35 +33,40 @@ namespace ekaH_server.Controllers
          * return the error message.
          * */
         [ActionName("login")]
-        public Dictionary<string, string> Post([FromBody] LogInInfo providedInfo)
+        public HttpResponseMessage Post([FromBody] LogInInfo providedInfo)
         {
             DBConnection database = DBConnection.getInstance();
             //UserAuthentication uauth = new UserAuthentication();
 
-            ErrorList response;
+            ErrorList status;
 
-            response = UserAuthentication.verifyUserExists(database, providedInfo);
+            status = UserAuthentication.verifyUserExists(database, providedInfo);
 
-            Dictionary<string, string> res = new Dictionary<string, string>();
+            //Dictionary<string, string> res = new Dictionary<string, string>();
 
-            if (response == ErrorList.SUCCESS)
+            HttpResponseMessage response;
+
+
+            if (status == ErrorList.SUCCESS)
             {
-                res.Add("result", "true");
+                response = Request.CreateResponse(HttpStatusCode.OK, true);
             }
             else
             {
-                res.Add("result", "false");
-                res.Add("message", Error.getInstance().getStringError(response));
+                response = Request.CreateResponse(HttpStatusCode.NotAcceptable, Error.getInstance().getStringError(status));
             }
 
-            return res;
-            //return response;
+            
+            return response;
         }
 
         [HttpPost]
         [ActionName("register")]
-        public Dictionary<string, string> registerUser([FromBody] RegisterInfo providedInfo)
+        public HttpResponseMessage registerUser([FromBody] RegisterInfo providedInfo)
         {
+            HttpResponseMessage response;
+
+
             // Gets the database instance.
             DBConnection database = DBConnection.getInstance();
 
@@ -74,39 +79,43 @@ namespace ekaH_server.Controllers
             // First verify that the user is not already in the list.
             ErrorList verifyIfExists = UserAuthentication.verifyUserExists(database, normalizedDetail);
 
-            Dictionary<string, string> res = new Dictionary<string, string>();
+            //Dictionary<string, string> res = new Dictionary<string, string>();
+            string message;
 
             if (verifyIfExists == ErrorList.LOGIN_NO_USER)
             {
                 // Register the user in this case
                 ErrorList registrationStatus = UserAuthentication.registerUser(database, providedInfo);
+                message = Error.getInstance().getStringError(registrationStatus);
 
                 if (registrationStatus == ErrorList.SUCCESS)
                 {
-                    res.Add("result", "true");
+
+                    response = Request.CreateResponse(HttpStatusCode.Created, message);
+
                 }
                 else
                 {
-                    res.Add("result", "false");
+                    response = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, message);
                 }
 
-                res.Add("message", Error.getInstance().getStringError(registrationStatus));
             }
             else
             {
-                res.Add("result", "false");
+
+                // Checks against the SUCCESS since success only means that the user has been found as the function is borrowed.
                 if (verifyIfExists == ErrorList.SUCCESS)
                 {
-                    res.Add("message", Error.getInstance().getStringError(ErrorList.REGISTER_USER_EXISTS));
+                    response = Request.CreateErrorResponse(HttpStatusCode.Conflict, Error.getInstance().getStringError(ErrorList.REGISTER_USER_EXISTS));
                 }
                 else
                 {
-                    res.Add("message", Error.getInstance().getStringError(verifyIfExists));
+                    response = Request.CreateErrorResponse(HttpStatusCode.Conflict, Error.getInstance().getStringError(verifyIfExists));
                 }
 
             }
 
-            return res;
+            return response;
         }
 
         
