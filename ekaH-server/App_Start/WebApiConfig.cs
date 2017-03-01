@@ -17,9 +17,15 @@ namespace ekaH_server
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "UserApi",
-                routeTemplate: "ekah/users/{id}",
-                defaults: new { controller = "user", id = RouteParameter.Optional }
+                name: "FacultyAPI",
+                routeTemplate: "ekah/faculties/{id}/",
+                defaults: new { controller = "faculty", id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "StudentsAPI",
+                routeTemplate: "ekah/stuents/{id}",
+                defaults: new { controller = "faculty", id = RouteParameter.Optional }
             );
 
             config.Routes.MapHttpRoute(

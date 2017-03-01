@@ -72,9 +72,9 @@ namespace ekaH_server.Controllers
 
             // Creates a LogInInfo for checking if the user already exists.
             LogInInfo normalizedDetail = new LogInInfo();
-            normalizedDetail.isStudent = providedInfo.isStudent;
-            normalizedDetail.pswd = providedInfo.pswd;
-            normalizedDetail.userEmail = providedInfo.userEmail;
+            normalizedDetail.IsStudent = providedInfo.isStudent;
+            normalizedDetail.Pswd = providedInfo.pswd;
+            normalizedDetail.UserEmail = providedInfo.userEmail;
 
             // First verify that the user is not already in the list.
             ErrorList verifyIfExists = UserAuthentication.verifyUserExists(database, normalizedDetail);

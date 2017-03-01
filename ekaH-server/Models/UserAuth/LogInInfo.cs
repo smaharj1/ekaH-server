@@ -7,17 +7,17 @@ namespace ekaH_server.Models
 {
     public class LogInInfo
     {
-        public Boolean isStudent { get; set; }
-        public string userEmail { get; set; }
-        public string pswd { get; set; }
+        public Boolean IsStudent { get; set; }
+        public string UserEmail { get; set; }
+        public string Pswd { get; set; }
 
 
         /*
         public LogInInfo(string email, string password, Boolean isStd)
         {
-            isStudent = isStd;
-            userEmail = email;
-            pswd = password;
+            IsStudent = isStd;
+            UserEmail = email;
+            Pswd = password;
         }
         */
         

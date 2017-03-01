@@ -20,11 +20,11 @@ namespace ekaH_server.App_DBHandler
 
         public static ErrorList verifyUserExists(DBConnection db, LogInInfo logInDetail)
         {
-            int tempMemType = logInDetail.isStudent ? 1 : 0;
+            int tempMemType = logInDetail.IsStudent ? 1 : 0;
 
             MySql.Data.MySqlClient.MySqlDataReader dataReader = null;
 
-            string reqQuery = "select * from authentication where email='" + logInDetail.userEmail + "';";
+            string reqQuery = "select * from authentication where email='" + logInDetail.UserEmail + "';";
 
             //string response;
             ErrorList result;
@@ -37,9 +37,9 @@ namespace ekaH_server.App_DBHandler
                 if (dataReader.Read())
                 {
                     bool dbData = dataReader.GetValue(1).ToString() == "1" ? true : false;
-                    if (logInDetail.pswd == dataReader.GetValue(2).ToString())
+                    if (logInDetail.Pswd == dataReader.GetValue(2).ToString())
                     {
-                        if (logInDetail.isStudent == dbData)
+                        if (logInDetail.IsStudent == dbData)
                         {
                             result = ErrorList.SUCCESS;
 
@@ -87,7 +87,7 @@ namespace ekaH_server.App_DBHandler
             }
             else
             {
-                reqQuery += "insert into professor_info(firstName, lastName, email, department) values('" +
+                reqQuery += "insert into professor_info(firstName, lastName, email, Department) values('" +
                     registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', '" + registerDetail.extraInfo + "');";
             }
 
@@ -98,7 +98,7 @@ namespace ekaH_server.App_DBHandler
 
                 result = ErrorList.SUCCESS;
             }
-            catch(MySql.Data.MySqlClient.MySqlException ex)
+            catch(MySql.Data.MySqlClient.MySqlException)
             {
                 result = ErrorList.DATABASE_EXCEPTION;
             }
