@@ -25,7 +25,7 @@ namespace ekaH_server.Controllers
         [HttpGet]
         public IHttpActionResult Get(string id)
         {
-            
+            IHttpActionResult result;
 
             MySqlDataReader dataReader = FacultyDBHandler.executeFacultyInfoQuery(id);
 
@@ -36,17 +36,21 @@ namespace ekaH_server.Controllers
 
                 if (facultyMem == null)
                 {
-                    return NotFound();
+                    result = NotFound();
                 }
                 else
                 {
-                    return Ok(facultyMem);
+                    result =  Ok(facultyMem);
                 }
             }
             else
             {
-                return InternalServerError();
+                result = InternalServerError();
             }
+
+            dataReader.Close();
+
+            return result;
             
         }
 
