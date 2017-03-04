@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using ekaH_server.Models;
 using System.Collections;
 using ekaH_server.Models.UserModels;
+using System.Windows.Forms;
 
 namespace ekaH_server.Controllers
 {
@@ -91,6 +92,7 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
+            
 
             bool isStudent = true;
 
@@ -108,12 +110,26 @@ namespace ekaH_server.Controllers
                 return StatusCode(HttpStatusCode.Forbidden);
             }
 
+            course.ProfessorID = id;
+
             // Handle the situation here since we are sure that it is a faculty member.
             // This is because only faculty members can add the courses.
 
+            if (!course.validateFields())
+            {
+                return BadRequest();
+            }
+
+            Course.fixCourseObject(ref course);
+
             bool status = FacultyDBHandler.executePostCourse(course);
 
-            return Ok();
+            if (status)
+            {
+                return StatusCode(HttpStatusCode.Created);
+            }
+
+            return InternalServerError();
         }
 
         // PUT: "ekah/courses/{id}

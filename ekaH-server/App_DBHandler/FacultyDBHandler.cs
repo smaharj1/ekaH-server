@@ -71,13 +71,27 @@ namespace ekaH_server.App_DBHandler
             return dataReader;
         }
 
-
+        // This posts a course in to the database.
         public static bool executePostCourse(Course course)
         {
             DBConnection db = DBConnection.getInstance();
 
-            //string reqQuery = 
+            string reqQuery = "insert into courses(courseID, year, semester, professorID, days, startTime, endTime, courseName, courseDescription) " +
+                "values('" + course.CourseID + "', " + course.Year + ", '" + course.Semester + "', '" + course.ProfessorID + "', '" + 
+                course.Days + "', '" + course.StartTime + "', '" + course.EndTime + "', '" + course.CourseName + "', '" + course.CourseDescription + "');";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                cmd.ExecuteNonQuery();
+            }
+            catch (MySqlException)
+            {
+                return false;
+            }
+
             return true;
+            
         }
 
         // This method changes the faculty info

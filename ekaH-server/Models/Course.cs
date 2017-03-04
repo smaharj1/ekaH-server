@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Text;
 using MySql.Data.MySqlClient;
 using System.Collections;
 using ekaH_server.Models.UserModels;
@@ -45,5 +46,54 @@ namespace ekaH_server.Models
             return courses;
             
         }
+
+        public static void fixCourseObject(ref Course course)
+        {
+            // Some of them would be strict. So, they don't need fixing like year.
+            course.Semester = course.Semester.ToUpper();
+            course.Days = course.Days.ToUpper();
+
+            course.CourseName = course.CourseName == null ? "" : course.CourseName;
+            course.CourseDescription = course.CourseDescription == null ? "" : course.CourseDescription;
+
+            generateUniqueCourseID(ref course);
+        }
+
+        private static void generateUniqueCourseID(ref Course course)
+        {
+            // At this point we are assuming that the Course object provided will have all upper case.
+            StringBuilder uniqueID = new StringBuilder("CRS-");
+
+            uniqueID.Append(course.Semester);
+            uniqueID.Append(course.Year);
+            string[] username = course.ProfessorID.Split('@');
+            uniqueID.Append(username[0]);
+
+            uniqueID.Append(course.StartTime.Hours);
+            uniqueID.Append(course.StartTime.Minutes);
+            uniqueID.Append(course.Days);
+
+            course.CourseID = uniqueID.ToString();
+
+        }
+
+        public bool validateFields()
+        {
+            // Email is already validated at this point.
+            if (Year == null || Year.ToString().Length != 4) { return false; }
+
+            Semester = Semester.ToUpper();
+
+            if (Semester == null || (Semester != "F" && Semester != "S")) return false;
+
+            if (Days == null || Days.Length > 7) return false;
+
+            if (StartTime.Hours > 24 || StartTime.Minutes > 59) return false;
+            if (EndTime.Hours > 24 || EndTime.Minutes > 59) return false;
+
+            return true;
+        }
+
+
     }
 }
