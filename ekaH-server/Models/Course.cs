@@ -10,11 +10,13 @@ namespace ekaH_server.Models
 {
     public class Course : Object
     {
-        public Int64 CourseID { get; set; }
-        public string CourseCode { get; set; }
+        public string CourseID { get; set; }
         public int Year { get; set; }
         public string Semester { get; set; }
         public string ProfessorID { get; set; }
+        public string Days { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
         public string CourseName { get; set; }
         public string CourseDescription { get; set; }
         
@@ -25,13 +27,15 @@ namespace ekaH_server.Models
             while (reader.Read())
             {
                 Course tempCourse = new Course();
-                tempCourse.CourseID = reader.GetInt64(0);
-                tempCourse.CourseCode = reader.GetString(1);
-                tempCourse.Year = (int)reader.GetValue(2);
-                tempCourse.Semester = reader.GetString(3);
-                tempCourse.ProfessorID = reader.GetString(4);
-                tempCourse.CourseName = FacultyWorker.getStringSafe(reader, 5);
-                tempCourse.CourseDescription = FacultyWorker.getStringSafe(reader, 6);
+                tempCourse.CourseID = FacultyWorker.getStringSafe(reader, 0);
+                tempCourse.Year = (int)reader.GetValue(1);
+                tempCourse.Semester = reader.GetString(2);
+                tempCourse.ProfessorID = reader.GetString(3);
+                tempCourse.Days = reader.GetString(4);
+                tempCourse.StartTime = reader.GetTimeSpan(5);
+                tempCourse.EndTime = reader.GetTimeSpan(6);
+                tempCourse.CourseName = FacultyWorker.getStringSafe(reader, 7);
+                tempCourse.CourseDescription = FacultyWorker.getStringSafe(reader, 8);
 
                 courses.Add(tempCourse);
             }

@@ -20,8 +20,9 @@ namespace ekaH_server.App_DBHandler
         }
 
         // This will return what the user type is. if it is student/faculty.
-        public static bool getUserType(DBConnection db, string emailID)
+        public static bool getUserType(string emailID)
         {
+            DBConnection db = DBConnection.getInstance();
             MySqlDataReader reader = null;
             bool isStudent = true;
 

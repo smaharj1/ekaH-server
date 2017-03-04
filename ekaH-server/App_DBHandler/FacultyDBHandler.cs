@@ -16,6 +16,8 @@ namespace ekaH_server.App_DBHandler
 
         }
 
+        
+
         // Returns all the courses taught by the faculty member.
         public static MySqlDataReader readCoursesByFaculty(string emailID)
         {
@@ -69,6 +71,16 @@ namespace ekaH_server.App_DBHandler
             return dataReader;
         }
 
+
+        public static bool executePostCourse(Course course)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            //string reqQuery = 
+            return true;
+        }
+
+        // This method changes the faculty info
         public static bool executePutFacultyInfo(FacultyInfo facultyMem)
         {
 

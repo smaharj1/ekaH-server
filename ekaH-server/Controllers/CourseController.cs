@@ -33,14 +33,14 @@ namespace ekaH_server.Controllers
 
             
 
-            DBConnection database = DBConnection.getInstance();
+           // DBConnection database = DBConnection.getInstance();
 
             ArrayList allCourses = new ArrayList();
             bool isStudent = true;
 
             try
             {
-                isStudent = UserAuthentication.getUserType(database, id);
+                isStudent = UserAuthentication.getUserType(id);
             }
             catch (Exception)
             {
@@ -78,16 +78,42 @@ namespace ekaH_server.Controllers
                 }
                     
             }
-            
-            
 
-            //reader.Dispose();
             return Ok(allCourses);
         }
 
         // POST: "ekah/courses/{id}
-        public void Post([FromBody]string value)
+        // This methods helps create a course for certain professor.
+        public IHttpActionResult Post(string id, [FromBody]Course course)
         {
+            if (!(new EmailAddressAttribute().IsValid(id)))
+            {
+                return BadRequest();
+            }
+
+
+            bool isStudent = true;
+
+            try
+            {
+                isStudent = UserAuthentication.getUserType(id);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            if (isStudent)
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            // Handle the situation here since we are sure that it is a faculty member.
+            // This is because only faculty members can add the courses.
+
+            bool status = FacultyDBHandler.executePostCourse(course);
+
+            return Ok();
         }
 
         // PUT: "ekah/courses/{id}
