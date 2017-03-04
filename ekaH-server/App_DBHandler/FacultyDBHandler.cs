@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
 using ekaH_server.Models.UserModels;
+using System.Windows.Forms;
 
 namespace ekaH_server.App_DBHandler
 {
@@ -12,6 +13,31 @@ namespace ekaH_server.App_DBHandler
     {
         private FacultyDBHandler()
         {
+
+        }
+
+        // Returns all the courses taught by the faculty member.
+        public static MySqlDataReader readCoursesByFaculty(string emailID)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            MySqlDataReader reader = null;
+
+            string reqQuery = "select * from courses where professorID='" + emailID + "';";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+                
+            }
+            catch (MySqlException ex)
+            {
+                //MessageBox.Show(ex.Message); 
+                return null;
+            }
+
+            return reader;
 
         }
 
@@ -36,6 +62,7 @@ namespace ekaH_server.App_DBHandler
             }
             catch (MySqlException)
             {
+                //dataReader.Dispose();
                 return null;
             }
 

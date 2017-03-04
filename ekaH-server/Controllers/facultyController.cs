@@ -55,7 +55,7 @@ namespace ekaH_server.Controllers
         }
 
         // POST: api/faculties/{id}
-        // Posts the information updated like name and things.
+        // Posts the information updated like name and things. We don't need this currently since PUT does its work.
         public void Post([FromBody]string value)
         {
         }
@@ -79,9 +79,6 @@ namespace ekaH_server.Controllers
             }
         }
 
-        // DELETE: api/user/5
-        public void Delete(int id)
-        {
-        }
+        
     }
 }

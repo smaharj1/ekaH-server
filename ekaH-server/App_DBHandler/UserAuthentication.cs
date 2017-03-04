@@ -6,6 +6,7 @@ using MySql.Data;
 using ekaH_server.Models;
 using ekaH_server.Models.UserAuth;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace ekaH_server.App_DBHandler
 {
@@ -18,11 +19,46 @@ namespace ekaH_server.App_DBHandler
             
         }
 
+        // This will return what the user type is. if it is student/faculty.
+        public static bool getUserType(DBConnection db, string emailID)
+        {
+            MySqlDataReader reader = null;
+            bool isStudent = true;
+
+            string reqQuery = "select type from member_type where email='" + emailID + "';";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    isStudent = reader.GetBoolean(0);
+                }
+                else
+                {
+                    reader.Dispose();
+                    throw new Exception(Error.getInstance().getStringError(ErrorList.LOGIN_NO_USER));
+                }
+            }
+            catch(MySqlException)
+            {
+                throw new Exception(Error.getInstance().getStringError(ErrorList.DATABASE_EXCEPTION));
+            }
+
+            reader.Dispose();
+
+            return isStudent;
+
+
+        }
+
         public static ErrorList verifyUserExists(DBConnection db, LogInInfo logInDetail)
         {
             int tempMemType = logInDetail.IsStudent ? 1 : 0;
 
-            MySql.Data.MySqlClient.MySqlDataReader dataReader = null;
+            MySqlDataReader dataReader = null;
 
             string reqQuery = "select * from authentication where email='" + logInDetail.UserEmail + "';";
 
@@ -31,7 +67,7 @@ namespace ekaH_server.App_DBHandler
             //MessageBox.Show(reqQuery);
             try
             {
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
                 dataReader = cmd.ExecuteReader();
 
                 if (dataReader.Read())
@@ -59,7 +95,7 @@ namespace ekaH_server.App_DBHandler
                     result = ErrorList.LOGIN_NO_USER;
                 }
             }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
+            catch (MySqlException ex)
             {
                 result= ErrorList.DATABASE_EXCEPTION;
             }
@@ -78,6 +114,7 @@ namespace ekaH_server.App_DBHandler
             ErrorList result;
 
             reqQuery = "insert into authentication values('" + registerDetail.userEmail + "', " + tempMemType + ", '" + registerDetail.pswd + "');";
+            reqQuery += "insert into member_type values('" + registerDetail.userEmail + "', " + tempMemType + ");";
 
             if (registerDetail.isStudent)
             {
