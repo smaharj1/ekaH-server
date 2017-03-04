@@ -117,6 +117,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_DBHandler\CourseDBHandler.cs" />
     <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\FacultyDBHandler.cs" />
     <Compile Include="App_DBHandler\UserAuthentication.cs" />

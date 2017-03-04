@@ -58,7 +58,7 @@ namespace ekaH_server.Controllers
             {
                 // This is for faculty. Returns the list of all the courses taught by a faculty member.
                 // This returns null if there is SQL ERROR.
-                MySqlDataReader reader = FacultyDBHandler.readCoursesByFaculty(id);
+                MySqlDataReader reader = CourseDBHandler.readCoursesByFaculty(id);
 
                 if (reader != null)
                 {
@@ -91,11 +91,10 @@ namespace ekaH_server.Controllers
             {
                 return BadRequest();
             }
-
             
-
             bool isStudent = true;
 
+            // Get the type of the student first as professors can only add/remove the course.
             try
             {
                 isStudent = UserAuthentication.getUserType(id);
@@ -122,7 +121,7 @@ namespace ekaH_server.Controllers
 
             Course.fixCourseObject(ref course);
 
-            bool status = FacultyDBHandler.executePostCourse(course);
+            bool status = CourseDBHandler.executePostCourse(course);
 
             if (status)
             {
@@ -133,8 +132,64 @@ namespace ekaH_server.Controllers
         }
 
         // PUT: "ekah/courses/{id}
-        public void Put(int id, [FromBody]string value)
+        // Helps change the information of the faculty for the courses they have already added.
+        public IHttpActionResult Put(string id, [FromBody]Course course)
         {
+            if (!(new EmailAddressAttribute().IsValid(id)))
+            {
+                return BadRequest();
+            }
+
+            bool isStudent = true;
+
+            // Get the type of the student first as professors can only add/remove the course.
+            try
+            {
+                isStudent = UserAuthentication.getUserType(id);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            if (isStudent)
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            course.ProfessorID = id;
+
+            // Handle the situation here since we are sure that it is a faculty member.
+            // This is because only faculty members can add the courses.
+
+            if (!course.validateFields())
+            {
+                return BadRequest();
+            }
+
+            string previousCourseID = course.CourseID;
+            Course.fixCourseObject(ref course);
+
+            try
+            {
+                if (CourseDBHandler.courseExists(previousCourseID))
+                {
+                    if (CourseDBHandler.executePutCourse(course, previousCourseID)) return StatusCode(HttpStatusCode.OK);
+                    else throw new Exception();
+                }
+                else
+                {
+                    // Indicates that the course user wants to edit doesn't exist. Hence, redirect it to POST's method.
+                    if (CourseDBHandler.executePostCourse(course)) return StatusCode(HttpStatusCode.Created);
+                    else throw new Exception();
+                }
+            }
+            catch(Exception)
+            {
+                // This is only thrown for database exception.
+                return InternalServerError();
+            }
+
         }
 
         // DELETE: "ekah/courses/{id}
