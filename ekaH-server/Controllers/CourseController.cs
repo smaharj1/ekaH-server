@@ -192,9 +192,47 @@ namespace ekaH_server.Controllers
 
         }
 
-        // DELETE: "ekah/courses/{id}
-        public void Delete(int id)
+        // DELETE: ekah/courses/{id}/{cid}
+        // It deletes the course from the database. 
+        // It does need two parameters for ids since delete does not take in any body while following strict http protocol.
+        public IHttpActionResult Delete(string id, string cid)
         {
+            if (!(new EmailAddressAttribute().IsValid(id)))
+            {
+                return BadRequest();
+            }
+
+            bool isStudent = true;
+
+            // Get the type of the student first as professors can only add/remove the course.
+            try
+            {
+                isStudent = UserAuthentication.getUserType(id);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            if (isStudent)
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+
+            try
+            {
+                if (CourseDBHandler.executeDeleteCourse(id, cid))
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            return InternalServerError();
         }
     }
 }

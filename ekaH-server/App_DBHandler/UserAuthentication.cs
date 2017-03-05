@@ -43,8 +43,9 @@ namespace ekaH_server.App_DBHandler
                     throw new Exception(Error.getInstance().getStringError(ErrorList.LOGIN_NO_USER));
                 }
             }
-            catch(MySqlException)
+            catch(MySqlException ex)
             {
+                string mes = ex.Message;
                 throw new Exception(Error.getInstance().getStringError(ErrorList.DATABASE_EXCEPTION));
             }
 

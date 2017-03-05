@@ -138,5 +138,51 @@ namespace ekaH_server.App_DBHandler
 
             return true;
         }
+
+        public static bool executeDeleteCourse(string email, string courseID)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string reqQuery = "delete from courses where courseID='" + courseID + "';";
+
+            // First, check if the professor teaches the course s/he wants to delete.
+            string checkQuery = "select * from courses where courseID='" + courseID + "' and professorID='" + email + "';";
+
+            MySqlDataReader reader = null;
+
+            try
+            {
+                
+                MySqlCommand cmd = new MySqlCommand(checkQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                if (!reader.Read())
+                {
+                    // In this case the course is not taught by the professor.
+                    throw new Exception("The access to this course is forbidden for the user.");
+                }
+
+            }
+            catch (MySqlException)
+            {
+                return false;
+            }
+
+            reader.Dispose();
+            
+
+            // Then, execute the delete.
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                cmd.ExecuteNonQuery();
+            }
+            catch(MySqlException)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
