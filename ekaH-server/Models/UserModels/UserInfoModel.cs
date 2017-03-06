@@ -12,11 +12,9 @@ namespace ekaH_server.Models.UserModels
         public string Email { get; set; }
         public string Department { get; set; }
         public string Education { get; set; }
-        public string StreetAdd1 { get; set; }
-        public string StreetAdd2 { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
+        public Address Address { get; set; }
         public string University { get; set; }
         public string Concentration { get; set; }
+        public string Phone { get; set; }
     }
 }

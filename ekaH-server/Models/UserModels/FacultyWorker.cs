@@ -26,10 +26,16 @@ namespace ekaH_server.Models.UserModels
                 facultyMem.Education = getStringSafe(reader, 4);
                 facultyMem.University = getStringSafe(reader, 5);
                 facultyMem.Concentration = getStringSafe(reader, 6);
-                facultyMem.StreetAdd1 = getStringSafe(reader, 7);
-                facultyMem.StreetAdd2 = getStringSafe(reader, 8);
-                facultyMem.State = getStringSafe(reader, 9);
-                facultyMem.Zip = getStringSafe(reader, 10);
+
+                Address address = new Address();
+                address.StreetAdd1 = getStringSafe(reader, 7);
+                address.StreetAdd2 = getStringSafe(reader, 8);
+                address.City = getStringSafe(reader, 9);
+                address.State = getStringSafe(reader, 10);
+                address.Zip = getStringSafe(reader, 11);
+                facultyMem.Address = address;
+
+                facultyMem.Phone = getStringSafe(reader, 12);
 
                 return facultyMem;
             }

@@ -49,11 +49,13 @@ namespace ekaH_server.App_DBHandler
         {
 
             DBConnection db = DBConnection.getInstance();
+            Address address = facultyMem.Address;
 
             string reqQuery = "update professor_info set firstName = '" + facultyMem.FirstName + "', lastName = '" + facultyMem.LastName + "', department = '" + 
                 facultyMem.Department + "', education = '" + facultyMem.Education +
-                "', university = '" + facultyMem.University + "', concentration = '" + facultyMem.Concentration + "', streetAdd1 = '" + facultyMem.StreetAdd1 + 
-                "', streetAdd2 = '" + facultyMem.StreetAdd2 + "', state = '" + facultyMem.State + "', zip = '" + facultyMem.Zip + "' where email = '" + facultyMem.Email + "';";
+                "', university = '" + facultyMem.University + "', concentration = '" + facultyMem.Concentration + "', streetAdd1 = '" + address.StreetAdd1 + 
+                "', streetAdd2 = '" + address.StreetAdd2 + "', state = '" + address.State + "', city ='"+ address.City+"', zip = '" + 
+                address.Zip + "', phone='"+facultyMem.Phone+"' where email = '" + facultyMem.Email + "';";
 
             try
             {
