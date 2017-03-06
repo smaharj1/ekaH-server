@@ -16,33 +16,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `assignment`
+-- Table structure for table `student_info`
 --
 
-DROP TABLE IF EXISTS `assignment`;
+DROP TABLE IF EXISTS `student_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `assignment` (
-  `courseID` bigint(8) NOT NULL,
-  `assignmentNum` int(4) unsigned NOT NULL,
-  `name` varchar(45) DEFAULT NULL,
-  `content` mediumtext,
-  `isLetterGrade` tinyint(4) NOT NULL,
-  `letterGrade` varchar(2) DEFAULT NULL,
-  `numberGrade` int(11) DEFAULT NULL,
-  `weight` int(10) unsigned zerofill DEFAULT NULL COMMENT 'This holds the total weight of this assignment in the final grade.',
-  PRIMARY KEY (`courseID`,`assignmentNum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This holds the assignments for all of the courses.';
+CREATE TABLE `student_info` (
+  `firstName` varchar(15) NOT NULL,
+  `lastName` varchar(15) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `graduationYear` int(11) DEFAULT NULL,
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This holds the general information of a student';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `assignment`
---
-
-LOCK TABLES `assignment` WRITE;
-/*!40000 ALTER TABLE `assignment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `assignment` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -53,4 +40,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-28 17:32:01
+-- Dump completed on 2017-03-05 21:29:50

@@ -16,29 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `authentication`
+-- Table structure for table `professor_info`
 --
 
-DROP TABLE IF EXISTS `authentication`;
+DROP TABLE IF EXISTS `professor_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authentication` (
-  `email` varchar(45) NOT NULL COMMENT 'This holds the email which is also a primary key',
-  `member_type` tinyint(4) NOT NULL COMMENT 'True means student, false means professor',
-  `pswd` varchar(128) NOT NULL COMMENT 'This is hashed and support up to 512-bit hash value.',
+CREATE TABLE `professor_info` (
+  `firstName` varchar(15) NOT NULL,
+  `lastName` varchar(25) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `department` varchar(45) DEFAULT NULL,
+  `education` varchar(45) DEFAULT NULL,
+  `university` varchar(45) DEFAULT NULL,
+  `concentration` varchar(45) DEFAULT NULL,
+  `streetAdd1` varchar(45) DEFAULT NULL,
+  `streetAdd2` varchar(45) DEFAULT NULL,
+  `state` varchar(2) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table holds the username and password (hashed)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This holds the general info of the professors';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `authentication`
---
-
-LOCK TABLES `authentication` WRITE;
-/*!40000 ALTER TABLE `authentication` DISABLE KEYS */;
-INSERT INTO `authentication` VALUES ('bsims@ramapo.edu',1,'okay'),('smaharj1@ramapo.edu',1,'helloworld'),('sshresth@ramapo.edu',1,'okay'),('tswift@ramapo.edu',1,'swift'),('vmiller@ramapo.edu',0,'duck'),('vpandey@ramapo.edu',1,'okay');
-/*!40000 ALTER TABLE `authentication` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -49,4 +47,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-28 17:32:01
+-- Dump completed on 2017-03-05 21:29:50

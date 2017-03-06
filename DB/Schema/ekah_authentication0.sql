@@ -16,34 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `courses`
+-- Table structure for table `authentication`
 --
 
-DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `authentication`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `courses` (
-  `courseID` bigint(8) NOT NULL AUTO_INCREMENT,
-  `courseNum` varchar(20) NOT NULL,
-  `year` year(4) NOT NULL,
-  `semester` varchar(10) NOT NULL,
-  `professorID` varchar(45) NOT NULL,
-  `courseName` varchar(45) DEFAULT NULL,
-  `courseDescription` mediumtext,
-  PRIMARY KEY (`courseNum`,`year`,`semester`,`professorID`),
-  UNIQUE KEY `courseID_UNIQUE` (`courseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1008 DEFAULT CHARSET=utf8;
+CREATE TABLE `authentication` (
+  `email` varchar(45) NOT NULL COMMENT 'This holds the email which is also a primary key',
+  `member_type` tinyint(4) NOT NULL COMMENT 'True means student, false means professor',
+  `pswd` varchar(128) NOT NULL COMMENT 'This is hashed and support up to 512-bit hash value.',
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table holds the username and password (hashed)';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `courses`
---
-
-LOCK TABLES `courses` WRITE;
-/*!40000 ALTER TABLE `courses` DISABLE KEYS */;
-INSERT INTO `courses` VALUES (1007,'COB552',2017,'fall','vmiller@ramapo.edu','CSII',NULL),(1002,'CRS-2016',2017,'fall','vmiller@ramapo.edu','CSII',NULL),(1000,'CRS-2016',2017,'spring','vmiller@ramapo.edu','CSII',NULL),(1006,'CRS0025',2017,'fall','vmiller@ramapo.edu','CSII',NULL);
-/*!40000 ALTER TABLE `courses` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -54,4 +39,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-28 17:32:01
+-- Dump completed on 2017-03-05 21:29:50

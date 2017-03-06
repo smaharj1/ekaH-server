@@ -16,30 +16,25 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `professor_info`
+-- Table structure for table `courses`
 --
 
-DROP TABLE IF EXISTS `professor_info`;
+DROP TABLE IF EXISTS `courses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `professor_info` (
-  `firstName` varchar(15) NOT NULL,
-  `lastName` varchar(25) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `department` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This holds the general info of the professors';
+CREATE TABLE `courses` (
+  `courseID` varchar(60) NOT NULL,
+  `year` year(4) NOT NULL,
+  `semester` char(1) NOT NULL,
+  `professorID` varchar(45) NOT NULL,
+  `days` varchar(8) NOT NULL COMMENT 'this should strictly follow SMTWRFA for days of the week.',
+  `startTime` time(6) NOT NULL,
+  `endTime` time(6) NOT NULL,
+  `courseName` varchar(45) DEFAULT NULL,
+  `courseDescription` mediumtext,
+  PRIMARY KEY (`courseID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `professor_info`
---
-
-LOCK TABLES `professor_info` WRITE;
-/*!40000 ALTER TABLE `professor_info` DISABLE KEYS */;
-INSERT INTO `professor_info` VALUES ('Victor','Miller','vmiller@ramapo.edu','CS');
-/*!40000 ALTER TABLE `professor_info` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -50,4 +45,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-28 17:32:00
+-- Dump completed on 2017-03-05 21:29:50
