@@ -10,34 +10,13 @@ namespace ekaH_server.App_DBHandler
     public class CourseDBHandler
     {
 
+
+
         public static bool courseExists(Course course)
         {
-            DBConnection db = DBConnection.getInstance();
 
-            string reqQuery = "select * from courses where courseID='" + course.CourseID + "';";
-
-            MySqlDataReader reader = null;
-
-            bool exists = false;
-
-            try
-            {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
-                reader = cmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    exists = true;
-                }
-
-            }
-            catch (MySqlException)
-            {
-                throw new Exception(Error.getInstance().getStringError(ErrorList.DATABASE_EXCEPTION));
-            }
-
-            reader.Dispose();
-            return exists;
+            return courseExists(course.CourseID);
+            
         }
 
         public static bool courseExists(string courseID)

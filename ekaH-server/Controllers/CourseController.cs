@@ -32,10 +32,6 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            
-
-           // DBConnection database = DBConnection.getInstance();
-
             ArrayList allCourses = new ArrayList();
             bool isStudent = true;
 
@@ -48,8 +44,6 @@ namespace ekaH_server.Controllers
                 return NotFound();
             }
 
-                
-               
             if (isStudent)
             {
                     
@@ -125,7 +119,7 @@ namespace ekaH_server.Controllers
 
             if (status)
             {
-                return StatusCode(HttpStatusCode.Created);
+                return Ok(course.CourseID);
             }
 
             return InternalServerError();
@@ -174,13 +168,13 @@ namespace ekaH_server.Controllers
             {
                 if (CourseDBHandler.courseExists(previousCourseID))
                 {
-                    if (CourseDBHandler.executePutCourse(course, previousCourseID)) return StatusCode(HttpStatusCode.OK);
+                    if (CourseDBHandler.executePutCourse(course, previousCourseID)) return Ok(course.CourseID);
                     else throw new Exception();
                 }
                 else
                 {
                     // Indicates that the course user wants to edit doesn't exist. Hence, redirect it to POST's method.
-                    if (CourseDBHandler.executePostCourse(course)) return StatusCode(HttpStatusCode.Created);
+                    if (CourseDBHandler.executePostCourse(course)) return Created("",course.CourseID);
                     else throw new Exception();
                 }
             }
@@ -234,5 +228,8 @@ namespace ekaH_server.Controllers
 
             return InternalServerError();
         }
+
+        
+       
     }
 }

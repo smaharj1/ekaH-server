@@ -23,10 +23,18 @@ namespace ekaH_server
             );
 
             config.Routes.MapHttpRoute(
+                name: "CourseStudentAPI",
+                routeTemplate: "ekah/courses/{cid}/students/{sid}",
+                defaults: new { controller = "courseStudent", sid=RouteParameter.Optional }
+                );
+
+            config.Routes.MapHttpRoute(
                 name:"CourseAPI",
                 routeTemplate: "ekah/courses/{id}/{cid}",
                 defaults: new {controller="course", cid = RouteParameter.Optional}
                 );
+
+            
 
             config.Routes.MapHttpRoute(
                 name: "StudentsAPI",

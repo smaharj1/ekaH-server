@@ -118,12 +118,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_DBHandler\CourseDBHandler.cs" />
+    <Compile Include="App_DBHandler\CourseStudentDBHandler.cs" />
     <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\FacultyDBHandler.cs" />
     <Compile Include="App_DBHandler\UserAuthentication.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\authController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
+    <Compile Include="Controllers\CourseStudentController.cs" />
     <Compile Include="Controllers\facultyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
