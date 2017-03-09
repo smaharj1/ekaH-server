@@ -101,5 +101,11 @@ namespace ekaH_server.Controllers
         public void Delete(int id)
         {
         }
+
+
+        // GET: ekah/students/{id}/courses/{cid}
+        // Returns all the courses that a student is enrolled in.
+        
+
     }
 }

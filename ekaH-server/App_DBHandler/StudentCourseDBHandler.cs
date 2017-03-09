@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
+using ekaH_server.Models;
+using System.Collections;
 
 namespace ekaH_server.App_DBHandler
 {
-    public class CourseStudentDBHandler
+    public class StudentCourseDBHandler
     {
+        // Returns all the courses taken by student
         public static List<string> getAllStudentsFromDB(string cid)
         {
             DBConnection db = DBConnection.getInstance();
@@ -36,7 +39,31 @@ namespace ekaH_server.App_DBHandler
             return result;
         }
 
-        public static bool deleteStudentFromDB(string courseID, string studentID)
+        public static ArrayList getAllCoursesByStudent(string studentID)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string reqQuery = "select * from courses where courseID in (select courseID from studentcourse where studentID = '" + studentID + "');";
+
+            MySqlDataReader reader = null;
+
+            ArrayList courses;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                courses = Course.normalizeCourses(reader);
+            }
+            catch(MySqlException)
+            {
+                throw new Exception();
+            }
+
+            return courses;
+        }
+
+        public static bool deleteStudentFromCourse(string courseID, string studentID)
         {
             DBConnection db = DBConnection.getInstance();
             string reqQuery = "delete from studentcourse where courseID='" + courseID + "' and studentID='" + studentID + "';";

@@ -1,5 +1,6 @@
 ﻿using ekaH_server.App_DBHandler;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,27 +10,29 @@ using System.Web.Http;
 
 namespace ekaH_server.Controllers
 {
-    public class CourseStudentController : ApiController
+    public class StudentCourseController : ApiController
     {
-        // GET: ekah/courses/{cid}/students
-        // Returns all the students in a certain course if cid is not empty.
-        public IHttpActionResult Get(string cid)
+        // GET: ekah/students/{id}/courses
+        // Returns all the courses taken byt he student
+        public IHttpActionResult Get(string id)
         {
-            if (!CourseDBHandler.courseExists(cid))
+            if (!(new EmailAddressAttribute().IsValid(id)))
             {
-                return NotFound();
+                return BadRequest();
             }
-            List<string> students;
+            ArrayList courses = new ArrayList();
+
+
             try
             {
-                students = CourseStudentDBHandler.getAllStudentsFromDB(cid);
+                courses = StudentCourseDBHandler.getAllCoursesByStudent(id);
             }
             catch(Exception)
             {
                 return InternalServerError();
             }
 
-            return Ok<List<string>>(students);
+            return Ok(courses);
         }
         
 
@@ -51,7 +54,7 @@ namespace ekaH_server.Controllers
                 return NotFound();
             }
 
-            bool success = CourseStudentDBHandler.addStudentsToDB(cid, ids);
+            bool success = StudentCourseDBHandler.addStudentsToDB(cid, ids);
 
             if (success)
             {
@@ -62,11 +65,11 @@ namespace ekaH_server.Controllers
 
         }
 
-        // POST: ekah/courses/{cid}/students/{sid}
+        // POST: ekah/students/{id}/courses/{cid}
         // Adds one student to a course at a time.
-        public IHttpActionResult Post(string cid, string sid)
+        public IHttpActionResult Post(string id, string cid)
         {
-            if (!(new EmailAddressAttribute().IsValid(sid)))
+            if (!(new EmailAddressAttribute().IsValid(id)))
             {
                 return BadRequest();
             }
@@ -78,14 +81,14 @@ namespace ekaH_server.Controllers
 
             try
             {
-                if (CourseStudentDBHandler.studentAlreadyExists(cid, sid))
+                if (StudentCourseDBHandler.studentAlreadyExists(cid, id))
                 {
                     return StatusCode(HttpStatusCode.Conflict);
                 }
             }
             catch (Exception) { return InternalServerError(); }
 
-            bool success = CourseStudentDBHandler.addOneStudentToCourse(cid, sid);
+            bool success = StudentCourseDBHandler.addOneStudentToCourse(cid, id);
 
             if (success) return Ok();
             else return InternalServerError();
@@ -97,12 +100,12 @@ namespace ekaH_server.Controllers
         {
         }
 
-        // DELETE: ekah/courses/{cid}/students/{sid}
+        // DELETE: ekah/students/{id}/courses/{cid}
         // Returns bad request if email is not valid, returns not found if course id is not found.
         // Delete returns ok even if the student doesn't exist.
-        public IHttpActionResult Delete(string cid, string sid)
+        public IHttpActionResult Delete(string id, string cid)
         {
-            if (!(new EmailAddressAttribute().IsValid(sid)))
+            if (!(new EmailAddressAttribute().IsValid(id)))
             {
                 return BadRequest();
             }
@@ -112,7 +115,7 @@ namespace ekaH_server.Controllers
                 return NotFound();
             }
 
-            bool success =  CourseStudentDBHandler.deleteStudentFromDB(cid, sid);
+            bool success =  StudentCourseDBHandler.deleteStudentFromCourse(cid, id);
 
             if (success) return Ok();
 
