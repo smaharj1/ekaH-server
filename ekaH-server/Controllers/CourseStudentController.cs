@@ -12,7 +12,7 @@ namespace ekaH_server.Controllers
     public class CourseStudentController : ApiController
     {
         // GET: ekah/courses/{cid}/students
-        // Returns all the students in a certain course
+        // Returns all the students in a certain course if cid is not empty.
         public IHttpActionResult Get(string cid)
         {
             if (!CourseDBHandler.courseExists(cid))
@@ -59,6 +59,36 @@ namespace ekaH_server.Controllers
             }
 
             return InternalServerError();
+
+        }
+
+        // POST: ekah/courses/{cid}/students/{sid}
+        // Adds one student to a course at a time.
+        public IHttpActionResult Post(string cid, string sid)
+        {
+            if (!(new EmailAddressAttribute().IsValid(sid)))
+            {
+                return BadRequest();
+            }
+
+            if (!CourseDBHandler.courseExists(cid))
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                if (CourseStudentDBHandler.studentAlreadyExists(cid, sid))
+                {
+                    return StatusCode(HttpStatusCode.Conflict);
+                }
+            }
+            catch (Exception) { return InternalServerError(); }
+
+            bool success = CourseStudentDBHandler.addOneStudentToCourse(cid, sid);
+
+            if (success) return Ok();
+            else return InternalServerError();
 
         }
 

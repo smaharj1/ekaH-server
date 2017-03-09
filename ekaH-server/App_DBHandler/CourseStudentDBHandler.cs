@@ -60,7 +60,7 @@ namespace ekaH_server.App_DBHandler
             string reqQuery = "";
             foreach (string email in studentEmails)
             {
-                reqQuery += "insert into studentcourse(courseID, studentID) values('" + courseID + "', '" + email + "');";
+                reqQuery += "insert ignore into studentcourse(courseID, studentID) values('" + courseID + "', '" + email + "');";
             }
 
             try
@@ -74,6 +74,50 @@ namespace ekaH_server.App_DBHandler
             }
             return true;
 
+        }
+
+        public static bool addOneStudentToCourse(string courseID, string studentID)
+        {
+            DBConnection db = DBConnection.getInstance();
+            string reqQuery = "insert ignore into studentcourse(courseID,studentID) values('" + courseID + "', '" + studentID + "');";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                cmd.ExecuteNonQuery();
+            }
+            catch(MySqlException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool studentAlreadyExists(string courseID, string studentID)
+        {
+            DBConnection db = DBConnection.getInstance();
+            string reqQuery = "select * from studentcourse where courseID='" + courseID + "' and studentID='" + studentID + "';";
+
+            MySqlDataReader reader = null;
+
+            bool result = false;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    result = true;
+                }
+            }
+            catch(MySqlException)
+            {
+                throw new Exception();
+            }
+
+            reader.Dispose();
+            return result;
         }
     }
 }

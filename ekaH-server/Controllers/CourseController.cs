@@ -79,9 +79,9 @@ namespace ekaH_server.Controllers
 
         // POST: "ekah/courses/{id}
         // This methods helps create a course for certain professor.
-        public IHttpActionResult Post(string id, [FromBody]Course course)
+        public IHttpActionResult Post([FromBody]Course course)
         {
-            if (!(new EmailAddressAttribute().IsValid(id)))
+            if (!(new EmailAddressAttribute().IsValid(course.ProfessorID)))
             {
                 return BadRequest();
             }
@@ -91,7 +91,7 @@ namespace ekaH_server.Controllers
             // Get the type of the student first as professors can only add/remove the course.
             try
             {
-                isStudent = UserAuthentication.getUserType(id);
+                isStudent = UserAuthentication.getUserType(course.ProfessorID);
             }
             catch (Exception)
             {
@@ -103,8 +103,7 @@ namespace ekaH_server.Controllers
                 return StatusCode(HttpStatusCode.Forbidden);
             }
 
-            course.ProfessorID = id;
-
+          
             // Handle the situation here since we are sure that it is a faculty member.
             // This is because only faculty members can add the courses.
 
@@ -127,9 +126,9 @@ namespace ekaH_server.Controllers
 
         // PUT: "ekah/courses/{id}
         // Helps change the information of the faculty for the courses they have already added.
-        public IHttpActionResult Put(string id, [FromBody]Course course)
+        public IHttpActionResult Put([FromBody]Course course)
         {
-            if (!(new EmailAddressAttribute().IsValid(id)))
+            if (!(new EmailAddressAttribute().IsValid(course.ProfessorID)))
             {
                 return BadRequest();
             }
@@ -139,7 +138,7 @@ namespace ekaH_server.Controllers
             // Get the type of the student first as professors can only add/remove the course.
             try
             {
-                isStudent = UserAuthentication.getUserType(id);
+                isStudent = UserAuthentication.getUserType(course.ProfessorID);
             }
             catch (Exception)
             {
@@ -150,8 +149,6 @@ namespace ekaH_server.Controllers
             {
                 return StatusCode(HttpStatusCode.Forbidden);
             }
-
-            course.ProfessorID = id;
 
             // Handle the situation here since we are sure that it is a faculty member.
             // This is because only faculty members can add the courses.
@@ -186,37 +183,14 @@ namespace ekaH_server.Controllers
 
         }
 
-        // DELETE: ekah/courses/{id}/{cid}
+        // DELETE: ekah/courses/{cid}
         // It deletes the course from the database. 
         // It does need two parameters for ids since delete does not take in any body while following strict http protocol.
-        public IHttpActionResult Delete(string id, string cid)
+        public IHttpActionResult Delete(string cid)
         {
-            if (!(new EmailAddressAttribute().IsValid(id)))
-            {
-                return BadRequest();
-            }
-
-            bool isStudent = true;
-
-            // Get the type of the student first as professors can only add/remove the course.
             try
             {
-                isStudent = UserAuthentication.getUserType(id);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-
-            if (isStudent)
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
-
-
-            try
-            {
-                if (CourseDBHandler.executeDeleteCourse(id, cid))
+                if (CourseDBHandler.executeDeleteCourse(cid))
                 {
                     return Ok();
                 }

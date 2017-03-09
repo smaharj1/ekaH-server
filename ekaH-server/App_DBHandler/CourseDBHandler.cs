@@ -79,7 +79,7 @@ namespace ekaH_server.App_DBHandler
         {
             DBConnection db = DBConnection.getInstance();
 
-            string reqQuery = "insert into courses(courseID, year, semester, professorID, days, startTime, endTime, courseName, courseDescription) " +
+            string reqQuery = "insert ignore into courses(courseID, year, semester, professorID, days, startTime, endTime, courseName, courseDescription) " +
                 "values('" + course.CourseID + "', " + course.Year + ", '" + course.Semester + "', '" + course.ProfessorID + "', '" +
                 course.Days + "', '" + course.StartTime + "', '" + course.EndTime + "', '" + course.CourseName + "', '" + course.CourseDescription + "');";
 
@@ -118,14 +118,14 @@ namespace ekaH_server.App_DBHandler
             return true;
         }
 
-        public static bool executeDeleteCourse(string email, string courseID)
+        public static bool executeDeleteCourse(string courseID)
         {
             DBConnection db = DBConnection.getInstance();
 
             string reqQuery = "delete from courses where courseID='" + courseID + "';";
 
             // First, check if the professor teaches the course s/he wants to delete.
-            string checkQuery = "select * from courses where courseID='" + courseID + "' and professorID='" + email + "';";
+            string checkQuery = "select * from courses where courseID='" + courseID + "';";
 
             MySqlDataReader reader = null;
 

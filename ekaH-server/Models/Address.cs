@@ -13,7 +13,14 @@ namespace ekaH_server.Models
         public string State { get; set; }
         public string Zip { get; set; }
 
-        public Address() { }
+        public Address()
+        {
+            StreetAdd1 = "";
+            StreetAdd2 = "";
+            City = "";
+            State = "";
+            Zip = "";
+        }
 
         public Address(string add1, string add2, string city, string state, string zip)
         {
