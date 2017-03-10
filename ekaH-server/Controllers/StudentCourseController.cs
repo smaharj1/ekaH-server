@@ -10,6 +10,8 @@ using System.Web.Http;
 
 namespace ekaH_server.Controllers
 {
+    // It is a controller for handling the courses functions for students. 
+    // For example, get all the courses taken by the students, add course and drop course for students.
     public class StudentCourseController : ApiController
     {
         // GET: ekah/students/{id}/courses

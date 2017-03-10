@@ -10,34 +10,7 @@ namespace ekaH_server.App_DBHandler
 {
     public class StudentCourseDBHandler
     {
-        // Returns all the courses taken by student
-        public static List<string> getAllStudentsFromDB(string cid)
-        {
-            DBConnection db = DBConnection.getInstance();
-
-            string reqQuery = "select * from studentcourse where courseID='" + cid + "';";
-
-            MySqlDataReader reader = null;
-            List<string> result = new List<string>();
-
-            try
-            {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
-                reader = cmd.ExecuteReader();
-            }
-            catch (MySqlException)
-            {
-                throw new Exception();
-            }
-
-            while(reader.Read())
-            {
-                result.Add(reader.GetString(1));
-            }
-
-            reader.Dispose();
-            return result;
-        }
+       
 
         public static ArrayList getAllCoursesByStudent(string studentID)
         {

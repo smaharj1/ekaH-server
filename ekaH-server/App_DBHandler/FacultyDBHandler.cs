@@ -40,20 +40,20 @@ namespace ekaH_server.App_DBHandler
             {
                 infoReceived = new StudentInfo();
                 infoReceived.Email = emailID;
-                infoReceived.FirstName = FacultyWorker.getStringSafe(dataReader, 0);
-                infoReceived.LastName = FacultyWorker.getStringSafe(dataReader, 1);
-                infoReceived.Education = FacultyWorker.getStringSafe(dataReader, 3);
-                infoReceived.Concentration = FacultyWorker.getStringSafe(dataReader, 4);
-                infoReceived.Graduation = int.Parse(FacultyWorker.getStringSafe(dataReader, 5));
+                infoReceived.FirstName = UserWorker.getStringSafe(dataReader, 0);
+                infoReceived.LastName = UserWorker.getStringSafe(dataReader, 1);
+                infoReceived.Education = UserWorker.getStringSafe(dataReader, 3);
+                infoReceived.Concentration = UserWorker.getStringSafe(dataReader, 4);
+                infoReceived.Graduation = int.Parse(UserWorker.getStringSafe(dataReader, 5));
 
                 Address addr = new Address();
-                addr.StreetAdd1 = FacultyWorker.getStringSafe(dataReader, 6);
-                addr.StreetAdd2 = FacultyWorker.getStringSafe(dataReader, 7);
-                addr.City = FacultyWorker.getStringSafe(dataReader, 8);
-                addr.State = FacultyWorker.getStringSafe(dataReader, 9);
-                addr.Zip = FacultyWorker.getStringSafe(dataReader, 10);
+                addr.StreetAdd1 = UserWorker.getStringSafe(dataReader, 6);
+                addr.StreetAdd2 = UserWorker.getStringSafe(dataReader, 7);
+                addr.City = UserWorker.getStringSafe(dataReader, 8);
+                addr.State = UserWorker.getStringSafe(dataReader, 9);
+                addr.Zip = UserWorker.getStringSafe(dataReader, 10);
                 infoReceived.Address = addr;
-                infoReceived.Phone = FacultyWorker.getStringSafe(dataReader, 11);
+                infoReceived.Phone = UserWorker.getStringSafe(dataReader, 11);
 
             }
 
@@ -110,7 +110,7 @@ namespace ekaH_server.App_DBHandler
                 throw new Exception();
             }
 
-            FacultyInfo faculty = FacultyWorker.extractInfo(dataReader);
+            FacultyInfo faculty = UserWorker.extractFacultyInfo(dataReader);
 
             dataReader.Dispose();
             return faculty;

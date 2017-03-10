@@ -6,14 +6,14 @@ using MySql.Data.MySqlClient;
 
 namespace ekaH_server.Models.UserModels
 {
-    public class FacultyWorker
+    public class UserWorker
     {
-        private FacultyWorker()
+        private UserWorker()
         {
 
         }
 
-        public static FacultyInfo extractInfo(MySqlDataReader reader)
+        public static FacultyInfo extractFacultyInfo(MySqlDataReader reader)
         {
             if (reader.Read())
             {
@@ -59,6 +59,38 @@ namespace ekaH_server.Models.UserModels
         }
 
 
+        // TODO: NEED TO WORD ON THIS
+        public static StudentInfo extractStudentInfo(MySqlDataReader reader)
+        {
+            if (reader != null)
+            {
+                // The user exists. Now read the line and extract the information into an object.
+                StudentInfo student = new StudentInfo();
+
+
+                student.FirstName = reader.GetString(0);
+                student.LastName = reader.GetString(1);
+                student.Email = reader.GetString(2);
+                //student.Department = reader.GetString(3);
+                student.Education = getStringSafe(reader, 4);
+                //student.University = getStringSafe(reader, 5);
+                student.Concentration = getStringSafe(reader, 6);
+
+                Address address = new Address();
+                address.StreetAdd1 = getStringSafe(reader, 7);
+                address.StreetAdd2 = getStringSafe(reader, 8);
+                address.City = getStringSafe(reader, 9);
+                address.State = getStringSafe(reader, 10);
+                address.Zip = getStringSafe(reader, 11);
+                student.Address = address;
+
+                student.Phone = getStringSafe(reader, 12);
+
+                return student;
+            }
+
+            return null;
+        }
 
     }
 }

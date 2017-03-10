@@ -163,5 +163,31 @@ namespace ekaH_server.App_DBHandler
 
             return true;
         }
+
+        // Returns all the students taken by the course ID.
+        public static List<string> getAllStudentsFromDB(string cid)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string reqQuery = "select * from studentcourse where courseID='" + cid + "';";
+
+            MySqlDataReader reader = null;
+            List<string> result = new List<string>();
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+            }
+            catch (MySqlException)
+            {
+                throw new Exception();
+            }
+
+            
+
+            reader.Dispose();
+            return result;
+        }
     }
 }

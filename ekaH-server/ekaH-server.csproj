@@ -136,7 +136,7 @@
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\UserAuth\LogInInfo.cs" />
     <Compile Include="Models\UserAuth\RegisterInfo.cs" />
-    <Compile Include="Models\UserModels\FacultyWorker.cs" />
+    <Compile Include="Models\UserModels\UserWorker.cs" />
     <Compile Include="Models\UserModels\UserInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

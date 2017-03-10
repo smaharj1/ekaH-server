@@ -23,11 +23,14 @@ namespace ekaH_server.Controllers
         }
 
         // GET: "ekah/courses/{id}
-        // Handles the response for faculty and students here. They are not different as both of them should receive 
-        // dictionary of all the courses they are teaching or they are studying.
-        public IHttpActionResult Get(string id)
+        // Including one extra functionality for faculty. Get all the courses 
+        // that the faculty teaches.
+        [HttpGet]
+        [ActionName("faculty")]
+        public IHttpActionResult Get(string cid)
         {
-            if (!(new EmailAddressAttribute().IsValid(id)))
+            // cid actually refers to the faculty email address in this scenario.
+            if (!(new EmailAddressAttribute().IsValid(cid)))
             {
                 return BadRequest();
             }
@@ -37,7 +40,7 @@ namespace ekaH_server.Controllers
 
             try
             {
-                isStudent = UserAuthentication.getUserType(id);
+                isStudent = UserAuthentication.getUserType(cid);
             }
             catch (Exception)
             {
@@ -46,33 +49,32 @@ namespace ekaH_server.Controllers
 
             if (isStudent)
             {
-                    
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+            
+            // This is for faculty. Returns the list of all the courses taught by a faculty member.
+            // This returns null if there is SQL ERROR.
+            MySqlDataReader reader = CourseDBHandler.readCoursesByFaculty(cid);
+
+            if (reader != null)
+            {
+                try
+                {
+                    allCourses = Course.normalizeCourses(reader);
+                }
+                catch(Exception)
+                {
+                    // This exception helps dispose reader.
+                    reader.Dispose();
+                }
             }
             else
             {
-                // This is for faculty. Returns the list of all the courses taught by a faculty member.
-                // This returns null if there is SQL ERROR.
-                MySqlDataReader reader = CourseDBHandler.readCoursesByFaculty(id);
-
-                if (reader != null)
-                {
-                    try
-                    {
-                        allCourses = Course.normalizeCourses(reader);
-                    }
-                    catch(Exception)
-                    {
-                        // This exception helps dispose reader.
-                        reader.Dispose();
-                    }
-                }
-                else
-                {
-                    // This means that there was SQL error.
-                    return InternalServerError();
-                }
-                    
+                // This means that there was SQL error.
+                return InternalServerError();
             }
+                    
+            
 
             return Ok(allCourses);
         }
@@ -203,7 +205,34 @@ namespace ekaH_server.Controllers
             return InternalServerError();
         }
 
+        [HttpGet]
+        [ActionName("students")]
+        // Returns all the students enrolled in a particular course
+        public IHttpActionResult getAllStudentsInCourse(string cid)
+        {
+            if (!CourseDBHandler.courseExists(cid))
+            {
+                return BadRequest();
+            }
+
+            ArrayList allStudents = new ArrayList();
+
+            try
+            {
+                //allStudents = CourseDBHandler.getAllStudentsFromDB(cid);
+            }
+            catch(Exception)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(allStudents);
+
+        }
+
         
+        
+
        
     }
 }

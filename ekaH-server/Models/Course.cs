@@ -28,15 +28,15 @@ namespace ekaH_server.Models
             while (reader.Read())
             {
                 Course tempCourse = new Course();
-                tempCourse.CourseID = FacultyWorker.getStringSafe(reader, 0);
+                tempCourse.CourseID = UserWorker.getStringSafe(reader, 0);
                 tempCourse.Year = (int)reader.GetValue(1);
                 tempCourse.Semester = reader.GetString(2);
                 tempCourse.ProfessorID = reader.GetString(3);
                 tempCourse.Days = reader.GetString(4);
                 tempCourse.StartTime = reader.GetTimeSpan(5);
                 tempCourse.EndTime = reader.GetTimeSpan(6);
-                tempCourse.CourseName = FacultyWorker.getStringSafe(reader, 7);
-                tempCourse.CourseDescription = FacultyWorker.getStringSafe(reader, 8);
+                tempCourse.CourseName = UserWorker.getStringSafe(reader, 7);
+                tempCourse.CourseDescription = UserWorker.getStringSafe(reader, 8);
 
                 courses.Add(tempCourse);
             }
