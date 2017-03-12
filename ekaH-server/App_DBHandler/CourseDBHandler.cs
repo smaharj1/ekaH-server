@@ -1,6 +1,8 @@
 ﻿using ekaH_server.Models;
+using ekaH_server.Models.UserModels;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -164,30 +166,62 @@ namespace ekaH_server.App_DBHandler
             return true;
         }
 
-        // Returns all the students taken by the course ID.
-        public static List<string> getAllStudentsFromDB(string cid)
+        // Returns all the students enrolled in the course by the course ID.
+        public static List<StudentInfo> getAllStudentsByCourse(string cid)
         {
             DBConnection db = DBConnection.getInstance();
 
-            string reqQuery = "select * from studentcourse where courseID='" + cid + "';";
+            string reqQuery = "select * from student_info where email in (select studentID from studentcourse where courseID = '" + cid + "');";
 
             MySqlDataReader reader = null;
-            List<string> result = new List<string>();
+            List<StudentInfo> result = new List<StudentInfo>();
 
             try
             {
                 MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
                 reader = cmd.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    result.Add(UserWorker.extractStudentInfo(reader));
+                }
             }
             catch (MySqlException)
             {
                 throw new Exception();
             }
-
             
-
             reader.Dispose();
             return result;
+        }
+
+        public static Course getCourseByID(string courseID)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string reqQuery = "select * from courses where courseID='" + courseID + "';";
+
+            MySqlDataReader reader = null;
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                List<Course> courses = Course.normalizeCourses(reader);
+                if (courses.Count<1)
+                {
+                    return null;
+                }
+                else
+                {
+                    return courses[0];
+                }
+            }
+            catch(MySqlException)
+            {
+                throw new Exception("There has been a database error!");
+            }
         }
     }
 }

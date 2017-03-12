@@ -11,8 +11,8 @@ namespace ekaH_server.App_DBHandler
     public class StudentCourseDBHandler
     {
        
-
-        public static ArrayList getAllCoursesByStudent(string studentID)
+        // Returns all the courses that the student is enrolled in.
+        public static List<Course> getAllCoursesByStudent(string studentID)
         {
             DBConnection db = DBConnection.getInstance();
 
@@ -20,7 +20,7 @@ namespace ekaH_server.App_DBHandler
 
             MySqlDataReader reader = null;
 
-            ArrayList courses;
+            List<Course> courses;
             try
             {
                 MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());

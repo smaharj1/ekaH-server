@@ -22,9 +22,9 @@ namespace ekaH_server.Models
         public string CourseDescription { get; set; }
         
 
-        public static ArrayList normalizeCourses(MySqlDataReader reader)
+        public static List<Course> normalizeCourses(MySqlDataReader reader)
         {
-            ArrayList courses = new ArrayList();
+            List<Course> courses = new List<Course>();
             while (reader.Read())
             {
                 Course tempCourse = new Course();

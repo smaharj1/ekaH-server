@@ -59,37 +59,31 @@ namespace ekaH_server.Models.UserModels
         }
 
 
-        // TODO: NEED TO WORD ON THIS
-        public static StudentInfo extractStudentInfo(MySqlDataReader reader)
+        // TODO: NEED TO WORK ON THIS
+        public static StudentInfo extractStudentInfo(MySqlDataReader dataReader)
         {
-            if (reader != null)
-            {
-                // The user exists. Now read the line and extract the information into an object.
-                StudentInfo student = new StudentInfo();
+            StudentInfo infoReceived = null;
+            // Handle the dataReader to read the data from the database and store it in StudentInfo class.
+            
+            infoReceived = new StudentInfo();
+            infoReceived.Email = getStringSafe(dataReader, 2);
+            infoReceived.FirstName = getStringSafe(dataReader, 0);
+            infoReceived.LastName = getStringSafe(dataReader, 1);
+            infoReceived.Education = getStringSafe(dataReader, 3);
+            infoReceived.Concentration = getStringSafe(dataReader, 4);
+            infoReceived.Graduation = int.Parse(getStringSafe(dataReader, 5));
 
+            Address addr = new Address();
+            addr.StreetAdd1 = getStringSafe(dataReader, 6);
+            addr.StreetAdd2 = getStringSafe(dataReader, 7);
+            addr.City = getStringSafe(dataReader, 8);
+            addr.State = getStringSafe(dataReader, 9);
+            addr.Zip = getStringSafe(dataReader, 10);
+            infoReceived.Address = addr;
+            infoReceived.Phone = getStringSafe(dataReader, 11);
 
-                student.FirstName = reader.GetString(0);
-                student.LastName = reader.GetString(1);
-                student.Email = reader.GetString(2);
-                //student.Department = reader.GetString(3);
-                student.Education = getStringSafe(reader, 4);
-                //student.University = getStringSafe(reader, 5);
-                student.Concentration = getStringSafe(reader, 6);
-
-                Address address = new Address();
-                address.StreetAdd1 = getStringSafe(reader, 7);
-                address.StreetAdd2 = getStringSafe(reader, 8);
-                address.City = getStringSafe(reader, 9);
-                address.State = getStringSafe(reader, 10);
-                address.Zip = getStringSafe(reader, 11);
-                student.Address = address;
-
-                student.Phone = getStringSafe(reader, 12);
-
-                return student;
-            }
-
-            return null;
+            
+            return infoReceived;
         }
 
     }

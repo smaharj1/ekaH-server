@@ -1,4 +1,5 @@
 ﻿using ekaH_server.App_DBHandler;
+using ekaH_server.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace ekaH_server.Controllers
             {
                 return BadRequest();
             }
-            ArrayList courses = new ArrayList();
+            List<Course> courses = new List<Course>();
 
 
             try
@@ -39,6 +40,8 @@ namespace ekaH_server.Controllers
         
 
         // POST: ekah/courses/{cid}/students
+        // This is specifically done when the professor adds a list of students to a course. 
+        // It is not being used right now.
         public IHttpActionResult Post(string cid, [FromBody]List<string> ids)
         {
             // Assumes that the client should sent correct email addresses in the body.
@@ -81,14 +84,14 @@ namespace ekaH_server.Controllers
                 return NotFound();
             }
 
-            try
-            {
-                if (StudentCourseDBHandler.studentAlreadyExists(cid, id))
-                {
-                    return StatusCode(HttpStatusCode.Conflict);
-                }
-            }
-            catch (Exception) { return InternalServerError(); }
+            //try
+            //{
+            //    if (StudentCourseDBHandler.studentAlreadyExists(cid, id))
+            //    {
+            //        return StatusCode(HttpStatusCode.Conflict);
+            //    }
+            //}
+            //catch (Exception) { return InternalServerError(); }
 
             bool success = StudentCourseDBHandler.addOneStudentToCourse(cid, id);
 

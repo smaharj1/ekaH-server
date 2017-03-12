@@ -22,12 +22,54 @@ namespace ekaH_server.Controllers
             return "No one is supposed to access this";
         }
 
-        // GET: "ekah/courses/{id}
+        // GET: "ekah/courses/{cid}/{action}
+        // It returns the details of a single course by the given id
+        [HttpGet]
+        [ActionName("single")]
+        public IHttpActionResult Get(string cid)
+        {
+            Course c;
+            try
+            {
+                c = CourseDBHandler.getCourseByID(cid);
+            }
+            catch(Exception)
+            {
+                // Returns the database error when exception is thrown
+                return InternalServerError();
+            }
+
+            // Checks if course is null. If it is, it means that the course is not found.
+            // Else, returns the course.
+            if (c == null) return Ok<Course>(null);
+            else return Ok<Course>(c);
+        }
+
+
+        // GET: "Ekah/courses/{cid}/{action}
+        // Returns the list of students enrolled in a course.
+        [HttpGet]
+        [ActionName("students")]
+        public IHttpActionResult GetStudentsInCourse(string cid)
+        {
+            try
+            {
+                List<StudentInfo> students = CourseDBHandler.getAllStudentsByCourse(cid);
+                return Ok(students);
+            }
+            catch(Exception)
+            {
+                return InternalServerError();
+            }
+
+        }
+
+        // GET: "ekah/courses/{cid}/{action}
         // Including one extra functionality for faculty. Get all the courses 
         // that the faculty teaches.
         [HttpGet]
         [ActionName("faculty")]
-        public IHttpActionResult Get(string cid)
+        public IHttpActionResult GetCourseTaughtByFaculty(string cid)
         {
             // cid actually refers to the faculty email address in this scenario.
             if (!(new EmailAddressAttribute().IsValid(cid)))
@@ -35,7 +77,7 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            ArrayList allCourses = new ArrayList();
+            List<Course> allCourses = new List<Course>();
             bool isStudent = true;
 
             try
@@ -205,30 +247,7 @@ namespace ekaH_server.Controllers
             return InternalServerError();
         }
 
-        [HttpGet]
-        [ActionName("students")]
-        // Returns all the students enrolled in a particular course
-        public IHttpActionResult getAllStudentsInCourse(string cid)
-        {
-            if (!CourseDBHandler.courseExists(cid))
-            {
-                return BadRequest();
-            }
-
-            ArrayList allStudents = new ArrayList();
-
-            try
-            {
-                //allStudents = CourseDBHandler.getAllStudentsFromDB(cid);
-            }
-            catch(Exception)
-            {
-                return InternalServerError();
-            }
-
-            return Ok(allStudents);
-
-        }
+        
 
         
         
