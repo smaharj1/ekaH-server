@@ -118,11 +118,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_DBHandler\CourseDBHandler.cs" />
+    <Compile Include="App_DBHandler\ScheduleDBHandler.cs" />
     <Compile Include="App_DBHandler\StudentCourseDBHandler.cs" />
     <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\FacultyDBHandler.cs" />
     <Compile Include="App_DBHandler\UserAuthentication.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\appointmentsController.cs" />
     <Compile Include="Controllers\authController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\StudentCourseController.cs" />
@@ -133,7 +135,9 @@
     </Compile>
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\DayInfo.cs" />
     <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\UserAuth\LogInInfo.cs" />
     <Compile Include="Models\UserAuth\RegisterInfo.cs" />
     <Compile Include="Models\UserModels\UserWorker.cs" />
