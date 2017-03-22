@@ -11,15 +11,7 @@ namespace ekaH_server.Controllers
 {
     public class appointmentsController : ApiController
     {
-        // GET: ekah/appointments/{action}/{id}
-        // Returns all the appointments in the database by all the people.
-        [HttpGet]
-        [ActionName("appointment")]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+        
         // GET: ekah/appointments/{action}/{id}
         // action: appointment, id = Optional
         // Returns the appointment information of a professor mentioned in id.
@@ -95,6 +87,86 @@ namespace ekaH_server.Controllers
                 return Ok();
             }
             else
+            {
+                return InternalServerError();
+            }
+        }
+
+
+        // -------------------------------------------------------------------
+        // --------------- APPOINTMENT PART-----------------------------------
+        // -------------------------------------------------------------------
+
+        // POST: ekah/appointments/{action}/{id}
+        // Action: app
+        [HttpPost]
+        [ActionName("app")]
+        public IHttpActionResult AddAppointment([FromBody]Appointment appointment)
+        {
+            try
+            {
+                bool status = AppointmentDBHandler.postAppointment(appointment);
+                if (status) return Ok();
+                else return Conflict();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        // GET: ekah/appointments/{action}/{id}
+        // Action: app. Default GET accepts id as EMAIL of professor
+        [HttpGet]
+        [ActionName("app")]
+        public IHttpActionResult GetAppointments(string id)
+        {
+            List<Appointment> allAppointments = new List<Appointment>();
+
+            try
+            {
+                allAppointments = AppointmentDBHandler.getAppointmentsByProfessorID(id);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(allAppointments);
+        }
+
+        // GET: ekah/appointments/{action}/
+        // Action: app. This gets all the appointments in the database. For admin purposes.
+        [HttpGet]
+        [ActionName("app")]
+        public IHttpActionResult GetAllAppointments()
+        {
+            List<Appointment> allAppointments = new List<Appointment>();
+
+            try
+            {
+                allAppointments = AppointmentDBHandler.getAllAppointments();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(allAppointments);
+        }
+
+        // DELETE: ekah/appointments/{action}/{id}
+        // Action: app. Deletes the appointment with the given ID
+        [HttpDelete]
+        [ActionName("app")]
+        public IHttpActionResult DeleteAppointment(int id)
+        {
+            try
+            {
+                AppointmentDBHandler.deleteAppointment(id);
+                return Ok();
+            }
+            catch(Exception)
             {
                 return InternalServerError();
             }

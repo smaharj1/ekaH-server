@@ -4,11 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 
 namespace ekaH_server.App_DBHandler
 {
     public class AppointmentDBHandler
     {
+        // Returns the SQL safe date string.
+        private static string getDateString(DateTime datetime)
+        {
+            return datetime.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        private static string getTimeString(TimeSpan time)
+        {
+            return time.ToString();
+        }
+
         // Posts the schedule to the database.
         public static bool postScheduleToDB(Schedule schedule)
         {
@@ -110,14 +122,154 @@ namespace ekaH_server.App_DBHandler
             }
 
             schedule.Days = days.ToArray();
+            reader.Dispose();
             return schedule;
         }
 
-        // Returns the SQL safe date string.
-        private static string getDateString(DateTime datetime)
+
+        public static bool checkIfAppointmentExists(Appointment appointment)
         {
-            return datetime.ToString("yyyy-MM-dd HH:mm:ss");
+            DBConnection db = DBConnection.getInstance();
+
+            string requestQuery = "select * from appointments where scheduleID = " + appointment.ScheduleID + " and startTime = '" +
+                getTimeString(appointment.StartTime) + "' and endTime = '" + getTimeString(appointment.EndTime) + "';";
+
+            MySqlDataReader reader = null;
+            bool result = true;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(requestQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read()) result = true;
+                else result =  false;
+            }
+            catch (MySqlException ee)
+            {
+                Debug.WriteLine(ee.Message);
+                throw new Exception();
+            }
+
+            reader.Dispose();
+            return result;
         }
+
+        // Sets an appointment. It is assumed that the client system already verifies that the professor's
+        // schedule is configured and ID is captured.
+        public static bool postAppointment(Appointment appointment)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            if (checkIfAppointmentExists(appointment))
+            {
+                return false;
+            }
+
+            string requestQuery = "insert into appointments(scheduleID, startTime, endTime, attendeeID) values ("+
+                appointment.ScheduleID+", '"+ getTimeString(appointment.StartTime) +"','"+getTimeString(appointment.EndTime)+"','"+
+                appointment.AttendeeID+"');";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(requestQuery, db.getConnection());
+                cmd.ExecuteNonQuery();
+            }
+            catch(MySqlException)
+            {
+                throw new Exception();
+            }
+
+            return true;
+        }
+
+        public static List<Appointment> getAppointmentsByProfessorID(string email)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string requestQuery = "select * from appointments where scheduleID in (select id from officehours where professorID = '"+email+"');";
+            
+            try
+            {
+                List<Appointment> list = getAppointmentsByQuery(requestQuery);
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public static List<Appointment> getAllAppointments()
+        {
+
+            string requestQuery = "select * from appointments;";
+
+            try
+            {
+                List<Appointment> list = getAppointmentsByQuery(requestQuery);
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private static List<Appointment> getAppointmentsByQuery(string requestQuery)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            MySqlDataReader reader = null;
+
+            List<Appointment> list = new List<Appointment>();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(requestQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Appointment tempApp = new Appointment();
+                    tempApp.AppointmentID = (int)reader.GetValue(0);
+                    tempApp.ScheduleID = (int)reader.GetValue(1);
+                    tempApp.StartTime = reader.GetTimeSpan(2);
+                    tempApp.EndTime = reader.GetTimeSpan(3);
+                    tempApp.AttendeeID = reader.IsDBNull(4) ? "" : reader.GetString(4);
+                    tempApp.Confirmed = reader.GetBoolean(5);
+                    list.Add(tempApp);
+                }
+            }
+            catch (MySqlException ee)
+            {
+                string exc = ee.Message;
+                throw new Exception();
+            }
+
+            reader.Dispose();
+
+            return list;
+        }
+
+        public static bool deleteAppointment(int id)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string query = "delete from appointments where id=" + id + ";";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, db.getConnection());
+                cmd.ExecuteNonQuery();
+            }
+            catch(MySqlException)
+            {
+                throw new Exception();
+            }
+
+            return true;
+        }
+
 
     }
 }
