@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_DBHandler\CourseDBHandler.cs" />
-    <Compile Include="App_DBHandler\ScheduleDBHandler.cs" />
+    <Compile Include="App_DBHandler\AppointmentDBHandler.cs" />
     <Compile Include="App_DBHandler\StudentCourseDBHandler.cs" />
     <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\FacultyDBHandler.cs" />

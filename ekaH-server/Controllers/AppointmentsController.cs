@@ -22,12 +22,22 @@ namespace ekaH_server.Controllers
 
         // GET: ekah/appointments/{action}/{id}
         // action: appointment, id = Optional
-        // Returns the appointment information of a particular appointment ID. 
+        // Returns the appointment information of a professor mentioned in id.
         [HttpGet]
-        [ActionName("appointment")]
-        public string GetSchedule(int id)
+        [ActionName("schedule")]
+        public IHttpActionResult GetSchedule(string id)
         {
-            return "value";
+            try
+            {
+                // Gets the schedule of the current week in Schedule object.
+                Schedule schedule = AppointmentDBHandler.getScheduleByProfessorID(id);
+                return Ok<Schedule>(schedule);
+            }
+            catch(Exception)
+            {
+                return InternalServerError();
+            }
+
         }
 
         // POST: ekah/appointments/{action}/{id}
@@ -47,7 +57,7 @@ namespace ekaH_server.Controllers
             bool status = true;
             try
             {
-                status = ScheduleDBHandler.postScheduleToDB(schedule);
+                status = AppointmentDBHandler.postScheduleToDB(schedule);
             }
             catch(Exception)
             {
@@ -76,17 +86,9 @@ namespace ekaH_server.Controllers
         // DELETE: ekah/appointments/{action}/{id}
         [HttpDelete]
         [ActionName("schedule")]
-        public IHttpActionResult DeleteSchedule([FromBody] Schedule schedule)
+        public IHttpActionResult DeleteSchedule(int id)
         {
-            bool status = true;
-            try
-            {
-                status = ScheduleDBHandler.deleteScheduleFromDB(schedule);
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }
+            bool status = AppointmentDBHandler.deleteScheduleFromDB(id);
 
             if (status)
             {

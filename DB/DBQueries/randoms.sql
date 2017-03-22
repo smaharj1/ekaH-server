@@ -30,6 +30,3 @@ alter table appointments add foreign key (attendeeID) references student_info(em
 on delete set null
 on update cascade;
 
-
-
-insert into officehours(
