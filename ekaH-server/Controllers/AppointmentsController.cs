@@ -32,6 +32,28 @@ namespace ekaH_server.Controllers
 
         }
 
+        // GET: ekah/appointments/{action}/{id}
+        // action: appointment, id = Optional
+        // Returns the appointment information of a professor mentioned in id.
+        [HttpGet]
+        [ActionName("schedules")]
+        public IHttpActionResult GetSchedules(string id)
+        {
+            List<Appointment> allSchedule;
+            try
+            {
+                // Gets the schedule of the current week in Schedule object.
+                allSchedule = AppointmentDBHandler.getTwoWeekSchedule(id);
+                
+                return Ok(allSchedule);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
+        }
+
         // POST: ekah/appointments/{action}/{id}
         // action: appointment
         // Posts an appointment to the given professor
@@ -125,7 +147,7 @@ namespace ekaH_server.Controllers
 
             try
             {
-                allAppointments = AppointmentDBHandler.getAppointmentsByProfessorID(id);
+                allAppointments = AppointmentDBHandler.getAppointmentsByProfessorID(id,2);
             }
             catch (Exception)
             {

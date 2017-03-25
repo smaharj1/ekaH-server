@@ -16,9 +16,9 @@ namespace ekaH_server.App_DBHandler
             return datetime.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
-        private static string getTimeString(TimeSpan time)
+        private static string getTimeString(DateTime dtime)
         {
-            return time.ToString();
+            return dtime.ToString();
         }
 
         // Posts the schedule to the database.
@@ -126,13 +126,85 @@ namespace ekaH_server.App_DBHandler
             return schedule;
         }
 
+        // Gets all the available two weeks appointments where the user can book.
+        public static List<Appointment> getTwoWeekSchedule(string email)
+        {
+            DBConnection db = DBConnection.getInstance();
+            DateTime currentDate = DateTime.Now;
+            DateTime futureDate = currentDate.AddDays(14);
+
+            string requestQuery = "select * from officehours where startDTime >= '" + getDateString(currentDate) +
+                "' and startDTime <= '" + getDateString(futureDate) + "' and professorID='" + email + "';";
+
+            List<SingleSchedule> schedules = new List<SingleSchedule>();
+            List<Appointment> generatedApps = new List<Appointment>();
+
+            MySqlDataReader reader = null;
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(requestQuery, db.getConnection());
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    SingleSchedule sch = new SingleSchedule();
+                    sch.ProfessorID = email;
+                    sch.ScheduleID = (int)reader.GetValue(0);
+                    sch.StartDTime = reader.GetDateTime(2);
+                    sch.EndDTime = reader.GetDateTime(3);
+
+                    schedules.Add(sch);
+                    generatedApps.AddRange(sch.divideToAppointments());
+                }
+
+            }
+            catch(MySqlException ex)
+            {
+                throw ex;
+            }
+
+            reader.Dispose();
+
+            List<Appointment> reservedApps;
+            try
+            {
+                 reservedApps = getAppointmentsByProfessorID(email, 2);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            List<Appointment> result = new List<Appointment>();
+
+            foreach (Appointment apps in generatedApps)
+            {
+                bool contains = false;
+                foreach(Appointment reserved in reservedApps)
+                {
+                    if (apps.ScheduleID == reserved.ScheduleID && apps.StartTime == reserved.StartTime)
+                    {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains)
+                {
+                    result.Add(apps);
+                }
+            }
+     
+            return result;
+        }
+
 
         public static bool checkIfAppointmentExists(Appointment appointment)
         {
             DBConnection db = DBConnection.getInstance();
 
             string requestQuery = "select * from appointments where scheduleID = " + appointment.ScheduleID + " and startTime = '" +
-                getTimeString(appointment.StartTime) + "' and endTime = '" + getTimeString(appointment.EndTime) + "';";
+                getDateString(appointment.StartTime) + "' and endTime = '" + getDateString(appointment.EndTime) + "';";
 
             MySqlDataReader reader = null;
             bool result = true;
@@ -166,7 +238,7 @@ namespace ekaH_server.App_DBHandler
             }
 
             string requestQuery = "insert into appointments(scheduleID, startTime, endTime, attendeeID) values ("+
-                appointment.ScheduleID+", '"+ getTimeString(appointment.StartTime) +"','"+getTimeString(appointment.EndTime)+"','"+
+                appointment.ScheduleID+", '"+ getDateString(appointment.StartTime) +"','"+getDateString(appointment.EndTime)+"','"+
                 appointment.AttendeeID+"');";
 
             try
@@ -182,12 +254,16 @@ namespace ekaH_server.App_DBHandler
             return true;
         }
 
-        public static List<Appointment> getAppointmentsByProfessorID(string email)
+        public static List<Appointment> getAppointmentsByProfessorID(string email, int weeks)
         {
             DBConnection db = DBConnection.getInstance();
+            DateTime currentDate = DateTime.Now;
+            DateTime futureDate = currentDate.AddDays(weeks * 7);
 
-            string requestQuery = "select * from appointments where scheduleID in (select id from officehours where professorID = '"+email+"');";
-            
+            string requestQuery = "select * from appointments where scheduleID in (select id from officehours where startDTime >= '" +
+                getDateString(currentDate) + "' and startDTime <= '" + getDateString(futureDate) + "' and professorID='" + email + "');";
+
+
             try
             {
                 List<Appointment> list = getAppointmentsByQuery(requestQuery);
@@ -233,8 +309,8 @@ namespace ekaH_server.App_DBHandler
                     Appointment tempApp = new Appointment();
                     tempApp.AppointmentID = (int)reader.GetValue(0);
                     tempApp.ScheduleID = (int)reader.GetValue(1);
-                    tempApp.StartTime = reader.GetTimeSpan(2);
-                    tempApp.EndTime = reader.GetTimeSpan(3);
+                    tempApp.StartTime = reader.GetDateTime(2);
+                    tempApp.EndTime = reader.GetDateTime(3);
                     tempApp.AttendeeID = reader.IsDBNull(4) ? "" : reader.GetString(4);
                     tempApp.Confirmed = reader.GetBoolean(5);
                     list.Add(tempApp);

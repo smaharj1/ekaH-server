@@ -22,11 +22,14 @@ namespace ekaH_server.App_DBHandler
 
             MySqlDataReader dataReader = null;
 
-            string reqQuery = "select * from student_info where email='" + emailID + "';";
-
             try
             {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = db.getConnection();
+                cmd.CommandText = "select * from student_info where email=@emailID;";
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("emailID", emailID);
+
                 dataReader = cmd.ExecuteReader();
             }
             catch (MySqlException)
@@ -68,15 +71,29 @@ namespace ekaH_server.App_DBHandler
             DBConnection db = DBConnection.getInstance();
             Address address = student.Address == null ? new Address() : student.Address;
 
-            string reqQuery = "update student_info set firstName = '" + student.FirstName + "', lastName = '" + student.LastName + "', graduationYear = " +
-                student.Graduation + ", education = '" + student.Education +
-                "', concentration = '" + student.Concentration + "', streetAdd1 = '" + address.StreetAdd1 +
-                "', streetAdd2 = '" + address.StreetAdd2 + "', state = '" + address.State + "', city ='" + address.City + "', zip = '" +
-                address.Zip + "', phone='" + student.Phone + "' where email = '" + student.Email + "';";
-
             try
             {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = db.getConnection();
+                cmd.CommandText = "update student_info set firstName = @FirstName, lastName = @LastName, " +
+                    "graduationYear = @Graduation, education = @Education, concentration = @Concentration, streetAdd1 = @StreetAdd1, "+
+                    "streetAdd2 = @StreetAdd2, state = @State, city =@City, zip =@Zip, phone=@Phone where email = @Email;";
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("FirstName", student.FirstName);
+                cmd.Parameters.AddWithValue("LastName", student.LastName);
+                cmd.Parameters.AddWithValue("Graduation", student.Graduation);
+                cmd.Parameters.AddWithValue("Education", student.Education);
+                cmd.Parameters.AddWithValue("Concentration", student.Concentration);
+                cmd.Parameters.AddWithValue("StreetAdd1", address.StreetAdd1);
+                cmd.Parameters.AddWithValue("StreetAdd2", address.StreetAdd2);
+                cmd.Parameters.AddWithValue("State", address.State);
+                cmd.Parameters.AddWithValue("City", address.City);
+                cmd.Parameters.AddWithValue("Zip", address.Zip);
+                cmd.Parameters.AddWithValue("Phone", student.Phone);
+                cmd.Parameters.AddWithValue("Email", student.Email);
+
+
                 cmd.ExecuteNonQuery();
             }
             catch (MySqlException)
@@ -94,14 +111,16 @@ namespace ekaH_server.App_DBHandler
             MySqlDataReader dataReader = null;
 
             string reqQuery = "select * from professor_info where email='" + emailID + "';";
-
-            //string response;
-            //ErrorList result;
-
-            // MessageBox.Show(reqQuery);
+            
             try
             {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = db.getConnection();
+                cmd.CommandText = "select * from professor_info where email=@emailID;";
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("emailID", emailID);
+
                 dataReader = cmd.ExecuteReader();
 
             }
@@ -122,16 +141,30 @@ namespace ekaH_server.App_DBHandler
 
             DBConnection db = DBConnection.getInstance();
             Address address = facultyMem.Address;
-
-            string reqQuery = "update professor_info set firstName = '" + facultyMem.FirstName + "', lastName = '" + facultyMem.LastName + "', department = '" + 
-                facultyMem.Department + "', education = '" + facultyMem.Education +
-                "', university = '" + facultyMem.University + "', concentration = '" + facultyMem.Concentration + "', streetAdd1 = '" + address.StreetAdd1 + 
-                "', streetAdd2 = '" + address.StreetAdd2 + "', state = '" + address.State + "', city ='"+ address.City+"', zip = '" + 
-                address.Zip + "', phone='"+facultyMem.Phone+"' where email = '" + facultyMem.Email + "';";
-
+            
             try
             {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = db.getConnection();
+                cmd.CommandText = "update professor_info set firstName = @FirstName, lastName = @LastName, " +
+                    "department = @Department, education = @Education, university = @University, concentration = @Concentration, streetAdd1 = @StreetAdd1, " +
+                    "streetAdd2 = @StreetAdd2, state = @State, city =@City, zip =@Zip, phone=@Phone where email = @Email;";
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("FirstName", facultyMem.FirstName);
+                cmd.Parameters.AddWithValue("LastName", facultyMem.LastName);
+                cmd.Parameters.AddWithValue("Department", facultyMem.Department);
+                cmd.Parameters.AddWithValue("Education", facultyMem.Education);
+                cmd.Parameters.AddWithValue("University", facultyMem.University);
+                cmd.Parameters.AddWithValue("Concentration", facultyMem.Concentration);
+                cmd.Parameters.AddWithValue("StreetAdd1", address.StreetAdd1);
+                cmd.Parameters.AddWithValue("StreetAdd2", address.StreetAdd2);
+                cmd.Parameters.AddWithValue("State", address.State);
+                cmd.Parameters.AddWithValue("City", address.City);
+                cmd.Parameters.AddWithValue("Zip", address.Zip);
+                cmd.Parameters.AddWithValue("Phone", facultyMem.Phone);
+                cmd.Parameters.AddWithValue("Email", facultyMem.Email);
+
                 cmd.ExecuteNonQuery();               
             }
             catch (MySqlException)
