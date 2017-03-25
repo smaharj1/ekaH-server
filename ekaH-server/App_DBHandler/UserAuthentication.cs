@@ -26,11 +26,15 @@ namespace ekaH_server.App_DBHandler
             MySqlDataReader reader = null;
             bool isStudent = true;
 
-            string reqQuery = "select type from member_type where email='" + emailID + "';";
-
             try
             {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = db.getConnection();
+                cmd.CommandText = "select type from member_type where email=@emailID;";
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("emailID", emailID);
+
                 reader = cmd.ExecuteReader();
 
                 if (reader.Read())
@@ -62,14 +66,16 @@ namespace ekaH_server.App_DBHandler
 
             MySqlDataReader dataReader = null;
 
-            string reqQuery = "select * from authentication where email='" + logInDetail.UserEmail + "';";
-
-            //string response;
             ErrorList result;
-            //MessageBox.Show(reqQuery);
+
             try
             {
-                MySqlCommand cmd = new MySqlCommand(reqQuery, db.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = db.getConnection();
+                cmd.CommandText = "select * from authentication where email = @emailID;";
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("emailID", logInDetail.UserEmail);
+
                 dataReader = cmd.ExecuteReader();
 
                 if (dataReader.Read())
@@ -112,32 +118,40 @@ namespace ekaH_server.App_DBHandler
         public static ErrorList registerUser(DBConnection database, RegisterInfo registerDetail)
         {
             int tempMemType = registerDetail.isStudent ? 1 : 0;
-            string reqQuery;
             ErrorList result;
-
-            reqQuery = "insert into authentication values('" + registerDetail.userEmail + "', " + tempMemType + ", '" + registerDetail.pswd + "');";
-            reqQuery += "insert into member_type values('" + registerDetail.userEmail + "', " + tempMemType + ");";
-
-            if (registerDetail.isStudent)
-            {
-                reqQuery += "insert into student_info(firstName, lastName, email, graduationYear) values('" +
-                    registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', " + registerDetail.extraInfo + ");";
-
-            }
-            else
-            {
-                reqQuery += "insert into professor_info(firstName, lastName, email, Department) values('" +
-                    registerDetail.firstName + "', '" + registerDetail.lastName + "', '" + registerDetail.userEmail + "', '" + registerDetail.extraInfo + "');";
-            }
 
             try
             {
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(reqQuery, database.getConnection());
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = database.getConnection();
+
+                cmd.CommandText = "insert into authentication values(@emailID, @memType, @password);"
+                    + "insert into member_type values(@emailID, @memType);";
+
+                if (registerDetail.isStudent)
+                {
+                    cmd.CommandText += "insert into student_info(firstName, lastName, email, graduationYear) values(@firstName, @lastName," +
+                        "@emailID, @extraInfo);";
+                }
+                else
+                {
+                    cmd.CommandText += "insert into professor_info(firstName, lastName, email, Department) values(@firstName, @lastName," +
+                        "@emailID, @extraInfo);";
+                }
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("emailID", registerDetail.userEmail);
+                cmd.Parameters.AddWithValue("memType", tempMemType);
+                cmd.Parameters.AddWithValue("password", registerDetail.pswd);
+                cmd.Parameters.AddWithValue("firstName", registerDetail.firstName);
+                cmd.Parameters.AddWithValue("lastName", registerDetail.lastName);
+                cmd.Parameters.AddWithValue("extraInfo", registerDetail.extraInfo);
+
                 cmd.ExecuteNonQuery();
 
                 result = ErrorList.SUCCESS;
             }
-            catch(MySql.Data.MySqlClient.MySqlException)
+            catch(MySqlException)
             {
                 result = ErrorList.DATABASE_EXCEPTION;
             }
