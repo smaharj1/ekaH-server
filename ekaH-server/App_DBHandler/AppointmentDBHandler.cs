@@ -21,6 +21,19 @@ namespace ekaH_server.App_DBHandler
             return dtime.ToString();
         }
 
+        private static Appointment generateAppointment(MySqlDataReader reader)
+        {
+            Appointment tempApp = new Appointment();
+            tempApp.AppointmentID = (int)reader.GetValue(0);
+            tempApp.ScheduleID = (int)reader.GetValue(1);
+            tempApp.StartTime = reader.GetDateTime(2);
+            tempApp.EndTime = reader.GetDateTime(3);
+            tempApp.AttendeeID = reader.IsDBNull(4) ? "" : reader.GetString(4);
+            tempApp.Confirmed = reader.GetBoolean(5);
+
+            return tempApp;
+        }
+
         // Posts the schedule to the database.
         public static bool postScheduleToDB(Schedule schedule)
         {
@@ -292,6 +305,43 @@ namespace ekaH_server.App_DBHandler
             }
         }
 
+        public static List<Appointment> getAppointmentsByStudent(string id)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            MySqlDataReader reader = null;
+
+            List<Appointment> list = new List<Appointment>();
+
+            string query = "select * from appointments where attendeeID = @emailID;";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, db.getConnection());
+                cmd.Prepare();
+                cmd.Parameters.AddWithValue("emailID", id);
+
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Appointment app = generateAppointment(reader);
+                    list.Add(app);
+                }
+                
+            }
+            catch(MySqlException ex)
+            {
+                if (reader != null) reader.Dispose();
+                throw ex;
+            }
+
+            reader.Dispose();
+
+            return list;
+        }
+
+        // This gets the list of appointments by the given query.
         private static List<Appointment> getAppointmentsByQuery(string requestQuery)
         {
             DBConnection db = DBConnection.getInstance();

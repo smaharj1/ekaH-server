@@ -2,6 +2,7 @@
 using ekaH_server.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,7 +35,7 @@ namespace ekaH_server.Controllers
 
         // GET: ekah/appointments/{action}/{id}
         // action: appointment, id = Optional
-        // Returns the appointment information of a professor mentioned in id.
+        // Returns all the available appointment times information of a professor mentioned in id.
         [HttpGet]
         [ActionName("schedules")]
         public IHttpActionResult GetSchedules(string id)
@@ -137,25 +138,7 @@ namespace ekaH_server.Controllers
             }
         }
 
-        // GET: ekah/appointments/{action}/{id}
-        // Action: app. Default GET accepts id as EMAIL of professor
-        [HttpGet]
-        [ActionName("app")]
-        public IHttpActionResult GetAppointments(string id)
-        {
-            List<Appointment> allAppointments = new List<Appointment>();
-
-            try
-            {
-                allAppointments = AppointmentDBHandler.getAppointmentsByProfessorID(id,2);
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }
-
-            return Ok(allAppointments);
-        }
+        
 
         // GET: ekah/appointments/{action}/
         // Action: app. This gets all the appointments in the database. For admin purposes.
@@ -193,5 +176,51 @@ namespace ekaH_server.Controllers
                 return InternalServerError();
             }
         }
+
+        // -------------------------------------------------------------------
+        // --------------- STUDENT/FACULTY APPOINTMENT PART---------------------------
+        // -------------------------------------------------------------------
+
+        // GET: ekah/appointments/{action}/{id}
+        // Action: students. Gets all the appointments currently held by a student.
+        // id represents the email address of a student
+        [HttpGet]
+        [ActionName("students")]
+        public IHttpActionResult GetStudentAppointments(string id)
+        {
+            List<Appointment> appointments;
+
+            try
+            {
+                appointments = AppointmentDBHandler.getAppointmentsByStudent(id);
+                return Ok(appointments);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return InternalServerError();
+            }
+        }
+
+        // GET: ekah/appointments/{action}/{id}
+        // Action: app. Default GET accepts id as EMAIL of professor
+        [HttpGet]
+        [ActionName("faculties")]
+        public IHttpActionResult GetAppointments(string id)
+        {
+            List<Appointment> allAppointments = new List<Appointment>();
+
+            try
+            {
+                allAppointments = AppointmentDBHandler.getAppointmentsByProfessorID(id, 2);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(allAppointments);
+        }
+
     }
 }
