@@ -1,12 +1,19 @@
-﻿using System;
+﻿using ekaH_server.Models.UserModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace ekaH_server.Models
 {
+    public class FullScheduleInfo
+    {
+        public Schedule Schedule { get; set; }
+        public FacultyInfo Faculty { get; set; }
+    }
     public class Schedule
     {
+        public int ScheduleID { get; set; }
         public string ProfessorID { get; set; }
         public DateTime StartDate { get; set; } 
         public DateTime EndDate { get; set; }

@@ -14,19 +14,41 @@ namespace ekaH_server.Controllers
     {
         
         // GET: ekah/appointments/{action}/{id}
-        // action: appointment, id = Optional
-        // Returns the appointment information of a professor mentioned in id.
+        // action: facultySchedule, id = Optional
+        // Returns the weekly schedule of a professor mentioned in id.
         [HttpGet]
-        [ActionName("schedule")]
+        [ActionName("facultySchedule")]
         public IHttpActionResult GetSchedule(string id)
         {
             try
             {
                 // Gets the schedule of the current week in Schedule object.
                 Schedule schedule = AppointmentDBHandler.getScheduleByProfessorID(id);
-                return Ok<Schedule>(schedule);
+                return Ok(schedule);
             }
             catch(Exception)
+            {
+                return InternalServerError();
+            }
+
+        }
+
+        // GET: ekah/appointments/{action}/{id}
+        // action: schedule, id = Optional
+        // Returns the full schedule (Schedule and professor info)
+        [HttpGet]
+        [ActionName("schedule")]
+        public IHttpActionResult GetFullInfo(int id)
+        {
+            try
+            {
+                // Gets the schedule of the current week in Schedule object.
+                FullScheduleInfo fullSchedule = AppointmentDBHandler.getFullScheduleInfo(id);
+
+                if (fullSchedule != null) return Ok(fullSchedule);
+                else return NotFound();
+            }
+            catch (Exception)
             {
                 return InternalServerError();
             }
@@ -53,13 +75,6 @@ namespace ekaH_server.Controllers
                 return InternalServerError();
             }
 
-        }
-
-        // POST: ekah/appointments/{action}/{id}
-        // action: appointment
-        // Posts an appointment to the given professor
-        public void Post([FromBody]string value)
-        {
         }
 
         // POST: ekah/appointments/{action}/{id}

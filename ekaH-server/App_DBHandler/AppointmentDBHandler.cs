@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using ekaH_server.Models.UserModels;
 
 namespace ekaH_server.App_DBHandler
 {
@@ -394,6 +395,51 @@ namespace ekaH_server.App_DBHandler
             }
 
             return true;
+        }
+
+        public static FullScheduleInfo getFullScheduleInfo(int id)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            string query = "select * from professor_info JOIN officehours where officehours.id = @scheduleID and " +
+                "professor_info.email = officehours.professorID;";
+
+            MySqlDataReader reader = null;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, db.getConnection());
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("scheduleID", id);
+
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    FacultyInfo faculty = UserWorker.extractFaculty(reader);
+
+                    // Start for the rest of the reader from index 13.
+                    Schedule sch = new Schedule();
+                    sch.ScheduleID = (int)reader.GetValue(13);
+                    sch.ProfessorID = UserWorker.getStringSafe(reader, 14);
+                    sch.StartDate = reader.GetDateTime(15);
+                    sch.EndDate = reader.GetDateTime(16);
+
+                    FullScheduleInfo fullSchedule = new FullScheduleInfo();
+                    fullSchedule.Faculty = faculty;
+                    fullSchedule.Schedule = sch;
+
+                    return fullSchedule;
+                }
+               
+
+            }
+            catch(MySqlException ex)
+            {
+                throw ex;
+            }
+
+            return null;
         }
 
 

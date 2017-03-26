@@ -13,29 +13,36 @@ namespace ekaH_server.Models.UserModels
 
         }
 
+        public static FacultyInfo extractFaculty(MySqlDataReader reader)
+        {
+            // The user exists. Now read the line and extract the information into an object.
+            FacultyInfo facultyMem = new FacultyInfo();
+            facultyMem.FirstName = reader.GetString(0);
+            facultyMem.LastName = reader.GetString(1);
+            facultyMem.Email = reader.GetString(2);
+            facultyMem.Department = reader.GetString(3);
+            facultyMem.Education = getStringSafe(reader, 4);
+            facultyMem.University = getStringSafe(reader, 5);
+            facultyMem.Concentration = getStringSafe(reader, 6);
+
+            Address address = new Address();
+            address.StreetAdd1 = getStringSafe(reader, 7);
+            address.StreetAdd2 = getStringSafe(reader, 8);
+            address.City = getStringSafe(reader, 9);
+            address.State = getStringSafe(reader, 10);
+            address.Zip = getStringSafe(reader, 11);
+            facultyMem.Address = address;
+
+            facultyMem.Phone = getStringSafe(reader, 12);
+
+            return facultyMem;
+        }
+
         public static FacultyInfo extractFacultyInfo(MySqlDataReader reader)
         {
             if (reader.Read())
             {
-                // The user exists. Now read the line and extract the information into an object.
-                FacultyInfo facultyMem = new FacultyInfo();
-                facultyMem.FirstName = reader.GetString(0);
-                facultyMem.LastName = reader.GetString(1); 
-                facultyMem.Email = reader.GetString(2); 
-                facultyMem.Department = reader.GetString(3);
-                facultyMem.Education = getStringSafe(reader, 4);
-                facultyMem.University = getStringSafe(reader, 5);
-                facultyMem.Concentration = getStringSafe(reader, 6);
-
-                Address address = new Address();
-                address.StreetAdd1 = getStringSafe(reader, 7);
-                address.StreetAdd2 = getStringSafe(reader, 8);
-                address.City = getStringSafe(reader, 9);
-                address.State = getStringSafe(reader, 10);
-                address.Zip = getStringSafe(reader, 11);
-                facultyMem.Address = address;
-
-                facultyMem.Phone = getStringSafe(reader, 12);
+                FacultyInfo facultyMem = extractFaculty(reader);
 
                 return facultyMem;
             }
@@ -59,7 +66,7 @@ namespace ekaH_server.Models.UserModels
         }
 
 
-        // TODO: NEED TO WORK ON THIS
+       
         public static StudentInfo extractStudentInfo(MySqlDataReader dataReader)
         {
             StudentInfo infoReceived = null;
