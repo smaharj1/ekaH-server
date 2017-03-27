@@ -252,7 +252,7 @@ namespace ekaH_server.App_DBHandler
             }
 
             string requestQuery = "insert into appointments(scheduleID, startTime, endTime, attendeeID)"+
-                " values (@scheduleID, @startTime, @endTime, @attendeeID";
+                " values (@scheduleID, @startTime, @endTime, @attendeeID);";
 
             try
             {
@@ -266,9 +266,9 @@ namespace ekaH_server.App_DBHandler
 
                 cmd.ExecuteNonQuery();
             }
-            catch(MySqlException)
+            catch(MySqlException ex)
             {
-                throw new Exception();
+                throw ex;
             }
 
             return true;
@@ -285,7 +285,7 @@ namespace ekaH_server.App_DBHandler
             }
 
             string requestQuery = "update appointments set scheduleID=@schID, startTime=@start"+
-                ", endTime=@end, attendeeID=@student, confirmed=@confirm where id=@appID";
+                ", endTime=@end, attendeeID=@student, confirmed=@confirm where id=@appID;";
 
             try
             {
