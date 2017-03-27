@@ -33,27 +33,7 @@ namespace ekaH_server.Controllers
 
         }
 
-        // GET: ekah/appointments/{action}/{id}
-        // action: schedule, id = Optional
-        // Returns the full schedule (Schedule and professor info)
-        [HttpGet]
-        [ActionName("schedule")]
-        public IHttpActionResult GetFullInfo(int id)
-        {
-            try
-            {
-                // Gets the schedule of the current week in Schedule object.
-                FullScheduleInfo fullSchedule = AppointmentDBHandler.getFullScheduleInfo(id);
-
-                if (fullSchedule != null) return Ok(fullSchedule);
-                else return NotFound();
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }
-
-        }
+        
 
         // GET: ekah/appointments/{action}/{id}
         // action: appointment, id = Optional
@@ -153,7 +133,44 @@ namespace ekaH_server.Controllers
             }
         }
 
-        
+        // POST: ekah/appointments/{action}/{id}
+        // Action: app
+        [HttpPut]
+        [ActionName("app")]
+        public IHttpActionResult ModifyAppointment([FromBody]Appointment appointment)
+        {
+            try
+            {
+                bool status = AppointmentDBHandler.putAppointment(appointment);
+                if (status) return Ok();
+                else return Conflict();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        // GET: ekah/appointments/{action}/{id}
+        // action: schedule, id = Optional
+        // Returns the full schedule (Schedule and professor info)
+        [HttpGet]
+        [ActionName("appFull")]
+        public IHttpActionResult GetFullInfo(int id)
+        {
+            try
+            {
+                // Gets the schedule of the current week in Schedule object.
+                FullAppointmentInfo fullSchedule = AppointmentDBHandler.getFullAppointmentInfo(id);
+
+                if (fullSchedule != null) return Ok(fullSchedule);
+                else return NotFound();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
 
         // GET: ekah/appointments/{action}/
         // Action: app. This gets all the appointments in the database. For admin purposes.

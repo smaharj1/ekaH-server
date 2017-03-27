@@ -6,10 +6,11 @@ using System.Web;
 
 namespace ekaH_server.Models
 {
-    public class FullScheduleInfo
+    public class FullAppointmentInfo
     {
-        public Schedule Schedule { get; set; }
+        public Appointment Appointment { get; set; }
         public FacultyInfo Faculty { get; set; }
+        public StudentInfo Student { get; set; }
     }
     public class Schedule
     {

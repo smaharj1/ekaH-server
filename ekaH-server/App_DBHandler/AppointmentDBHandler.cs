@@ -251,19 +251,61 @@ namespace ekaH_server.App_DBHandler
                 return false;
             }
 
-            string requestQuery = "insert into appointments(scheduleID, startTime, endTime, attendeeID) values ("+
-                appointment.ScheduleID+", '"+ getDateString(appointment.StartTime) +"','"+getDateString(appointment.EndTime)+"','"+
-                appointment.AttendeeID+"');";
+            string requestQuery = "insert into appointments(scheduleID, startTime, endTime, attendeeID)"+
+                " values (@scheduleID, @startTime, @endTime, @attendeeID";
 
             try
             {
                 MySqlCommand cmd = new MySqlCommand(requestQuery, db.getConnection());
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("scheduleID", appointment.ScheduleID);
+                cmd.Parameters.AddWithValue("startTime", getDateString(appointment.StartTime));
+                cmd.Parameters.AddWithValue("endTime", getDateString(appointment.EndTime));
+                cmd.Parameters.AddWithValue("attendeeID", appointment.AttendeeID);
+
                 cmd.ExecuteNonQuery();
             }
             catch(MySqlException)
             {
                 throw new Exception();
             }
+
+            return true;
+        }
+
+        // Modifies the currently existing appointment
+        public static bool putAppointment(Appointment appointment)
+        {
+            DBConnection db = DBConnection.getInstance();
+
+            if (!checkIfAppointmentExists(appointment))
+            {
+                return false;
+            }
+
+            string requestQuery = "update appointments set scheduleID=@schID, startTime=@start"+
+                ", endTime=@end, attendeeID=@student, confirmed=@confirm where id=@appID";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(requestQuery, db.getConnection());
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("schID", appointment.ScheduleID);
+                cmd.Parameters.AddWithValue("start", getDateString(appointment.StartTime));
+                cmd.Parameters.AddWithValue("end", getDateString(appointment.EndTime));
+                cmd.Parameters.AddWithValue("student", appointment.AttendeeID);
+                cmd.Parameters.AddWithValue("confirm", appointment.Confirmed ? 1 : 0);
+                cmd.Parameters.AddWithValue("appID", appointment.AppointmentID);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch(MySqlException ex)
+            {
+                throw ex;
+            }
+            
 
             return true;
         }
@@ -276,7 +318,6 @@ namespace ekaH_server.App_DBHandler
 
             string requestQuery = "select * from appointments where scheduleID in (select id from officehours where startDTime >= '" +
                 getDateString(currentDate) + "' and startDTime <= '" + getDateString(futureDate) + "' and professorID='" + email + "');";
-
 
             try
             {
@@ -357,13 +398,7 @@ namespace ekaH_server.App_DBHandler
 
                 while (reader.Read())
                 {
-                    Appointment tempApp = new Appointment();
-                    tempApp.AppointmentID = (int)reader.GetValue(0);
-                    tempApp.ScheduleID = (int)reader.GetValue(1);
-                    tempApp.StartTime = reader.GetDateTime(2);
-                    tempApp.EndTime = reader.GetDateTime(3);
-                    tempApp.AttendeeID = reader.IsDBNull(4) ? "" : reader.GetString(4);
-                    tempApp.Confirmed = reader.GetBoolean(5);
+                    Appointment tempApp = UserWorker.extractAppointment(reader);
                     list.Add(tempApp);
                 }
             }
@@ -397,49 +432,72 @@ namespace ekaH_server.App_DBHandler
             return true;
         }
 
-        public static FullScheduleInfo getFullScheduleInfo(int id)
+        // id holds the appointment ID
+        // Returns the full information of appointment including professor and student info.
+        public static FullAppointmentInfo getFullAppointmentInfo(int id)
         {
             DBConnection db = DBConnection.getInstance();
 
-            string query = "select * from professor_info JOIN officehours where officehours.id = @scheduleID and " +
-                "professor_info.email = officehours.professorID;";
+            string query = "select * from professor_info where " +
+                "professor_info.email = (select professorID from officehours where officehours.id = "+
+                "(select scheduleID from appointments where id=@appointmentID));";
 
             MySqlDataReader reader = null;
+            FullAppointmentInfo fullInfo = new FullAppointmentInfo();
             try
             {
                 MySqlCommand cmd = new MySqlCommand(query, db.getConnection());
                 cmd.Prepare();
 
-                cmd.Parameters.AddWithValue("scheduleID", id);
+                cmd.Parameters.AddWithValue("appointmentID", id);
 
                 reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
                     FacultyInfo faculty = UserWorker.extractFaculty(reader);
-
-                    // Start for the rest of the reader from index 13.
-                    Schedule sch = new Schedule();
-                    sch.ScheduleID = (int)reader.GetValue(13);
-                    sch.ProfessorID = UserWorker.getStringSafe(reader, 14);
-                    sch.StartDate = reader.GetDateTime(15);
-                    sch.EndDate = reader.GetDateTime(16);
-
-                    FullScheduleInfo fullSchedule = new FullScheduleInfo();
-                    fullSchedule.Faculty = faculty;
-                    fullSchedule.Schedule = sch;
-
-                    return fullSchedule;
+                    fullInfo.Faculty = faculty;
                 }
-               
-
             }
             catch(MySqlException ex)
             {
                 throw ex;
             }
 
-            return null;
+            reader.Dispose();
+
+            // Gets the appointment object
+            query = "select * from appointments where id = @appointmentID;";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, db.getConnection());
+                cmd.Prepare();
+
+                cmd.Parameters.AddWithValue("appointmentID", id);
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    Appointment app = UserWorker.extractAppointment(reader);
+                    fullInfo.Appointment = app;
+                }
+            }
+            catch(MySqlException ex)
+            {
+                throw ex;
+            }
+
+            reader.Dispose();
+
+            // Populates the information of the student
+            if (!String.IsNullOrEmpty(fullInfo.Appointment.AttendeeID))
+            {
+                StudentInfo student = FacultyDBHandler.executeStudentInfoQuery(fullInfo.Appointment.AttendeeID);
+                fullInfo.Student = student;
+            }
+
+            return fullInfo;
         }
 
 

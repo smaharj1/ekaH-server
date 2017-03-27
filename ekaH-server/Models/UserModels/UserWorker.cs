@@ -13,6 +13,19 @@ namespace ekaH_server.Models.UserModels
 
         }
 
+        public static Appointment extractAppointment(MySqlDataReader reader)
+        {
+            Appointment app = new Appointment();
+            app.AppointmentID = (int)reader.GetValue(0);
+            app.ScheduleID = (int)reader.GetValue(1);
+            app.StartTime = reader.GetDateTime(2);
+            app.EndTime = reader.GetDateTime(3);
+            app.AttendeeID = getStringSafe(reader, 4);
+            app.Confirmed = reader.GetBoolean(5);
+
+            return app;
+        }
+
         public static FacultyInfo extractFaculty(MySqlDataReader reader)
         {
             // The user exists. Now read the line and extract the information into an object.
