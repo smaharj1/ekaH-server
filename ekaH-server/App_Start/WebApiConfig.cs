@@ -9,8 +9,6 @@ namespace ekaH_server
     {
         public static void Register(HttpConfiguration config)
         {
-            // TODO: Maybe do the database connection here.
-            
             // Web API configuration and services
 
             // Web API routes
@@ -21,6 +19,12 @@ namespace ekaH_server
                 routeTemplate: "ekah/appointments/{action}/{id}",
                 defaults: new {controller="appointments", id=RouteParameter.Optional}
                 );
+
+            config.Routes.MapHttpRoute(
+                name: "submissionAPI",
+                routeTemplate: "ekah/submissions/{action}/{id}/",
+                defaults: new { controller = "submissions", id = RouteParameter.Optional }
+            );
 
             config.Routes.MapHttpRoute(
                 name: "FacultyAPI",
@@ -54,15 +58,12 @@ namespace ekaH_server
                 defaults: new {controller = "student", id=RouteParameter.Optional}
                 );
 
-            
-
-
-
+            /*
             config.Routes.MapHttpRoute(
                 name: "StudentsAPI",
                 routeTemplate: "ekah/stuents/{id}",
                 defaults: new { controller = "faculty", id = RouteParameter.Optional }
-            );
+            );*/
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

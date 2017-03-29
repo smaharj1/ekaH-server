@@ -16,24 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `assignment`
+-- Table structure for table `submission`
 --
 
-DROP TABLE IF EXISTS `assignment`;
+DROP TABLE IF EXISTS `submission`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `assignment` (
-  `courseID` varchar(60) NOT NULL,
-  `assignmentNum` int(4) unsigned NOT NULL,
-  `name` varchar(45) DEFAULT NULL,
-  `content` mediumtext,
-  `isLetterGrade` tinyint(4) NOT NULL,
-  `letterGrade` varchar(2) DEFAULT NULL,
-  `numberGrade` int(11) DEFAULT NULL,
-  `weight` int(10) unsigned zerofill DEFAULT NULL COMMENT 'This holds the total weight of this assignment in the final grade.',
-  PRIMARY KEY (`courseID`,`assignmentNum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This holds the assignments for all of the courses.';
+CREATE TABLE `submission` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `assignmentID` int(11) unsigned NOT NULL,
+  `studentID` varchar(45) NOT NULL,
+  `submissionContent` longtext,
+  `grade` int(4) DEFAULT NULL,
+  `submissionDateTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`assignmentID`,`studentID`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `studentID_idx` (`studentID`),
+  CONSTRAINT `assignmentFK` FOREIGN KEY (`assignmentID`) REFERENCES `assignment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `studentID` FOREIGN KEY (`studentID`) REFERENCES `student_info` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This holds the project submission table.';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `submission`
+--
+
+LOCK TABLES `submission` WRITE;
+/*!40000 ALTER TABLE `submission` DISABLE KEYS */;
+/*!40000 ALTER TABLE `submission` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -44,4 +55,4 @@ CREATE TABLE `assignment` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-05 21:29:50
+-- Dump completed on 2017-03-28 20:09:08

@@ -117,6 +117,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_DBHandler\AssignmentDB.cs" />
     <Compile Include="App_DBHandler\CourseDBHandler.cs" />
     <Compile Include="App_DBHandler\AppointmentDBHandler.cs" />
     <Compile Include="App_DBHandler\StudentCourseDBHandler.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Controllers\StudentCourseController.cs" />
     <Compile Include="Controllers\facultyController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\SubmissionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -138,6 +140,7 @@
     <Compile Include="Models\DayInfo.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Schedule.cs" />
+    <Compile Include="Models\AssignmentModel.cs" />
     <Compile Include="Models\UserAuth\LogInInfo.cs" />
     <Compile Include="Models\UserAuth\RegisterInfo.cs" />
     <Compile Include="Models\UserModels\UserWorker.cs" />

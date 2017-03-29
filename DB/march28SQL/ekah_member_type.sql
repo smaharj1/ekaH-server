@@ -16,19 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `authentication`
+-- Table structure for table `member_type`
 --
 
-DROP TABLE IF EXISTS `authentication`;
+DROP TABLE IF EXISTS `member_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authentication` (
-  `email` varchar(45) NOT NULL COMMENT 'This holds the email which is also a primary key',
-  `member_type` tinyint(4) NOT NULL COMMENT 'True means student, false means professor',
-  `pswd` varchar(128) NOT NULL COMMENT 'This is hashed and support up to 512-bit hash value.',
-  PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table holds the username and password (hashed)';
+CREATE TABLE `member_type` (
+  `email` varchar(45) NOT NULL,
+  `type` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This just holds the information of email and type if its student or staff.';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `member_type`
+--
+
+LOCK TABLES `member_type` WRITE;
+/*!40000 ALTER TABLE `member_type` DISABLE KEYS */;
+INSERT INTO `member_type` VALUES ('amruth@ramapo.edu',0),('bregmi@ramapo.edu',1),('bsims@ramapo.edu',1),('mserban@ramapo.edu',0),('smaharj1@ramapo.edu',1),('vmiller@ramapo.edu',0),('vpandey@ramapo.edu',1);
+/*!40000 ALTER TABLE `member_type` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -39,4 +47,4 @@ CREATE TABLE `authentication` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-05 21:29:50
+-- Dump completed on 2017-03-28 20:09:08

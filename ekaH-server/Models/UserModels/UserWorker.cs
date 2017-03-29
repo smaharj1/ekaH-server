@@ -8,9 +8,17 @@ namespace ekaH_server.Models.UserModels
 {
     public class UserWorker
     {
-        private UserWorker()
+        public static Submission extractSubmission(MySqlDataReader reader)
         {
+            Submission sub = new Submission();
+            sub.ID = reader.GetInt32(0);
+            sub.AssignmentID = reader.GetInt32(1);
+            sub.StudentID = getStringSafe(reader, 2);
+            sub.Grade = reader.GetInt32(3);
+            sub.RawContent = (byte[]) reader.GetValue(4);
+            sub.SubmittedTime = reader.GetDateTime(5);
 
+            return sub;
         }
 
         public static Appointment extractAppointment(MySqlDataReader reader)

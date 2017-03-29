@@ -16,18 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `studentcourse`
+-- Table structure for table `authentication`
 --
 
-DROP TABLE IF EXISTS `studentcourse`;
+DROP TABLE IF EXISTS `authentication`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `studentcourse` (
-  `courseID` varchar(60) NOT NULL,
-  `studentID` varchar(45) NOT NULL,
-  PRIMARY KEY (`courseID`,`studentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table consists the relation between students and courses they are taking. It can only be modified by professors.';
+CREATE TABLE `authentication` (
+  `email` varchar(45) NOT NULL COMMENT 'This holds the email which is also a primary key',
+  `member_type` tinyint(4) NOT NULL COMMENT 'True means student, false means professor',
+  `pswd` varchar(128) NOT NULL COMMENT 'This is hashed and support up to 512-bit hash value.',
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table holds the username and password (hashed)';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `authentication`
+--
+
+LOCK TABLES `authentication` WRITE;
+/*!40000 ALTER TABLE `authentication` DISABLE KEYS */;
+INSERT INTO `authentication` VALUES ('amruth@ramapo.edu',0,'hard'),('bregmi@ramapo.edu',1,'regmi'),('bsims@ramapo.edu',1,'okay'),('mserban@ramapo.edu',0,'mia'),('smaharj1@ramapo.edu',1,'helloworld'),('sshresth@ramapo.edu',1,'okay'),('tswift@ramapo.edu',1,'swift'),('vmiller@ramapo.edu',0,'duck'),('vpandey@ramapo.edu',1,'okay');
+/*!40000 ALTER TABLE `authentication` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -38,4 +49,4 @@ CREATE TABLE `studentcourse` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-05 21:29:51
+-- Dump completed on 2017-03-28 20:09:09

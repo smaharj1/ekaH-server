@@ -22,11 +22,12 @@ namespace ekaH_server.App_DBHandler
 
         public static DBConnection getInstance()
         {
+            
             if (database != null)
             {
                 return database;
             }
-
+            
             database = new DBConnection();
             return database;
         }
