@@ -6,3 +6,4 @@ insert into submission(assignmentID, studentID, grade,  submissionDateTime) valu
 
 insert into submission(assignmentID, studentID, grade, submissionContent, submissionDateTime) values
 (@aID, @studentID, @grade, @content, @submissionDateTime)
+ON DUPLICATE KEY update grade=@grade, submissionContent = @content, submissionDateTime=@submittedDT;

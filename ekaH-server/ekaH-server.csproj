@@ -43,6 +43,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -76,8 +84,21 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Web, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Web.6.9.9\lib\net45\MySql.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -111,18 +132,75 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_DBHandler\ekahModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ekahModel.edmx</DependentUpon>
+      <LastGenOutput>ekahModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_DBHandler\ekahModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ekahModel.edmx</DependentUpon>
+      <LastGenOutput>ekahModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_DBHandler\appointment.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\assignment.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_DBHandler\AssignmentDB.cs" />
+    <Compile Include="App_DBHandler\authentication.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\cours.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_DBHandler\CourseDBHandler.cs" />
     <Compile Include="App_DBHandler\AppointmentDBHandler.cs" />
+    <Compile Include="App_DBHandler\ekahModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ekahModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\ekahModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\ekahModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ekahModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\member_type.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\officehour.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\professor_info.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\studentcourse.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_DBHandler\StudentCourseDBHandler.cs" />
     <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\FacultyDBHandler.cs" />
+    <Compile Include="App_DBHandler\student_info.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DBHandler\submission.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_DBHandler\UserAuthentication.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\appointmentsController.cs" />
@@ -152,6 +230,13 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EntityDeploy Include="App_DBHandler\ekahModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ekahModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="App_DBHandler\ekahModel.edmx.diagram">
+      <DependentUpon>ekahModel.edmx</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -161,6 +246,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -7,11 +7,14 @@ using System.Web.Http;
 using ekaH_server.Models;
 using ekaH_server.App_DBHandler;
 using ekaH_server.Models.UserAuth;
+using System.Data.Entity.Infrastructure;
 
 namespace ekaH_server.Controllers
 {
     public class authController : ApiController
     {
+        ekahEntities11 db = new ekahEntities11();
+
         // GET: api/ekaH
         public IEnumerable<string> Get()
         {
@@ -33,92 +36,80 @@ namespace ekaH_server.Controllers
          * return the error message.
          * */
         [ActionName("login")]
-        public HttpResponseMessage Post([FromBody] LogInInfo providedInfo)
+        public IHttpActionResult Post([FromBody] authentication providedInfo)
         {
-            DBConnection database = DBConnection.getInstance();
-            //UserAuthentication uauth = new UserAuthentication();
+            authentication result = db.authentications.Find(providedInfo.email);
 
-            ErrorList status;
-
-            status = UserAuthentication.verifyUserExists(database, providedInfo);
-
-            //Dictionary<string, string> res = new Dictionary<string, string>();
-
-            HttpResponseMessage response;
-
-
-            if (status == ErrorList.SUCCESS)
+            if (result != null)
             {
-                response = Request.CreateResponse(HttpStatusCode.OK, true);
+                if (result.pswd == providedInfo.pswd)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(HttpStatusCode.Ambiguous);
+                }
             }
-            else
-            {
-                response = Request.CreateResponse(HttpStatusCode.NotAcceptable, Error.getInstance().getStringError(status));
-            }
+
+            return NotFound();
 
             
-            return response;
         }
 
         [HttpPost]
         [ActionName("register")]
-        public HttpResponseMessage registerUser([FromBody] RegisterInfo providedInfo)
+        public IHttpActionResult registerUser([FromBody] RegisterInfo providedInfo)
         {
-            HttpResponseMessage response;
-
-
-            // Gets the database instance.
-            DBConnection database = DBConnection.getInstance();
-
-            // Creates a LogInInfo for checking if the user already exists.
-            LogInInfo normalizedDetail = new LogInInfo();
-            normalizedDetail.IsStudent = providedInfo.isStudent;
-            normalizedDetail.Pswd = providedInfo.pswd;
-            normalizedDetail.UserEmail = providedInfo.userEmail;
-
-            // First verify that the user is not already in the list.
-            ErrorList verifyIfExists = UserAuthentication.verifyUserExists(database, normalizedDetail);
-
-            //Dictionary<string, string> res = new Dictionary<string, string>();
-            string message;
-
-            if (verifyIfExists == ErrorList.LOGIN_NO_USER)
+            if (!ModelState.IsValid)
             {
-                // Register the user in this case
-                ErrorList registrationStatus = UserAuthentication.registerUser(database, providedInfo);
-                message = Error.getInstance().getStringError(registrationStatus);
+                return BadRequest(ModelState);
+            }
 
-                if (registrationStatus == ErrorList.SUCCESS)
-                {
+            bool isStudent = providedInfo.isStudent;
 
-                    response = Request.CreateResponse(HttpStatusCode.Created, message);
+            if (userExists(providedInfo.userEmail))
+            {
+                return Conflict();
+            }
+            authentication authTemp = new authentication();
+            authTemp.email = providedInfo.userEmail;
+            authTemp.member_type = (sbyte)(providedInfo.isStudent ? 1 : 0);
+            authTemp.pswd = providedInfo.pswd;
 
-                }
-                else
-                {
-                    response = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, message);
-                }
+            db.authentications.Add(authTemp);
 
+            if (isStudent)
+            {
+                student_info student = new student_info();
+                student.firstName = providedInfo.firstName;
+                student.lastName = providedInfo.lastName;
+                student.email = providedInfo.userEmail;
+                student.graduationYear = int.Parse(providedInfo.extraInfo);
+
+                db.student_info.Add(student);
             }
             else
             {
-
-                // Checks against the SUCCESS since success only means that the user has been found as the function is borrowed.
-                if (verifyIfExists == ErrorList.SUCCESS)
-                {
-                    response = Request.CreateErrorResponse(HttpStatusCode.Conflict, Error.getInstance().getStringError(ErrorList.REGISTER_USER_EXISTS));
-                }
-                else
-                {
-                    response = Request.CreateErrorResponse(HttpStatusCode.Conflict, Error.getInstance().getStringError(verifyIfExists));
-                }
-
+                professor_info professor = new professor_info();
+                professor.firstName = providedInfo.firstName;
+                professor.lastName = providedInfo.lastName;
+                professor.email = providedInfo.userEmail;
+                professor.department = providedInfo.extraInfo;
+                db.professor_info.Add(professor);
             }
 
-            return response;
-        }
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
 
-        
+            return Ok();
+        }
 
         // PUT: api/ekaH/5
         public void Put(int id, [FromBody]string value)
@@ -128,6 +119,11 @@ namespace ekaH_server.Controllers
         // DELETE: api/ekaH/5
         public void Delete(int id)
         {
+        }
+
+        private bool userExists(string id)
+        {
+            return db.authentications.Count(e => e.email == id) > 0;
         }
     }
 }

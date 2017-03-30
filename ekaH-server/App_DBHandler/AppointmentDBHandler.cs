@@ -140,6 +140,7 @@ namespace ekaH_server.App_DBHandler
             return schedule;
         }
 
+        /*
         // Gets all the available two weeks appointments where the user can book.
         public static List<Appointment> getTwoWeekSchedule(string email)
         {
@@ -211,7 +212,7 @@ namespace ekaH_server.App_DBHandler
      
             return result;
         }
-
+        */
 
         public static bool checkIfAppointmentExists(Appointment appointment)
         {
@@ -432,6 +433,7 @@ namespace ekaH_server.App_DBHandler
             return true;
         }
 
+        /*
         // id holds the appointment ID
         // Returns the full information of appointment including professor and student info.
         public static FullAppointmentInfo getFullAppointmentInfo(int id)
@@ -499,7 +501,7 @@ namespace ekaH_server.App_DBHandler
 
             return fullInfo;
         }
-
+        */
 
     }
 }

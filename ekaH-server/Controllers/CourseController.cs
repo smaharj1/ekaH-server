@@ -11,16 +11,14 @@ using ekaH_server.Models;
 using System.Collections;
 using ekaH_server.Models.UserModels;
 using System.Windows.Forms;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
 
 namespace ekaH_server.Controllers
 {
     public class CourseController : ApiController
     {
-        // GET: "ekah/courses
-        public string Get()
-        {
-            return "No one is supposed to access this";
-        }
+        private ekahEntities11 db = new ekahEntities11();
 
         // GET: "ekah/courses/{cid}/{action}
         // It returns the details of a single course by the given id
@@ -28,21 +26,15 @@ namespace ekaH_server.Controllers
         [ActionName("single")]
         public IHttpActionResult Get(string cid)
         {
-            Course c;
-            try
+            cours course = db.courses.Find(cid);
+
+            if (course == null)
             {
-                c = CourseDBHandler.getCourseByID(cid);
-            }
-            catch(Exception)
-            {
-                // Returns the database error when exception is thrown
-                return InternalServerError();
+                return NotFound();
             }
 
-            // Checks if course is null. If it is, it means that the course is not found.
-            // Else, returns the course.
-            if (c == null) return Ok<Course>(null);
-            else return Ok<Course>(c);
+            return Ok(course);
+            
         }
 
 
@@ -52,15 +44,16 @@ namespace ekaH_server.Controllers
         [ActionName("students")]
         public IHttpActionResult GetStudentsInCourse(string cid)
         {
-            try
+            List<studentcourse> allRecords = db.studentcourses.Where(e => e.courseID == cid).ToList();
+            
+            if (allRecords.Count == 0)
             {
-                List<StudentInfo> students = CourseDBHandler.getAllStudentsByCourse(cid);
-                return Ok(students);
+                return NotFound();
             }
-            catch(Exception)
-            {
-                return InternalServerError();
-            }
+
+            return Ok(allRecords);
+
+            
 
         }
 
@@ -77,101 +70,93 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            List<Course> allCourses = new List<Course>();
-            bool isStudent = true;
+            List<cours> allCoursesByFaculty = db.courses.Where(entry => entry.professorID == cid).ToList();
 
-            try
-            {
-                isStudent = UserAuthentication.getUserType(cid);
-            }
-            catch (Exception)
+            if (allCoursesByFaculty == null)
             {
                 return NotFound();
             }
 
-            if (isStudent)
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
+            return Ok(allCoursesByFaculty);
             
-            // This is for faculty. Returns the list of all the courses taught by a faculty member.
-            // This returns null if there is SQL ERROR.
-            MySqlDataReader reader = CourseDBHandler.readCoursesByFaculty(cid);
-
-            if (reader != null)
-            {
-                try
-                {
-                    allCourses = Course.normalizeCourses(reader);
-                }
-                catch(Exception)
-                {
-                    // This exception helps dispose reader.
-                    reader.Dispose();
-                }
-            }
-            else
-            {
-                // This means that there was SQL error.
-                return InternalServerError();
-            }
-                    
-            
-
-            return Ok(allCourses);
         }
 
         // POST: "ekah/courses/{id}
         // This methods helps create a course for certain professor.
-        public IHttpActionResult Post([FromBody]Course course)
+        public IHttpActionResult Post([FromBody]cours course)
         {
-            if (!(new EmailAddressAttribute().IsValid(course.ProfessorID)))
+            if (!(new EmailAddressAttribute().IsValid(course.professorID)))
             {
                 return BadRequest();
             }
-            
-            bool isStudent = true;
 
-            // Get the type of the student first as professors can only add/remove the course.
-            try
+            if (!ModelState.IsValid)
             {
-                isStudent = UserAuthentication.getUserType(course.ProfessorID);
-            }
-            catch (Exception)
-            {
-                return NotFound();
+                return BadRequest(ModelState);
             }
 
-            if (isStudent)
+            if (courseExists(course.courseID))
             {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
-
-          
-            // Handle the situation here since we are sure that it is a faculty member.
-            // This is because only faculty members can add the courses.
-
-            if (!course.validateFields())
-            {
-                return BadRequest();
+                return StatusCode(HttpStatusCode.Conflict);
             }
 
             Course.fixCourseObject(ref course);
+            db.courses.Add(course);
 
-            bool status = CourseDBHandler.executePostCourse(course);
-
-            if (status)
+            try
             {
-                return Ok(course.CourseID);
+                db.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                return InternalServerError();
             }
 
-            return InternalServerError();
+            return Ok();
+            
         }
 
         // PUT: "ekah/courses/{id}
         // Helps change the information of the faculty for the courses they have already added.
-        public IHttpActionResult Put([FromBody]Course course)
+        [HttpPut]
+        public IHttpActionResult Put([FromBody]cours course)
         {
+            // TODO: Modify is currently under review since primary key is course ID that we generated.
+            if (!(new EmailAddressAttribute().IsValid(course.professorID)))
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            this.Delete(course.courseID);
+            Course.fixCourseObject(ref course);
+            // The id for this course is generated through an algorithm. So, it cannot be directly modified.
+            //db.Entry(course).State = EntityState.Modified;
+            db.courses.Add(course);
+            
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!courseExists(course.courseID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return InternalServerError();
+                }
+            }
+
+            return Ok();
+
+            /*
             if (!(new EmailAddressAttribute().IsValid(course.ProfessorID)))
             {
                 return BadRequest();
@@ -224,6 +209,7 @@ namespace ekaH_server.Controllers
                 // This is only thrown for database exception.
                 return InternalServerError();
             }
+            */
 
         }
 
@@ -232,26 +218,24 @@ namespace ekaH_server.Controllers
         // It does need two parameters for ids since delete does not take in any body while following strict http protocol.
         public IHttpActionResult Delete(string cid)
         {
-            try
+            if (!courseExists(cid))
             {
-                if (CourseDBHandler.executeDeleteCourse(cid))
-                {
-                    return Ok();
-                }
-            }
-            catch (Exception)
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
+                return NotFound();
             }
 
-            return InternalServerError();
+            cours course = db.courses.Find(cid);
+            db.courses.Remove(course);
+
+            db.SaveChanges();
+
+            return Ok();
+
         }
 
-        
+        private bool courseExists(string cid)
+        {
+            return db.courses.Count(e => e.courseID == cid) > 0;
 
-        
-        
-
-       
+        }
     }
 }

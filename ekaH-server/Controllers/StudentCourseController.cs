@@ -15,60 +15,32 @@ namespace ekaH_server.Controllers
     // For example, get all the courses taken by the students, add course and drop course for students.
     public class StudentCourseController : ApiController
     {
+        private ekahEntities11 db = new ekahEntities11();
+
         // GET: ekah/students/{id}/courses
-        // Returns all the courses taken byt he student
+        // Returns all the courses taken by the student
         public IHttpActionResult Get(string id)
         {
             if (!(new EmailAddressAttribute().IsValid(id)))
             {
                 return BadRequest();
             }
-            List<Course> courses = new List<Course>();
+            student_info student = db.student_info.Find(id);
 
+            List<studentcourse> studentCour = student.studentcourses.ToList();
 
-            try
+            if (studentCour == null) { return NotFound(); }
+
+            List<cours> courses = new List<cours>();
+            foreach( studentcourse sc in studentCour)
             {
-                courses = StudentCourseDBHandler.getAllCoursesByStudent(id);
-            }
-            catch(Exception)
-            {
-                return InternalServerError();
+                courses.Add(sc.cours);
             }
 
             return Ok(courses);
+            
         }
-        
-
-        // POST: ekah/courses/{cid}/students
-        // This is specifically done when the professor adds a list of students to a course. 
-        // It is not being used right now.
-        public IHttpActionResult Post(string cid, [FromBody]List<string> ids)
-        {
-            // Assumes that the client should sent correct email addresses in the body.
-            // If not, just remove those emails from the list.
-            foreach (string email in ids)
-            {
-                if (!(new EmailAddressAttribute().IsValid(email)))
-                {
-                    ids.Remove(email);
-                }
-            }
-
-            if (!CourseDBHandler.courseExists(cid))
-            {
-                return NotFound();
-            }
-
-            bool success = StudentCourseDBHandler.addStudentsToDB(cid, ids);
-
-            if (success)
-            {
-                return StatusCode(HttpStatusCode.Created);
-            }
-
-            return InternalServerError();
-
-        }
+              
 
         // POST: ekah/students/{id}/courses/{cid}
         // Adds one student to a course at a time.
@@ -79,25 +51,41 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            if (!CourseDBHandler.courseExists(cid))
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!courseExists(cid))
             {
                 return NotFound();
             }
 
-            //try
-            //{
-            //    if (StudentCourseDBHandler.studentAlreadyExists(cid, id))
-            //    {
-            //        return StatusCode(HttpStatusCode.Conflict);
-            //    }
-            //}
-            //catch (Exception) { return InternalServerError(); }
+            
+            List<studentcourse> stdCourse = db.studentcourses.Where(sc=> sc.courseID == cid && sc.studentID == id).ToList();
 
-            bool success = StudentCourseDBHandler.addOneStudentToCourse(cid, id);
+            if (stdCourse.Count != 0)
+            {
+                return StatusCode(HttpStatusCode.Conflict);
+            }
 
-            if (success) return Ok();
-            else return InternalServerError();
+            studentcourse sCourse = new studentcourse();
+            sCourse.courseID = cid;
+            sCourse.studentID = id;
 
+            db.studentcourses.Add(sCourse);
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return InternalServerError();
+            }
+
+            return Ok();
+            
         }
 
         // PUT: ekah/courses/{cid}/students
@@ -115,16 +103,28 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            if (!CourseDBHandler.courseExists(cid))
+            if (!courseExists(cid))
             {
                 return NotFound();
             }
 
-            bool success =  StudentCourseDBHandler.deleteStudentFromCourse(cid, id);
+            List<studentcourse> found = db.studentcourses.Where(sc => sc.courseID == cid && sc.studentID == id).ToList();
 
-            if (success) return Ok();
+            if (found.Count == 0 )
+            {
+                return NotFound();
+            }
 
-            return InternalServerError();
+            db.studentcourses.Remove(found[0]);
+            db.SaveChanges();
+
+            return Ok();
+            
+        }
+
+        private bool courseExists(string cid)
+        {
+            return db.courses.Count(e => e.courseID == cid) > 0;
 
         }
     }

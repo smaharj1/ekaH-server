@@ -2,6 +2,8 @@
 using ekaH_server.Models.UserModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,50 +13,20 @@ namespace ekaH_server.Controllers
 {
     public class StudentController : ApiController
     {
-        // GET: api/Student
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        private ekahEntities11 db = new ekahEntities11();
 
         // GET: api/Student/{id}
         // Returns the studentinfo object
         public IHttpActionResult Get(string id)
         {
-            bool isStudent = true;
-            try
+            student_info student = db.student_info.Find(id);
+
+            if (student == null)
             {
-                isStudent = UserAuthentication.getUserType(id);
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
+                return NotFound();
             }
 
-            if (!isStudent) return BadRequest();
-
-            // Handle the request for student here.
-
-            IHttpActionResult result;
-            try
-            {
-                StudentInfo student = FacultyDBHandler.executeStudentInfoQuery(id);
-
-                if (student == null)
-                {
-                    result = NotFound();
-                }
-                else
-                {
-                    result = Ok(student);
-                }
-            }
-            catch (Exception)
-            {
-                result = InternalServerError();
-            }
-
-            return result;
+            return Ok(student);
         }
 
         // POST: api/Student
@@ -64,37 +36,39 @@ namespace ekaH_server.Controllers
         {
         }
 
-        // PUT: api/Student/5
-        public IHttpActionResult Put(string id, [FromBody]StudentInfo student)
+        // PUT: api/Student/email@email.com
+        public IHttpActionResult Put(string id, [FromBody]student_info student)
         {
-            bool isStudent = true;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != student.email)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(student).State = EntityState.Modified;
+
             try
             {
-                isStudent = UserAuthentication.getUserType(id);
+                db.SaveChanges();
             }
-            catch (Exception)
+            catch (DbUpdateConcurrencyException ex)
             {
-                return InternalServerError();
+                if (!studentExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return InternalServerError(ex);
+                }
             }
 
-            if (!isStudent) return BadRequest();
-
-            IHttpActionResult response;
-            student.Email = id;
-            bool result = FacultyDBHandler.executePutStudentInfo(student);
-
-            if (result)
-            {
-                // Return true since the table has been updated. Else, return false because there has been an error.
-                response = Ok();
-            }
-            else
-            {
-                // The error indicates that the database found an error.
-                response = InternalServerError();
-            }
-
-            return response;
+            return StatusCode(HttpStatusCode.NoContent);
+            
         }
 
         // DELETE: api/Student/5
@@ -102,9 +76,10 @@ namespace ekaH_server.Controllers
         {
         }
 
-
-        // GET: ekah/students/{id}/courses/{cid}
-        // Returns all the courses that a student is enrolled in.
+        private bool studentExists(string id)
+        {
+            return db.student_info.Count(e => e.email == id) > 0;
+        }
         
 
     }

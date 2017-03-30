@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ekahModelStoreContainer" CdmEntityContainer="ekahEntities11">
+    <EntitySetMapping Name="appointments">
+      <EntityTypeMapping TypeName="ekahModel.appointment">
+        <MappingFragment StoreEntitySet="appointments">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="scheduleID" ColumnName="scheduleID" />
+          <ScalarProperty Name="startTime" ColumnName="startTime" />
+          <ScalarProperty Name="endTime" ColumnName="endTime" />
+          <ScalarProperty Name="attendeeID" ColumnName="attendeeID" />
+          <ScalarProperty Name="confirmed" ColumnName="confirmed" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="assignments">
+      <EntityTypeMapping TypeName="ekahModel.assignment">
+        <MappingFragment StoreEntitySet="assignment">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="courseID" ColumnName="courseID" />
+          <ScalarProperty Name="projectNum" ColumnName="projectNum" />
+          <ScalarProperty Name="projectTitle" ColumnName="projectTitle" />
+          <ScalarProperty Name="weight" ColumnName="weight" />
+          <ScalarProperty Name="deadline" ColumnName="deadline" />
+          <ScalarProperty Name="content" ColumnName="content" />
+          <ScalarProperty Name="attachments" ColumnName="attachments" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="authentications">
+      <EntityTypeMapping TypeName="ekahModel.authentication">
+        <MappingFragment StoreEntitySet="authentication">
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="member_type" ColumnName="member_type" />
+          <ScalarProperty Name="pswd" ColumnName="pswd" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="courses">
+      <EntityTypeMapping TypeName="ekahModel.cours">
+        <MappingFragment StoreEntitySet="courses">
+          <ScalarProperty Name="courseID" ColumnName="courseID" />
+          <ScalarProperty Name="year" ColumnName="year" />
+          <ScalarProperty Name="semester" ColumnName="semester" />
+          <ScalarProperty Name="professorID" ColumnName="professorID" />
+          <ScalarProperty Name="days" ColumnName="days" />
+          <ScalarProperty Name="startTime" ColumnName="startTime" />
+          <ScalarProperty Name="endTime" ColumnName="endTime" />
+          <ScalarProperty Name="courseName" ColumnName="courseName" />
+          <ScalarProperty Name="courseDescription" ColumnName="courseDescription" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="member_type">
+      <EntityTypeMapping TypeName="ekahModel.member_type">
+        <MappingFragment StoreEntitySet="member_type">
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="type" ColumnName="type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="officehours">
+      <EntityTypeMapping TypeName="ekahModel.officehour">
+        <MappingFragment StoreEntitySet="officehours">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="professorID" ColumnName="professorID" />
+          <ScalarProperty Name="startDTime" ColumnName="startDTime" />
+          <ScalarProperty Name="endDTime" ColumnName="endDTime" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="professor_info">
+      <EntityTypeMapping TypeName="ekahModel.professor_info">
+        <MappingFragment StoreEntitySet="professor_info">
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="department" ColumnName="department" />
+          <ScalarProperty Name="education" ColumnName="education" />
+          <ScalarProperty Name="university" ColumnName="university" />
+          <ScalarProperty Name="concentration" ColumnName="concentration" />
+          <ScalarProperty Name="streetAdd1" ColumnName="streetAdd1" />
+          <ScalarProperty Name="streetAdd2" ColumnName="streetAdd2" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="zip" ColumnName="zip" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="student_info">
+      <EntityTypeMapping TypeName="ekahModel.student_info">
+        <MappingFragment StoreEntitySet="student_info">
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="education" ColumnName="education" />
+          <ScalarProperty Name="concentration" ColumnName="concentration" />
+          <ScalarProperty Name="graduationYear" ColumnName="graduationYear" />
+          <ScalarProperty Name="streetAdd1" ColumnName="streetAdd1" />
+          <ScalarProperty Name="streetAdd2" ColumnName="streetAdd2" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="zip" ColumnName="zip" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="studentcourses">
+      <EntityTypeMapping TypeName="ekahModel.studentcourse">
+        <MappingFragment StoreEntitySet="studentcourse">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="courseID" ColumnName="courseID" />
+          <ScalarProperty Name="studentID" ColumnName="studentID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="submissions">
+      <EntityTypeMapping TypeName="ekahModel.submission">
+        <MappingFragment StoreEntitySet="submission">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="assignmentID" ColumnName="assignmentID" />
+          <ScalarProperty Name="studentID" ColumnName="studentID" />
+          <ScalarProperty Name="grade" ColumnName="grade" />
+          <ScalarProperty Name="submissionContent" ColumnName="submissionContent" />
+          <ScalarProperty Name="submissionDateTime" ColumnName="submissionDateTime" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

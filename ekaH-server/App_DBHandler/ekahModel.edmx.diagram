@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="83ab2743270a4b868100f366deae6321" Name="Diagram1">
+        <EntityTypeShape EntityType="ekahModel.appointment" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.assignment" Width="1.5" PointX="3.75" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.authentication" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.cours" Width="1.5" PointX="0.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.member_type" Width="1.5" PointX="7.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.officehour" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.professor_info" Width="1.5" PointX="1.5" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.student_info" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.studentcourse" Width="1.5" PointX="3" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ekahModel.submission" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
+        <AssociationConnector Association="ekahModel.AttendeeID" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.ScheduleID" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.assignmentID" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.courseid" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.professor" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.withCourse" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.officeProfessor" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.studentID" ManuallyRouted="false" />
+        <AssociationConnector Association="ekahModel.withStudent" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

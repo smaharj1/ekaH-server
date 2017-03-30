@@ -7,17 +7,14 @@ using System.Net.Http;
 using System.Web.Http;
 using MySql.Data.MySqlClient;
 using ekaH_server.Models.UserModels;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace ekaH_server.Controllers
 {
     public class facultyController : ApiController
     {
-        // GET: ekah/faculties
-        // Returns all the faculty members
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "No one is authorized for this" };
-        }
+        private ekahEntities11 db = new ekahEntities11();
 
         // GET: ekah/faculties/{id}
         // Returns the information of the user from user info database. 
@@ -25,6 +22,16 @@ namespace ekaH_server.Controllers
         [HttpGet]
         public IHttpActionResult Get(string id)
         {
+            professor_info professor = db.professor_info.Find(id);
+
+            if (professor == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(professor);
+
+            /*
             IHttpActionResult result;
 
             bool isStudent = true; 
@@ -59,7 +66,7 @@ namespace ekaH_server.Controllers
                 
             
 
-            return result;
+            return result;*/
         }
 
         // POST: api/faculties/{id}
@@ -70,8 +77,40 @@ namespace ekaH_server.Controllers
 
         // PUT: ekah/faculties/{id}
         [HttpPut]
-        public IHttpActionResult Put(string id, [FromBody] FacultyInfo providedObj)
+        public IHttpActionResult Put(string id, [FromBody] professor_info professor)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != professor.email)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(professor).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!professorExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return InternalServerError(ex);
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+
+            /*
             IHttpActionResult response;
 
             bool isStudent = true;
@@ -86,7 +125,7 @@ namespace ekaH_server.Controllers
 
             if (isStudent) return BadRequest();
 
-            FacultyInfo faculty = providedObj;
+            FacultyInfo faculty = professor;
             faculty.Email = id;
             bool result = FacultyDBHandler.executePutFacultyInfo(faculty);
 
@@ -101,9 +140,14 @@ namespace ekaH_server.Controllers
                 response = InternalServerError();
             }
             
-            return response;
+            return response;*/
         }
 
-        
+        private bool professorExists(string id)
+        {
+            return db.professor_info.Count(e => e.email == id) > 0;
+        }
+
+
     }
 }

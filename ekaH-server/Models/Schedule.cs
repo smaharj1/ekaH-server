@@ -1,4 +1,5 @@
-﻿using ekaH_server.Models.UserModels;
+﻿using ekaH_server.App_DBHandler;
+using ekaH_server.Models.UserModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace ekaH_server.Models
 {
     public class FullAppointmentInfo
     {
-        public Appointment Appointment { get; set; }
-        public FacultyInfo Faculty { get; set; }
-        public StudentInfo Student { get; set; }
+        public appointment Appointment { get; set; }
+        public professor_info Faculty { get; set; }
+        public student_info Student { get; set; }
     }
     public class Schedule
     {
@@ -38,18 +39,18 @@ namespace ekaH_server.Models
         public DateTime StartDTime { get; set; }
         public DateTime EndDTime { get; set; }
 
-        public List<Appointment> divideToAppointments()
+        public List<appointment> divideToAppointments()
         {
-            List<Appointment> allAppointments = new List<Appointment>();
+            List<appointment> allAppointments = new List<appointment>();
 
             for (DateTime dt = StartDTime; dt < EndDTime; dt = dt.AddMinutes(30))
             {
-                Appointment app = new Appointment();
-                app.ScheduleID = ScheduleID;
-                app.AttendeeID = "";
-                app.Confirmed = false;
-                app.StartTime = dt;
-                app.EndTime = app.StartTime.AddMinutes(30);
+                appointment app = new appointment();
+                app.scheduleID = ScheduleID;
+                app.attendeeID = "";
+                app.confirmed = 0;
+                app.startTime = dt;
+                app.endTime = app.startTime.AddMinutes(30);
 
                 allAppointments.Add(app);
             }

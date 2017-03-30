@@ -1,0 +1,758 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ekahModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="appointments">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="scheduleID" Type="int" Nullable="false" />
+          <Property Name="startTime" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="endTime" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="attendeeID" Type="varchar" MaxLength="45" />
+          <Property Name="confirmed" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="assignment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="courseID" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="projectNum" Type="int" Nullable="false" />
+          <Property Name="projectTitle" Type="varchar" MaxLength="45" />
+          <Property Name="weight" Type="int" />
+          <Property Name="deadline" Type="datetime" Precision="0" />
+          <Property Name="content" Type="longtext" Nullable="false" />
+          <Property Name="attachments" Type="longblob" />
+        </EntityType>
+        <EntityType Name="authentication">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="member_type" Type="tinyint" Nullable="false" />
+          <Property Name="pswd" Type="varchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="courses">
+          <Key>
+            <PropertyRef Name="courseID" />
+          </Key>
+          <Property Name="courseID" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="year" Type="year" Nullable="false" />
+          <Property Name="semester" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="professorID" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="days" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="startTime" Type="time" Precision="6" Nullable="false" />
+          <Property Name="endTime" Type="time" Precision="6" Nullable="false" />
+          <Property Name="courseName" Type="varchar" MaxLength="45" />
+          <Property Name="courseDescription" Type="mediumtext" />
+        </EntityType>
+        <EntityType Name="member_type">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="type" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="officehours">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="professorID" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="startDTime" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="endDTime" Type="datetime" Precision="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="professor_info">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="firstName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="lastName" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="department" Type="varchar" MaxLength="45" />
+          <Property Name="education" Type="varchar" MaxLength="45" />
+          <Property Name="university" Type="varchar" MaxLength="45" />
+          <Property Name="concentration" Type="varchar" MaxLength="45" />
+          <Property Name="streetAdd1" Type="varchar" MaxLength="45" />
+          <Property Name="streetAdd2" Type="varchar" MaxLength="45" />
+          <Property Name="city" Type="varchar" MaxLength="40" />
+          <Property Name="state" Type="varchar" MaxLength="2" />
+          <Property Name="zip" Type="varchar" MaxLength="10" />
+          <Property Name="phone" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="student_info">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="firstName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="lastName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="education" Type="varchar" MaxLength="30" />
+          <Property Name="concentration" Type="varchar" MaxLength="30" />
+          <Property Name="graduationYear" Type="int" />
+          <Property Name="streetAdd1" Type="varchar" MaxLength="45" />
+          <Property Name="streetAdd2" Type="varchar" MaxLength="45" />
+          <Property Name="city" Type="varchar" MaxLength="45" />
+          <Property Name="state" Type="varchar" MaxLength="2" />
+          <Property Name="zip" Type="varchar" MaxLength="10" />
+          <Property Name="phone" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="studentcourse">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="courseID" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="studentID" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="submission">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="assignmentID" Type="uint" Nullable="false" />
+          <Property Name="studentID" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="grade" Type="int" />
+          <Property Name="submissionContent" Type="longblob" />
+          <Property Name="submissionDateTime" Type="datetime" Precision="0" />
+        </EntityType>
+        <Association Name="assignmentID">
+          <End Role="assignment" Type="Self.assignment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="submission" Type="Self.submission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="submission">
+              <PropertyRef Name="assignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AttendeeID">
+          <End Role="student_info" Type="Self.student_info" Multiplicity="0..1" />
+          <End Role="appointments" Type="Self.appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="appointments">
+              <PropertyRef Name="attendeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="courseid">
+          <End Role="courses" Type="Self.courses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="assignment" Type="Self.assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="courses">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="assignment">
+              <PropertyRef Name="courseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="officeProfessor">
+          <End Role="professor_info" Type="Self.professor_info" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="officehours" Type="Self.officehours" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="professor_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="officehours">
+              <PropertyRef Name="professorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="professor">
+          <End Role="professor_info" Type="Self.professor_info" Multiplicity="1" />
+          <End Role="courses" Type="Self.courses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="professor_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="courses">
+              <PropertyRef Name="professorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ScheduleID">
+          <End Role="officehours" Type="Self.officehours" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="appointments" Type="Self.appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="officehours">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="appointments">
+              <PropertyRef Name="scheduleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="studentID">
+          <End Role="student_info" Type="Self.student_info" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="submission" Type="Self.submission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="submission">
+              <PropertyRef Name="studentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="withCourse">
+          <End Role="courses" Type="Self.courses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="studentcourse" Type="Self.studentcourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="courses">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="studentcourse">
+              <PropertyRef Name="courseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="withStudent">
+          <End Role="student_info" Type="Self.student_info" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="studentcourse" Type="Self.studentcourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="studentcourse">
+              <PropertyRef Name="studentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ekahModelStoreContainer">
+          <EntitySet Name="appointments" EntityType="Self.appointments" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="assignment" EntityType="Self.assignment" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="authentication" EntityType="Self.authentication" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="courses" EntityType="Self.courses" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="member_type" EntityType="Self.member_type" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="officehours" EntityType="Self.officehours" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="professor_info" EntityType="Self.professor_info" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="student_info" EntityType="Self.student_info" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="studentcourse" EntityType="Self.studentcourse" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="submission" EntityType="Self.submission" Schema="ekah" store:Type="Tables" />
+          <AssociationSet Name="assignmentID" Association="Self.assignmentID">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="submission" EntitySet="submission" />
+          </AssociationSet>
+          <AssociationSet Name="AttendeeID" Association="Self.AttendeeID">
+            <End Role="student_info" EntitySet="student_info" />
+            <End Role="appointments" EntitySet="appointments" />
+          </AssociationSet>
+          <AssociationSet Name="courseid" Association="Self.courseid">
+            <End Role="courses" EntitySet="courses" />
+            <End Role="assignment" EntitySet="assignment" />
+          </AssociationSet>
+          <AssociationSet Name="officeProfessor" Association="Self.officeProfessor">
+            <End Role="professor_info" EntitySet="professor_info" />
+            <End Role="officehours" EntitySet="officehours" />
+          </AssociationSet>
+          <AssociationSet Name="professor" Association="Self.professor">
+            <End Role="professor_info" EntitySet="professor_info" />
+            <End Role="courses" EntitySet="courses" />
+          </AssociationSet>
+          <AssociationSet Name="ScheduleID" Association="Self.ScheduleID">
+            <End Role="officehours" EntitySet="officehours" />
+            <End Role="appointments" EntitySet="appointments" />
+          </AssociationSet>
+          <AssociationSet Name="studentID" Association="Self.studentID">
+            <End Role="student_info" EntitySet="student_info" />
+            <End Role="submission" EntitySet="submission" />
+          </AssociationSet>
+          <AssociationSet Name="withCourse" Association="Self.withCourse">
+            <End Role="courses" EntitySet="courses" />
+            <End Role="studentcourse" EntitySet="studentcourse" />
+          </AssociationSet>
+          <AssociationSet Name="withStudent" Association="Self.withStudent">
+            <End Role="student_info" EntitySet="student_info" />
+            <End Role="studentcourse" EntitySet="studentcourse" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ekahModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="appointment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="scheduleID" Type="Int32" Nullable="false" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" />
+          <Property Name="attendeeID" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="confirmed" Type="SByte" Nullable="false" />
+          <NavigationProperty Name="student_info" Relationship="Self.AttendeeID" FromRole="appointments" ToRole="student_info" />
+          <NavigationProperty Name="officehour" Relationship="Self.ScheduleID" FromRole="appointments" ToRole="officehours" />
+        </EntityType>
+        <EntityType Name="assignment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="courseID" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="projectNum" Type="Int32" Nullable="false" />
+          <Property Name="projectTitle" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="weight" Type="Int32" />
+          <Property Name="deadline" Type="DateTime" />
+          <Property Name="content" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="attachments" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="submissions" Relationship="Self.assignmentID" FromRole="assignment" ToRole="submission" />
+          <NavigationProperty Name="cours" Relationship="Self.courseid" FromRole="assignment" ToRole="courses" />
+        </EntityType>
+        <EntityType Name="authentication">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="member_type" Type="SByte" Nullable="false" />
+          <Property Name="pswd" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="cours">
+          <Key>
+            <PropertyRef Name="courseID" />
+          </Key>
+          <Property Name="courseID" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="year" Type="Int16" Nullable="false" />
+          <Property Name="semester" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="professorID" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="days" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startTime" Type="Time" Nullable="false" />
+          <Property Name="endTime" Type="Time" Nullable="false" />
+          <Property Name="courseName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="courseDescription" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="assignments" Relationship="Self.courseid" FromRole="courses" ToRole="assignment" />
+          <NavigationProperty Name="professor_info" Relationship="Self.professor" FromRole="courses" ToRole="professor_info" />
+          <NavigationProperty Name="studentcourses" Relationship="Self.withCourse" FromRole="courses" ToRole="studentcourse" />
+        </EntityType>
+        <EntityType Name="member_type">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="type" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="officehour">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="professorID" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startDTime" Type="DateTime" Nullable="false" />
+          <Property Name="endDTime" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="appointments" Relationship="Self.ScheduleID" FromRole="officehours" ToRole="appointments" />
+          <NavigationProperty Name="professor_info" Relationship="Self.officeProfessor" FromRole="officehours" ToRole="professor_info" />
+        </EntityType>
+        <EntityType Name="professor_info">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="firstName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="lastName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="department" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="education" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="university" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="concentration" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="streetAdd1" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="streetAdd2" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="city" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="state" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="zip" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="courses" Relationship="Self.professor" FromRole="professor_info" ToRole="courses" />
+          <NavigationProperty Name="officehours" Relationship="Self.officeProfessor" FromRole="professor_info" ToRole="officehours" />
+        </EntityType>
+        <EntityType Name="student_info">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="firstName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="lastName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="education" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="concentration" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="graduationYear" Type="Int32" />
+          <Property Name="streetAdd1" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="streetAdd2" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="city" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="state" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="zip" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="appointments" Relationship="Self.AttendeeID" FromRole="student_info" ToRole="appointments" />
+          <NavigationProperty Name="submissions" Relationship="Self.studentID" FromRole="student_info" ToRole="submission" />
+          <NavigationProperty Name="studentcourses" Relationship="Self.withStudent" FromRole="student_info" ToRole="studentcourse" />
+        </EntityType>
+        <EntityType Name="studentcourse">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="courseID" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="studentID" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="cours" Relationship="Self.withCourse" FromRole="studentcourse" ToRole="courses" />
+          <NavigationProperty Name="student_info" Relationship="Self.withStudent" FromRole="studentcourse" ToRole="student_info" />
+        </EntityType>
+        <EntityType Name="submission">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="assignmentID" Type="Int64" Nullable="false" />
+          <Property Name="studentID" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="grade" Type="Int32" />
+          <Property Name="submissionContent" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="submissionDateTime" Type="DateTime" />
+          <NavigationProperty Name="assignment" Relationship="Self.assignmentID" FromRole="submission" ToRole="assignment" />
+          <NavigationProperty Name="student_info" Relationship="Self.studentID" FromRole="submission" ToRole="student_info" />
+        </EntityType>
+        <Association Name="AttendeeID">
+          <End Role="student_info" Type="Self.student_info" Multiplicity="0..1" />
+          <End Role="appointments" Type="Self.appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="appointments">
+              <PropertyRef Name="attendeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ScheduleID">
+          <End Role="officehours" Type="Self.officehour" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="appointments" Type="Self.appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="officehours">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="appointments">
+              <PropertyRef Name="scheduleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="assignmentID">
+          <End Role="assignment" Type="Self.assignment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="submission" Type="Self.submission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="submission">
+              <PropertyRef Name="assignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="courseid">
+          <End Role="courses" Type="Self.cours" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="assignment" Type="Self.assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="courses">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="assignment">
+              <PropertyRef Name="courseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="professor">
+          <End Role="professor_info" Type="Self.professor_info" Multiplicity="1" />
+          <End Role="courses" Type="Self.cours" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="professor_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="courses">
+              <PropertyRef Name="professorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="withCourse">
+          <End Role="courses" Type="Self.cours" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="studentcourse" Type="Self.studentcourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="courses">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="studentcourse">
+              <PropertyRef Name="courseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="officeProfessor">
+          <End Role="professor_info" Type="Self.professor_info" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="officehours" Type="Self.officehour" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="professor_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="officehours">
+              <PropertyRef Name="professorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="studentID">
+          <End Role="student_info" Type="Self.student_info" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="submission" Type="Self.submission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="submission">
+              <PropertyRef Name="studentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="withStudent">
+          <End Role="student_info" Type="Self.student_info" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="studentcourse" Type="Self.studentcourse" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student_info">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="studentcourse">
+              <PropertyRef Name="studentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ekahEntities11" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="appointments" EntityType="Self.appointment" />
+          <EntitySet Name="assignments" EntityType="Self.assignment" />
+          <EntitySet Name="authentications" EntityType="Self.authentication" />
+          <EntitySet Name="courses" EntityType="Self.cours" />
+          <EntitySet Name="member_type" EntityType="Self.member_type" />
+          <EntitySet Name="officehours" EntityType="Self.officehour" />
+          <EntitySet Name="professor_info" EntityType="Self.professor_info" />
+          <EntitySet Name="student_info" EntityType="Self.student_info" />
+          <EntitySet Name="studentcourses" EntityType="Self.studentcourse" />
+          <EntitySet Name="submissions" EntityType="Self.submission" />
+          <AssociationSet Name="AttendeeID" Association="Self.AttendeeID">
+            <End Role="student_info" EntitySet="student_info" />
+            <End Role="appointments" EntitySet="appointments" />
+          </AssociationSet>
+          <AssociationSet Name="ScheduleID" Association="Self.ScheduleID">
+            <End Role="officehours" EntitySet="officehours" />
+            <End Role="appointments" EntitySet="appointments" />
+          </AssociationSet>
+          <AssociationSet Name="assignmentID" Association="Self.assignmentID">
+            <End Role="assignment" EntitySet="assignments" />
+            <End Role="submission" EntitySet="submissions" />
+          </AssociationSet>
+          <AssociationSet Name="courseid" Association="Self.courseid">
+            <End Role="courses" EntitySet="courses" />
+            <End Role="assignment" EntitySet="assignments" />
+          </AssociationSet>
+          <AssociationSet Name="professor" Association="Self.professor">
+            <End Role="professor_info" EntitySet="professor_info" />
+            <End Role="courses" EntitySet="courses" />
+          </AssociationSet>
+          <AssociationSet Name="withCourse" Association="Self.withCourse">
+            <End Role="courses" EntitySet="courses" />
+            <End Role="studentcourse" EntitySet="studentcourses" />
+          </AssociationSet>
+          <AssociationSet Name="officeProfessor" Association="Self.officeProfessor">
+            <End Role="professor_info" EntitySet="professor_info" />
+            <End Role="officehours" EntitySet="officehours" />
+          </AssociationSet>
+          <AssociationSet Name="studentID" Association="Self.studentID">
+            <End Role="student_info" EntitySet="student_info" />
+            <End Role="submission" EntitySet="submissions" />
+          </AssociationSet>
+          <AssociationSet Name="withStudent" Association="Self.withStudent">
+            <End Role="student_info" EntitySet="student_info" />
+            <End Role="studentcourse" EntitySet="studentcourses" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ekahModelStoreContainer" CdmEntityContainer="ekahEntities11">
+          <EntitySetMapping Name="appointments">
+            <EntityTypeMapping TypeName="ekahModel.appointment">
+              <MappingFragment StoreEntitySet="appointments">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="scheduleID" ColumnName="scheduleID" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="attendeeID" ColumnName="attendeeID" />
+                <ScalarProperty Name="confirmed" ColumnName="confirmed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="assignments">
+            <EntityTypeMapping TypeName="ekahModel.assignment">
+              <MappingFragment StoreEntitySet="assignment">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="courseID" ColumnName="courseID" />
+                <ScalarProperty Name="projectNum" ColumnName="projectNum" />
+                <ScalarProperty Name="projectTitle" ColumnName="projectTitle" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+                <ScalarProperty Name="deadline" ColumnName="deadline" />
+                <ScalarProperty Name="content" ColumnName="content" />
+                <ScalarProperty Name="attachments" ColumnName="attachments" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="authentications">
+            <EntityTypeMapping TypeName="ekahModel.authentication">
+              <MappingFragment StoreEntitySet="authentication">
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="member_type" ColumnName="member_type" />
+                <ScalarProperty Name="pswd" ColumnName="pswd" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="courses">
+            <EntityTypeMapping TypeName="ekahModel.cours">
+              <MappingFragment StoreEntitySet="courses">
+                <ScalarProperty Name="courseID" ColumnName="courseID" />
+                <ScalarProperty Name="year" ColumnName="year" />
+                <ScalarProperty Name="semester" ColumnName="semester" />
+                <ScalarProperty Name="professorID" ColumnName="professorID" />
+                <ScalarProperty Name="days" ColumnName="days" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="courseName" ColumnName="courseName" />
+                <ScalarProperty Name="courseDescription" ColumnName="courseDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="member_type">
+            <EntityTypeMapping TypeName="ekahModel.member_type">
+              <MappingFragment StoreEntitySet="member_type">
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="type" ColumnName="type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="officehours">
+            <EntityTypeMapping TypeName="ekahModel.officehour">
+              <MappingFragment StoreEntitySet="officehours">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="professorID" ColumnName="professorID" />
+                <ScalarProperty Name="startDTime" ColumnName="startDTime" />
+                <ScalarProperty Name="endDTime" ColumnName="endDTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="professor_info">
+            <EntityTypeMapping TypeName="ekahModel.professor_info">
+              <MappingFragment StoreEntitySet="professor_info">
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="department" ColumnName="department" />
+                <ScalarProperty Name="education" ColumnName="education" />
+                <ScalarProperty Name="university" ColumnName="university" />
+                <ScalarProperty Name="concentration" ColumnName="concentration" />
+                <ScalarProperty Name="streetAdd1" ColumnName="streetAdd1" />
+                <ScalarProperty Name="streetAdd2" ColumnName="streetAdd2" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="zip" ColumnName="zip" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="student_info">
+            <EntityTypeMapping TypeName="ekahModel.student_info">
+              <MappingFragment StoreEntitySet="student_info">
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="education" ColumnName="education" />
+                <ScalarProperty Name="concentration" ColumnName="concentration" />
+                <ScalarProperty Name="graduationYear" ColumnName="graduationYear" />
+                <ScalarProperty Name="streetAdd1" ColumnName="streetAdd1" />
+                <ScalarProperty Name="streetAdd2" ColumnName="streetAdd2" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="zip" ColumnName="zip" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="studentcourses">
+            <EntityTypeMapping TypeName="ekahModel.studentcourse">
+              <MappingFragment StoreEntitySet="studentcourse">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="courseID" ColumnName="courseID" />
+                <ScalarProperty Name="studentID" ColumnName="studentID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="submissions">
+            <EntityTypeMapping TypeName="ekahModel.submission">
+              <MappingFragment StoreEntitySet="submission">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="assignmentID" ColumnName="assignmentID" />
+                <ScalarProperty Name="studentID" ColumnName="studentID" />
+                <ScalarProperty Name="grade" ColumnName="grade" />
+                <ScalarProperty Name="submissionContent" ColumnName="submissionContent" />
+                <ScalarProperty Name="submissionDateTime" ColumnName="submissionDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
