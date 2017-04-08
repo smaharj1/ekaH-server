@@ -8,6 +8,7 @@ using ekaH_server.Models;
 using ekaH_server.App_DBHandler;
 using ekaH_server.Models.UserAuth;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
 
 namespace ekaH_server.Controllers
 {
@@ -42,7 +43,8 @@ namespace ekaH_server.Controllers
 
             if (result != null)
             {
-                if (result.pswd == providedInfo.pswd)
+               
+                if (Hashing.ValidatePassword(providedInfo.pswd, result.pswd))
                 {
                     return Ok();
                 }
@@ -50,6 +52,7 @@ namespace ekaH_server.Controllers
                 {
                     return StatusCode(HttpStatusCode.Ambiguous);
                 }
+                
             }
 
             return NotFound();
@@ -75,7 +78,8 @@ namespace ekaH_server.Controllers
             authentication authTemp = new authentication();
             authTemp.email = providedInfo.userEmail;
             authTemp.member_type = (sbyte)(providedInfo.isStudent ? 1 : 0);
-            authTemp.pswd = providedInfo.pswd;
+            
+            authTemp.pswd = Hashing.HashPassword(providedInfo.pswd);
 
             db.authentications.Add(authTemp);
 
