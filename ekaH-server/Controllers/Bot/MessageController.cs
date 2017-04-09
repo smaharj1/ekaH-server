@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Bot.Connector;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Dialogs;
+using ekaH_server.Bot.Dialogs;
 
 namespace ekaH_server.Controllers.Bot
 {
@@ -20,13 +22,7 @@ namespace ekaH_server.Controllers.Bot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
-
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                await Conversation.SendAsync(activity, () => new RootDialog());
             }
             else
             {
