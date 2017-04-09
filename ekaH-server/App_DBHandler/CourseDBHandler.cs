@@ -66,7 +66,7 @@ namespace ekaH_server.App_DBHandler
                 reader = cmd.ExecuteReader();
 
             }
-            catch (MySqlException ex)
+            catch (MySqlException )
             {
                 //MessageBox.Show(ex.Message); 
                 return null;

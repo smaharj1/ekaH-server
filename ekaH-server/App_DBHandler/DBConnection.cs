@@ -40,7 +40,7 @@ namespace ekaH_server.App_DBHandler
                 connection.ConnectionString = connectionDetail;
                 connection.Open();
             }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
+            catch (MySql.Data.MySqlClient.MySqlException )
             {
                 // Handles the MySQL connection exception here.
                 //MessageBox.Show("DB Connection failed");

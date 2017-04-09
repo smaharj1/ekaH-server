@@ -103,7 +103,7 @@ namespace ekaH_server.App_DBHandler
                     result = ErrorList.LOGIN_NO_USER;
                 }
             }
-            catch (MySqlException ex)
+            catch (MySqlException)
             {
                 result= ErrorList.DATABASE_EXCEPTION;
             }

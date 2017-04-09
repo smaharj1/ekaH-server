@@ -79,7 +79,7 @@ namespace ekaH_server.Controllers
             {
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch(Exception )
             {
                 return InternalServerError();
             }

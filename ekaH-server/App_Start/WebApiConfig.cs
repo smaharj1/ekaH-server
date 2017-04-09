@@ -71,7 +71,13 @@ namespace ekaH_server
                 defaults: new { controller = "auth", id = RouteParameter.Optional }
             );
 
-            
+            config.Routes.MapHttpRoute(
+                name: "BotApi",
+                routeTemplate: "api/messages/{id}",
+                defaults: new { controller = "message", id = RouteParameter.Optional }
+            );
+
+
         }
     }
 }
