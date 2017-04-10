@@ -248,6 +248,7 @@
     <Compile Include="Bot\Forms\ReservationForm.cs" />
     <Compile Include="Bot\Models\Reservation.cs" />
     <Compile Include="Controllers\appointmentsController.cs" />
+    <Compile Include="Controllers\AssignmentController.cs" />
     <Compile Include="Controllers\authController.cs" />
     <Compile Include="Controllers\Bot\MessageController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
