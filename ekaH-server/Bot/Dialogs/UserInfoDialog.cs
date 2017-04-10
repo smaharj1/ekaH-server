@@ -42,7 +42,7 @@ namespace ekaH_server.Bot.Dialogs
             {
                 //If name was already stored we will say hi to the user.
                 await context.PostAsync(String.Format("Hi {0}.  How can I help you today?", userName));
-
+                context.UserData.SetValue<bool>("GetName", false);
             }
         }
 
@@ -70,7 +70,7 @@ namespace ekaH_server.Bot.Dialogs
 
                     context.Wait(MessageReceivedAsync);
                 }
-                //await Respond(context);
+                await Respond(context);
                 context.Done(message);
             }
             catch (Exception ex)

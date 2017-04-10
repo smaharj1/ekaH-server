@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.FormFlow;
 using System.Threading.Tasks;
@@ -12,17 +14,56 @@ using ekaH_server.Bot.Models;
 namespace ekaH_server.Bot.Dialogs
 {
     [Serializable]
-    public class RootDialog : IDialog<object>
+    [LuisModel("5ffdc213-ee58-449f-8f66-194cf3a86c83", "a1c360ac2dc04fd2b266f14a57f41169")]
+    public class RootDialog : LuisDialog<object>
     {
         private const string HELLO_OPTION = "Say Hello";
         private const string RESERVE_OPTION = "Reserve table";
 
-
-        public async Task StartAsync(IDialogContext context)
+        [LuisIntent("")]
+        [LuisIntent("None")]
+        public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Hi I am Clara, your college help bot");
-            context.Wait(this.MessageReceivedAsync);
+            string message = $"Sorry, I did not understand '{result.Query}'";
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
         }
+
+        [LuisIntent("ReserveATable")]
+        public async Task ReserveATable(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Great, lets book a table for you. You will need to provide a few details.");
+                var form = new FormDialog<Reservation>(
+                new Reservation(context.UserData.Get<String>("Name")),
+                ReservationForm.BuildForm,
+                FormOptions.PromptInStart,
+                null);
+
+                context.Call(form, this.ReservationFormComplete);
+            }
+            catch (Exception ex)
+            {
+
+                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                context.Wait(MessageReceived);
+            }
+        }
+
+        [LuisIntent("SayHello")]
+        public async Task SayHello(IDialogContext context, LuisResult result)
+        {
+            context.Call(new UserInfoDialog(), this.ResumeAfterOptionDialog);
+        }
+
+        [LuisIntent("Help")]
+        public async Task Help(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Insert Help Dialog here");
+            context.Wait(MessageReceived);
+        }
+
 
         private async Task ReservationFormComplete(IDialogContext context, IAwaitable<Reservation> result)
         {
@@ -71,22 +112,22 @@ namespace ekaH_server.Bot.Dialogs
             }
             finally
             {
-                context.Wait(MessageReceivedAsync);
+                context.Wait(MessageReceived);
             }
         }
 
 
-        private void PromptUser(IDialogContext context)
-        {
-            PromptDialog.Choice(
-            context,
-            this.OnOptionSelected,
-            // Present two (2) options to user
-            new List<string>() { RESERVE_OPTION, HELLO_OPTION },
-            String.Format("Hi {0}, are you looking for to reserve a table or Just say hello?", context.UserData.Get<String>("Name")), "Not a valid option", 3);
-        }
+        //private void PromptUser(IDialogContext context)
+        //{
+        //    PromptDialog.Choice(
+        //    context,
+        //    this.OnOptionSelected,
+        //    // Present two (2) options to user
+        //    new List<string>() { RESERVE_OPTION, HELLO_OPTION },
+        //    String.Format("Hi {0}, are you looking for to reserve a table or Just say hello?", context.UserData.Get<String>("Name")), "Not a valid option", 3);
+        //}
 
-
+/*
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             //check to see if we already have username stored
@@ -103,13 +144,13 @@ namespace ekaH_server.Bot.Dialogs
             }
 
         }
-
+        */
         private async Task ResumeAfterUserInfoDialog(IDialogContext context, IAwaitable<object> result)
         {
-            PromptUser(context);
+            //PromptUser(context);
         }
 
-
+        /*
         private async Task OnOptionSelected(IDialogContext context, IAwaitable<string> result)
         {
             try
@@ -144,7 +185,7 @@ namespace ekaH_server.Bot.Dialogs
                 //This sets us in a waiting state, after running the prompt again. 
                 context.Wait(this.MessageReceivedAsync);
             }
-        }
+        }*/
 
         private async Task ResumeAfterOptionDialog(IDialogContext context, IAwaitable<object> result)
         {
@@ -158,7 +199,7 @@ namespace ekaH_server.Bot.Dialogs
             }
             finally
             {
-                context.Wait(this.MessageReceivedAsync);
+                context.Wait(MessageReceived);
             }
         }
 
