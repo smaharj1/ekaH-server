@@ -15,8 +15,8 @@ namespace ekaH_server.Controllers
     {
         private ekahEntities11 db = new ekahEntities11();
 
-        // GET: ekah/submissions/student/id
-        // Gets all assignment solutions submitted by student
+        // GET: ekah/submissions/submit/id
+        // Gets all assignment solutions submitted.
         [HttpGet]
         [ActionName("submit")]
         public IHttpActionResult GetSubmission(int id)
@@ -41,6 +41,32 @@ namespace ekaH_server.Controllers
                 return InternalServerError(ex);
             }*/
         }
+        
+        /// <summary>
+        /// Gets the submission made by the student for the particular project
+        /// </summary>
+        /// <param name="aid">It represents the assignment id.</param>
+        /// <param name="sid">It represents the student email</param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("submit")]
+        public IHttpActionResult GetSubmission(int aid, string sid)
+        {
+            List<submission> submission = db.submissions.Where(sub => sub.assignmentID == aid && sub.studentID == sid).ToList();
+
+            return Ok(submission);
+        }
+
+        [HttpGet]
+        [ActionName("assignments")]
+        public IHttpActionResult GetSubmissionByAssgnID(int id)
+        {
+            List<submission> allSubs = db.submissions.Where(sub => sub.assignmentID == id).ToList();
+
+            return Ok(allSubs);
+        }
+
+
 
         // POST & PUT: ekah/submissions/submit/
         // Posts the submission of the student to the database.
@@ -140,7 +166,7 @@ namespace ekaH_server.Controllers
 
         // PUT: ekah/submissions/faculty/
         // This is for changing the functionalities by professor like Grading.
-        [HttpPost]
+        [HttpPut]
         [ActionName("faculty")]
         public IHttpActionResult PutSubmissionByFaculty(long id, [FromBody] submission submitted)
         {

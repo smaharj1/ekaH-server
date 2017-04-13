@@ -27,6 +27,12 @@ namespace ekaH_server
                 );
 
             config.Routes.MapHttpRoute(
+                name: "submissionIIAPI",
+                routeTemplate: "ekah/submissions/{action}/{aid}/{sid}",
+                defaults: new { controller = "submissions", id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
                 name: "submissionAPI",
                 routeTemplate: "ekah/submissions/{action}/{id}/",
                 defaults: new { controller = "submissions", id = RouteParameter.Optional }
