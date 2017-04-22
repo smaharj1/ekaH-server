@@ -243,9 +243,12 @@
     <Compile Include="App_DBHandler\UserAuthentication.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Bot\Dialogs\HelloDialog.cs" />
+    <Compile Include="Bot\Dialogs\JokeDialog.cs" />
     <Compile Include="Bot\Dialogs\RootDialog.cs" />
     <Compile Include="Bot\Dialogs\UserInfoDialog.cs" />
+    <Compile Include="Bot\Dialogs\WeatherDialog.cs" />
     <Compile Include="Bot\Forms\ReservationForm.cs" />
+    <Compile Include="Bot\Models\Joke.cs" />
     <Compile Include="Bot\Models\Reservation.cs" />
     <Compile Include="Controllers\appointmentsController.cs" />
     <Compile Include="Controllers\AssignmentController.cs" />

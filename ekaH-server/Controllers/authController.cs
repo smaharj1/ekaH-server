@@ -84,7 +84,7 @@ namespace ekaH_server.Controllers
             authTemp.pswd = Hashing.HashPassword(providedInfo.pswd);
 
             db.authentications.Add(authTemp);
-
+            
             if (isStudent)
             {
                 student_info student = new student_info();
@@ -104,7 +104,7 @@ namespace ekaH_server.Controllers
                 professor.department = providedInfo.extraInfo;
                 db.professor_info.Add(professor);
             }
-
+            
             try
             {
                 db.SaveChanges();

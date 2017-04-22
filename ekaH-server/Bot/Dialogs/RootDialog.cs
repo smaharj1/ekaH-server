@@ -17,9 +17,6 @@ namespace ekaH_server.Bot.Dialogs
     [LuisModel("5ffdc213-ee58-449f-8f66-194cf3a86c83", "a1c360ac2dc04fd2b266f14a57f41169")]
     public class RootDialog : LuisDialog<object>
     {
-        private const string HELLO_OPTION = "Say Hello";
-        private const string RESERVE_OPTION = "Reserve table";
-
         [LuisIntent("")]
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
@@ -27,6 +24,18 @@ namespace ekaH_server.Bot.Dialogs
             string message = $"Sorry, I did not understand '{result.Query}'";
             await context.PostAsync(message);
             context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("Joke")]
+        public async Task TellAJoke(IDialogContext context, LuisResult result)
+        {
+            context.Call(new JokeDialog(), ResumeAfterOptionDialog);
+        }
+
+        [LuisIntent("Weather")]
+        public async Task GetWeatherReport(IDialogContext context, LuisResult result)
+        {
+            context.Call(new WeatherDialog(result), ResumeAfterOptionDialog);
         }
 
         [LuisIntent("ReserveATable")]
@@ -150,43 +159,7 @@ namespace ekaH_server.Bot.Dialogs
             //PromptUser(context);
         }
 
-        /*
-        private async Task OnOptionSelected(IDialogContext context, IAwaitable<string> result)
-        {
-            try
-            {
-                //capture which option then selected
-                string optionSelected = await result;
-                switch (optionSelected)
-                {
-                    case RESERVE_OPTION:
-                        // Not implemented yet -- that's in the next lesson! 
-
-                        var form = new FormDialog<Reservation>(
-                        new Reservation(context.UserData.Get<String>("Name")),
-                        ReservationForm.BuildForm,
-                        FormOptions.PromptInStart,
-                        null);
-
-                        context.Call(form, this.ReservationFormComplete);
-                        break;
-
-
-                    case HELLO_OPTION:
-                        context.Call(new HelloDialog(), this.ResumeAfterOptionDialog);
-                        break;
-                }
-            }
-            catch (TooManyAttemptsException ex)
-            {
-                //If too many attempts we send error to user and start all over. 
-                await context.PostAsync($"Ooops! Too many attempts :( You can start again!");
-
-                //This sets us in a waiting state, after running the prompt again. 
-                context.Wait(this.MessageReceivedAsync);
-            }
-        }*/
-
+        
         private async Task ResumeAfterOptionDialog(IDialogContext context, IAwaitable<object> result)
         {
             try
