@@ -115,6 +115,7 @@
     <Property Name="grade" Type="int" />
     <Property Name="submissionContent" Type="longblob" />
     <Property Name="submissionDateTime" Type="datetime" Precision="0" />
+    <Property Name="submissionFileName" Type="varchar" MaxLength="60" />
   </EntityType>
   <Association Name="assignmentID">
     <End Role="assignment" Type="Self.assignment" Multiplicity="1">

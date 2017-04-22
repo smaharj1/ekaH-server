@@ -133,6 +133,7 @@
     <Property Name="submissionDateTime" Type="DateTime" />
     <NavigationProperty Name="assignment" Relationship="Self.assignmentID" FromRole="submission" ToRole="assignment" />
     <NavigationProperty Name="student_info" Relationship="Self.studentID" FromRole="submission" ToRole="student_info" />
+    <Property Name="submissionFileName" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
   </EntityType>
   <Association Name="AttendeeID">
     <End Role="student_info" Type="Self.student_info" Multiplicity="0..1" />

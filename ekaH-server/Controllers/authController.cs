@@ -46,7 +46,9 @@ namespace ekaH_server.Controllers
                
                 if (Hashing.ValidatePassword(providedInfo.pswd, result.pswd))
                 {
-                    return Ok();
+                    // If it is student, the data should be in student profile as well.
+                    if (providedInfo.member_type == result.member_type) return Ok();
+                    else return NotFound();
                 }
                 else
                 {

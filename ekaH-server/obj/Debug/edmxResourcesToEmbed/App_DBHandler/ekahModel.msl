@@ -118,6 +118,7 @@
     <EntitySetMapping Name="submissions">
       <EntityTypeMapping TypeName="ekahModel.submission">
         <MappingFragment StoreEntitySet="submission">
+          <ScalarProperty Name="submissionFileName" ColumnName="submissionFileName" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="assignmentID" ColumnName="assignmentID" />
           <ScalarProperty Name="studentID" ColumnName="studentID" />
