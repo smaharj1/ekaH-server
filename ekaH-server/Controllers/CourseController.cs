@@ -18,7 +18,7 @@ namespace ekaH_server.Controllers
 {
     public class CourseController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        private static ekahEntities11 db = new ekahEntities11();
 
         // GET: "ekah/courses/{cid}/{action}
         // It returns the details of a single course by the given id
@@ -155,62 +155,7 @@ namespace ekaH_server.Controllers
             }
 
             return Ok();
-
-            /*
-            if (!(new EmailAddressAttribute().IsValid(course.ProfessorID)))
-            {
-                return BadRequest();
-            }
-
-            bool isStudent = true;
-
-            // Get the type of the student first as professors can only add/remove the course.
-            try
-            {
-                isStudent = UserAuthentication.getUserType(course.ProfessorID);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-
-            if (isStudent)
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
-
-            // Handle the situation here since we are sure that it is a faculty member.
-            // This is because only faculty members can add the courses.
-
-            if (!course.validateFields())
-            {
-                return BadRequest();
-            }
-
-            string previousCourseID = course.CourseID;
-            Course.fixCourseObject(ref course);
-
-            try
-            {
-                if (CourseDBHandler.courseExists(previousCourseID))
-                {
-                    if (CourseDBHandler.executePutCourse(course, previousCourseID)) return Ok(course.CourseID);
-                    else throw new Exception();
-                }
-                else
-                {
-                    // Indicates that the course user wants to edit doesn't exist. Hence, redirect it to POST's method.
-                    if (CourseDBHandler.executePostCourse(course)) return Created("",course.CourseID);
-                    else throw new Exception();
-                }
-            }
-            catch(Exception)
-            {
-                // This is only thrown for database exception.
-                return InternalServerError();
-            }
-            */
-
+                        
         }
 
         // DELETE: ekah/courses/{cid}
@@ -230,6 +175,29 @@ namespace ekaH_server.Controllers
 
             return Ok();
 
+        }
+
+        public static List<cours> GetCoursesByParameters(string email, string semester, short yr)
+        {
+            List<cours> allCoursesByFaculty = db.courses.Where(cr => cr.professorID == email && cr.semester == semester && cr.year == yr).ToList();
+
+            return allCoursesByFaculty;   
+        }
+
+        public static List<string> GetCoursesByParametersInString(string email, string semester, short yr)
+        {
+            List<cours> courses = GetCoursesByParameters(email, semester, yr);
+
+            List<string> result = new List<string>();
+
+            foreach(cours course in courses)
+            {
+                DateTime start = DateTime.Today + course.startTime;
+                DateTime end = DateTime.Today + course.endTime;
+                result.Add(course.courseName +" "+ course.days +" " + start.ToString("hh:mm tt") + " to " + end.ToString("hh:mm tt"));
+            }
+
+            return result;
         }
 
         private bool courseExists(string cid)

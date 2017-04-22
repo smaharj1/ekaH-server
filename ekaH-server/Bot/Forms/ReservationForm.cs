@@ -44,7 +44,7 @@ namespace ekaH_server.Bot.Forms
             return Task.FromResult(result);
         }
 
-        private static bool GetEmailAddress(string response, out string contactInfo)
+        public static bool GetEmailAddress(string response, out string contactInfo)
         {
             contactInfo = string.Empty;
             var match = Regex.Match(response, @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");

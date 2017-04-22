@@ -10,6 +10,8 @@ using Microsoft.Bot.Builder.FormFlow;
 using System.Threading.Tasks;
 using ekaH_server.Bot.Forms;
 using ekaH_server.Bot.Models;
+using ekaH_server.Controllers;
+using ekaH_server.App_DBHandler;
 
 namespace ekaH_server.Bot.Dialogs
 {
@@ -36,6 +38,27 @@ namespace ekaH_server.Bot.Dialogs
         public async Task GetWeatherReport(IDialogContext context, LuisResult result)
         {
             context.Call(new WeatherDialog(result), ResumeAfterOptionDialog);
+        }
+
+        [LuisIntent("ViewClasses")]
+        public async Task GetClasses(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Let's get you started!");
+                var form = new FormDialog<ViewClass>(
+                    new ViewClass(),
+                    ViewClassForm.BuildForm,
+                    FormOptions.PromptInStart
+                    );
+
+                context.Call(form, OnViewClassCompletion);
+            }
+            catch(Exception ex)
+            {
+                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                context.Wait(MessageReceived);
+            }
         }
 
         [LuisIntent("ReserveATable")]
@@ -85,7 +108,7 @@ namespace ekaH_server.Bot.Dialogs
                 //resultMessage.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                 resultMessage.Attachments = new List<Attachment>();
                 string ThankYouMessage;
-
+                
                 if (reservation.SpecialOccasion == Reservation.SpecialOccasionOptions.none)
                 {
                     ThankYouMessage = reservation.Name + ", thank you for joining us for dinner, we look forward to having you and your guests.";
@@ -108,7 +131,6 @@ namespace ekaH_server.Bot.Dialogs
 
                 resultMessage.Attachments.Add(thumbnailCard.ToAttachment());
                 await context.PostAsync(resultMessage);
-                await context.PostAsync(String.Format(""));
             }
             catch (FormCanceledException)
             {
@@ -125,41 +147,31 @@ namespace ekaH_server.Bot.Dialogs
             }
         }
 
-
-        //private void PromptUser(IDialogContext context)
-        //{
-        //    PromptDialog.Choice(
-        //    context,
-        //    this.OnOptionSelected,
-        //    // Present two (2) options to user
-        //    new List<string>() { RESERVE_OPTION, HELLO_OPTION },
-        //    String.Format("Hi {0}, are you looking for to reserve a table or Just say hello?", context.UserData.Get<String>("Name")), "Not a valid option", 3);
-        //}
-
-/*
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        private async Task OnViewClassCompletion(IDialogContext context, IAwaitable<ViewClass> result)
         {
-            //check to see if we already have username stored
-            //If not, we will ask for it. 
-            string userName = String.Empty;
-            var message = await result;
-            if (!context.UserData.TryGetValue<string>("Name", out userName))
+            try
             {
-                context.Call(new UserInfoDialog(), ResumeAfterUserInfoDialog);
-            }
-            else
-            {
-                PromptUser(context);
-            }
+                ViewClass classes = await result;
 
-        }
-        */
-        private async Task ResumeAfterUserInfoDialog(IDialogContext context, IAwaitable<object> result)
-        {
-            //PromptUser(context);
+                IMessageActivity message = CompletionActions.OnViewClassCompleted(context, classes);
+                await context.PostAsync(message);
+
+            }
+            catch (FormCanceledException)
+            {
+                await context.PostAsync("You canceled the transaction, ok. ");
+            }
+            catch (Exception ex)
+            {
+                var exDetail = ex;
+                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+            }
+            finally
+            {
+                context.Wait(MessageReceived);
+            }
         }
 
-        
         private async Task ResumeAfterOptionDialog(IDialogContext context, IAwaitable<object> result)
         {
             try

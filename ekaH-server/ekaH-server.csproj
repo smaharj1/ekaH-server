@@ -248,8 +248,12 @@
     <Compile Include="Bot\Dialogs\UserInfoDialog.cs" />
     <Compile Include="Bot\Dialogs\WeatherDialog.cs" />
     <Compile Include="Bot\Forms\ReservationForm.cs" />
+    <Compile Include="Bot\Forms\ViewClassForm.cs" />
+    <Compile Include="Bot\Models\CompletionActions.cs" />
     <Compile Include="Bot\Models\Joke.cs" />
     <Compile Include="Bot\Models\Reservation.cs" />
+    <Compile Include="Bot\Models\ViewClass.cs" />
+    <Compile Include="Bot\Models\Weather.cs" />
     <Compile Include="Controllers\appointmentsController.cs" />
     <Compile Include="Controllers\AssignmentController.cs" />
     <Compile Include="Controllers\authController.cs" />
