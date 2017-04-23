@@ -12,6 +12,7 @@ using ekaH_server.Bot.Forms;
 using ekaH_server.Bot.Models;
 using ekaH_server.Controllers;
 using ekaH_server.App_DBHandler;
+using ekaH_server.Models;
 
 namespace ekaH_server.Bot.Dialogs
 {
@@ -38,6 +39,27 @@ namespace ekaH_server.Bot.Dialogs
         public async Task GetWeatherReport(IDialogContext context, LuisResult result)
         {
             context.Call(new WeatherDialog(result), ResumeAfterOptionDialog);
+        }
+
+        [LuisIntent("SetAppointment")]
+        public async Task SetAppointment(IDialogContext context, LuisResult result)
+        {
+            try
+            {
+                await context.PostAsync("Alright! Let's get you started!");
+                var form = new FormDialog<BotAppointment>(
+                    new BotAppointment(result),
+                    AppointmentForm.BuildForm,
+                    FormOptions.PromptInStart
+                    );
+
+                context.Call(form, OnAppointmentCompletion);
+            }
+            catch (Exception ex)
+            {
+                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                context.Wait(MessageReceived);
+            }
         }
 
         [LuisIntent("ViewClasses")]
@@ -156,6 +178,30 @@ namespace ekaH_server.Bot.Dialogs
                 IMessageActivity message = CompletionActions.OnViewClassCompleted(context, classes);
                 await context.PostAsync(message);
 
+            }
+            catch (FormCanceledException)
+            {
+                await context.PostAsync("You canceled the transaction, ok. ");
+            }
+            catch (Exception ex)
+            {
+                var exDetail = ex;
+                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+            }
+            finally
+            {
+                context.Wait(MessageReceived);
+            }
+        }
+
+        private async Task OnAppointmentCompletion(IDialogContext context, IAwaitable<BotAppointment> result)
+        {
+            try
+            {
+                BotAppointment appointment = await result;
+
+                IMessageActivity message = CompletionActions.OnAppointmentCompleted(context, appointment);
+                await context.PostAsync(message);
             }
             catch (FormCanceledException)
             {

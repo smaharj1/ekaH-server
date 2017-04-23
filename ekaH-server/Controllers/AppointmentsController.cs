@@ -15,7 +15,7 @@ namespace ekaH_server.Controllers
 {
     public class appointmentsController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        private static ekahEntities11 db = new ekahEntities11();
 
 
         // GET: ekah/appointments/{action}/{id}
@@ -69,12 +69,11 @@ namespace ekaH_server.Controllers
 
             return Ok(appointments);
 
-
         }
 
 
         // Gets all the available two weeks appointments where the user can book.
-        private List<appointment> getTwoWeekSchedule(string email)
+        public static List<appointment> getTwoWeekSchedule(string email)
         {
             DateTime currentDate = DateTime.Now;
             DateTime futureDate = currentDate.AddDays(14);
@@ -272,19 +271,6 @@ namespace ekaH_server.Controllers
 
             return Ok(fullInfo);
 
-            /*
-            try
-            {
-                // Gets the schedule of the current week in Schedule object.
-                FullAppointmentInfo fullSchedule = AppointmentDBHandler.getFullAppointmentInfo(id);
-
-                if (fullSchedule != null) return Ok(fullSchedule);
-                else return NotFound();
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }*/
         }
 
         // GET: ekah/appointments/{action}/
@@ -296,20 +282,7 @@ namespace ekaH_server.Controllers
             List<appointment> app = db.appointments.ToList();
 
             return Ok(app);
-
-            /*
-            List<Appointment> allAppointments = new List<Appointment>();
-
-            try
-            {
-                allAppointments = AppointmentDBHandler.getAllAppointments();
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }
-
-            return Ok(allAppointments);*/
+            
         }
 
         // DELETE: ekah/appointments/{action}/{id}
@@ -325,16 +298,6 @@ namespace ekaH_server.Controllers
 
             return Ok();
 
-            /*
-            try
-            {
-                AppointmentDBHandler.deleteAppointment(id);
-                return Ok();
-            }
-            catch(Exception)
-            {
-                return InternalServerError();
-            }*/
         }
 
         // -------------------------------------------------------------------
@@ -352,19 +315,7 @@ namespace ekaH_server.Controllers
 
             return Ok(apps);
 
-            /*
-            List<Appointment> appointments;
-
-            try
-            {
-                appointments = AppointmentDBHandler.getAppointmentsByStudent(id);
-                return Ok(appointments);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return InternalServerError();
-            }*/
+            
         }
 
         // GET: ekah/appointments/{action}/{id}
@@ -385,18 +336,7 @@ namespace ekaH_server.Controllers
             List<appointment> appointments = db.appointments.Where(app => officeHourIds.Contains(app.scheduleID)).ToList();
 
             return Ok(appointments);
-
-            /*
-            try
-            {
-                allAppointments = AppointmentDBHandler.getAppointmentsByProfessorID(id, 2);
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }
-
-            return Ok(allAppointments);*/
+            
         }
 
         // Posts the schedule to the database.
