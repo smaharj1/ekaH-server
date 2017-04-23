@@ -195,15 +195,12 @@
     <Compile Include="App_DBHandler\assignment.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_DBHandler\AssignmentDB.cs" />
     <Compile Include="App_DBHandler\authentication.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DBHandler\cours.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_DBHandler\CourseDBHandler.cs" />
-    <Compile Include="App_DBHandler\AppointmentDBHandler.cs" />
     <Compile Include="App_DBHandler\ekahModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -231,16 +228,13 @@
     <Compile Include="App_DBHandler\studentcourse.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_DBHandler\StudentCourseDBHandler.cs" />
     <Compile Include="App_DBHandler\DBConnection.cs" />
-    <Compile Include="App_DBHandler\FacultyDBHandler.cs" />
     <Compile Include="App_DBHandler\student_info.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DBHandler\submission.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_DBHandler\UserAuthentication.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Bot\Dialogs\HelloDialog.cs" />
     <Compile Include="Bot\Dialogs\JokeDialog.cs" />
@@ -266,17 +260,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\DayInfo.cs" />
-    <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Hashing.cs" />
     <Compile Include="Models\Schedule.cs" />
-    <Compile Include="Models\AssignmentModel.cs" />
-    <Compile Include="Models\UserAuth\LogInInfo.cs" />
     <Compile Include="Models\UserAuth\RegisterInfo.cs" />
     <Compile Include="Models\UserModels\UserWorker.cs" />
-    <Compile Include="Models\UserModels\UserInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

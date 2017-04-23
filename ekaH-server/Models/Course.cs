@@ -12,42 +12,6 @@ namespace ekaH_server.Models
 {
     public class Course : Object
     {
-        public string CourseID { get; set; }
-        public int Year { get; set; }
-        public string Semester { get; set; }
-        public string ProfessorID { get; set; }
-        public string Days { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
-        public string CourseName { get; set; }
-        public string CourseDescription { get; set; }
-        
-
-        public static List<Course> normalizeCourses(MySqlDataReader reader)
-        {
-            List<Course> courses = new List<Course>();
-            while (reader.Read())
-            {
-                Course tempCourse = new Course();
-                tempCourse.CourseID = UserWorker.getStringSafe(reader, 0);
-                tempCourse.Year = (int)reader.GetValue(1);
-                tempCourse.Semester = reader.GetString(2);
-                tempCourse.ProfessorID = reader.GetString(3);
-                tempCourse.Days = reader.GetString(4);
-                tempCourse.StartTime = reader.GetTimeSpan(5);
-                tempCourse.EndTime = reader.GetTimeSpan(6);
-                tempCourse.CourseName = UserWorker.getStringSafe(reader, 7);
-                tempCourse.CourseDescription = UserWorker.getStringSafe(reader, 8);
-
-                courses.Add(tempCourse);
-            }
-
-            // Returns all of the courses arranged in Course object.
-            reader.Dispose();
-            return courses;
-            
-        }
-
         public static void fixCourseObject(ref cours course)
         {
             // Some of them would be strict. So, they don't need fixing like year.
@@ -77,24 +41,6 @@ namespace ekaH_server.Models
             course.courseID = uniqueID.ToString();
 
         }
-
-        public bool validateFields()
-        {
-            // Email is already validated at this point.
-            if (Year == null || Year.ToString().Length != 4) { return false; }
-
-            Semester = Semester.ToUpper();
-
-            if (Semester == null || (Semester != "F" && Semester != "S")) return false;
-
-            if (Days == null || Days.Length > 7) return false;
-
-            if (StartTime.Hours > 24 || StartTime.Minutes > 59) return false;
-            if (EndTime.Hours > 24 || EndTime.Minutes > 59) return false;
-
-            return true;
-        }
-
-
+        
     }
 }

@@ -21,16 +21,7 @@ namespace ekaH_server.Models
         public DateTime EndDate { get; set; }
         public DayInfo[] Days { get; set; }
     }
-
-    public class Appointment
-    {
-        public int AppointmentID { get; set; }
-        public int ScheduleID { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public string AttendeeID { get; set; }
-        public bool Confirmed { get; set; }
-    }
+    
 
     public class SingleSchedule
     {

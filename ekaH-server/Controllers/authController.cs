@@ -19,16 +19,10 @@ namespace ekaH_server.Controllers
         // GET: api/ekaH
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/ekaH/Get/5
-        public LogInInfo Get(int id)
-        {
-            //LogInInfo linfo = new LogInInfo("smaharj1@ramapo.edu", "asdf", true);
             return null;
         }
 
+        
         // GET: api/ekaH/person
 
         /*
