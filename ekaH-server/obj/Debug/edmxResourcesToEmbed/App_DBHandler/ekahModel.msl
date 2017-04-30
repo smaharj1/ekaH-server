@@ -128,5 +128,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="discussions">
+      <EntityTypeMapping TypeName="ekahModel.discussion">
+        <MappingFragment StoreEntitySet="discussion">
+          <ScalarProperty Name="content" ColumnName="content" />
+          <ScalarProperty Name="assignmentID" ColumnName="assignmentID" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

@@ -18,7 +18,7 @@ namespace ekaH_server.Controllers
 {
     public class CourseController : ApiController
     {
-        private static ekahEntities11 db = new ekahEntities11();
+        private ekahEntities11 db = new ekahEntities11();
 
         // GET: "ekah/courses/{cid}/{action}
         // It returns the details of a single course by the given id
@@ -142,7 +142,7 @@ namespace ekaH_server.Controllers
             {
                 db.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException ex)
             {
                 if (!courseExists(course.courseID))
                 {
@@ -177,14 +177,14 @@ namespace ekaH_server.Controllers
 
         }
 
-        public static List<cours> GetCoursesByParameters(string email, string semester, short yr)
+        public List<cours> GetCoursesByParameters(string email, string semester, short yr)
         {
             List<cours> allCoursesByFaculty = db.courses.Where(cr => cr.professorID == email && cr.semester == semester && cr.year == yr).ToList();
 
             return allCoursesByFaculty;   
         }
 
-        public static List<string> GetCoursesByParametersInString(string email, string semester, short yr)
+        public List<string> GetCoursesByParametersInString(string email, string semester, short yr)
         {
             List<cours> courses = GetCoursesByParameters(email, semester, yr);
 

@@ -15,7 +15,7 @@ namespace ekaH_server.Controllers
 {
     public class appointmentsController : ApiController
     {
-        private static ekahEntities11 db = new ekahEntities11();
+        private ekahEntities11 db = new ekahEntities11();
 
 
         // GET: ekah/appointments/{action}/{id}
@@ -73,7 +73,7 @@ namespace ekaH_server.Controllers
 
 
         // Gets all the available two weeks appointments where the user can book.
-        public static List<appointment> getTwoWeekSchedule(string email)
+        public List<appointment> getTwoWeekSchedule(string email)
         {
             DateTime currentDate = DateTime.Now;
             DateTime futureDate = currentDate.AddDays(14);

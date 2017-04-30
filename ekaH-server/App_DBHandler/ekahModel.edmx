@@ -51,6 +51,14 @@
           <Property Name="courseName" Type="varchar" MaxLength="45" />
           <Property Name="courseDescription" Type="mediumtext" />
         </EntityType>
+        <EntityType Name="discussion">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uint" Nullable="false" />
+          <Property Name="assignmentID" Type="uint" />
+          <Property Name="content" Type="longtext" />
+        </EntityType>
         <EntityType Name="member_type">
           <Key>
             <PropertyRef Name="email" />
@@ -122,6 +130,20 @@
           <Property Name="submissionDateTime" Type="datetime" Precision="0" />
           <Property Name="submissionFileName" Type="varchar" MaxLength="60" />
         </EntityType>
+        <Association Name="assignDiscuss">
+          <End Role="assignment" Type="Self.assignment" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="discussion" Type="Self.discussion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="discussion">
+              <PropertyRef Name="assignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="assignmentID">
           <End Role="assignment" Type="Self.assignment" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -249,12 +271,17 @@
           <EntitySet Name="assignment" EntityType="Self.assignment" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="authentication" EntityType="Self.authentication" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="courses" EntityType="Self.courses" Schema="ekah" store:Type="Tables" />
+          <EntitySet Name="discussion" EntityType="Self.discussion" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="member_type" EntityType="Self.member_type" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="officehours" EntityType="Self.officehours" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="professor_info" EntityType="Self.professor_info" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="student_info" EntityType="Self.student_info" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="studentcourse" EntityType="Self.studentcourse" Schema="ekah" store:Type="Tables" />
           <EntitySet Name="submission" EntityType="Self.submission" Schema="ekah" store:Type="Tables" />
+          <AssociationSet Name="assignDiscuss" Association="Self.assignDiscuss">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="discussion" EntitySet="discussion" />
+          </AssociationSet>
           <AssociationSet Name="assignmentID" Association="Self.assignmentID">
             <End Role="assignment" EntitySet="assignment" />
             <End Role="submission" EntitySet="submission" />
@@ -323,6 +350,7 @@
           <Property Name="attachments" Type="Binary" MaxLength="Max" FixedLength="false" />
           <NavigationProperty Name="submissions" Relationship="Self.assignmentID" FromRole="assignment" ToRole="submission" />
           <NavigationProperty Name="cours" Relationship="Self.courseid" FromRole="assignment" ToRole="courses" />
+          <NavigationProperty Name="discussions" Relationship="ekahModel.assignDiscuss" FromRole="assignment" ToRole="discussion" />
         </EntityType>
         <EntityType Name="authentication">
           <Key>
@@ -600,7 +628,35 @@
             <End Role="student_info" EntitySet="student_info" />
             <End Role="studentcourse" EntitySet="studentcourses" />
           </AssociationSet>
+          <EntitySet Name="discussions" EntityType="ekahModel.discussion" />
+          <AssociationSet Name="assignDiscuss" Association="ekahModel.assignDiscuss">
+            <End Role="assignment" EntitySet="assignments" />
+            <End Role="discussion" EntitySet="discussions" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="discussion">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" />
+          <Property Name="assignmentID" Type="Int64" />
+          <Property Name="content" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="assignment" Relationship="ekahModel.assignDiscuss" FromRole="discussion" ToRole="assignment" />
+        </EntityType>
+        <Association Name="assignDiscuss">
+          <End Type="ekahModel.assignment" Role="assignment" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ekahModel.discussion" Role="discussion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="discussion">
+              <PropertyRef Name="assignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -731,6 +787,15 @@
                 <ScalarProperty Name="grade" ColumnName="grade" />
                 <ScalarProperty Name="submissionContent" ColumnName="submissionContent" />
                 <ScalarProperty Name="submissionDateTime" ColumnName="submissionDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="discussions">
+            <EntityTypeMapping TypeName="ekahModel.discussion">
+              <MappingFragment StoreEntitySet="discussion">
+                <ScalarProperty Name="content" ColumnName="content" />
+                <ScalarProperty Name="assignmentID" ColumnName="assignmentID" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

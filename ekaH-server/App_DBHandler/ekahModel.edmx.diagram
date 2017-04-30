@@ -24,6 +24,8 @@
         <AssociationConnector Association="ekahModel.officeProfessor" ManuallyRouted="false" />
         <AssociationConnector Association="ekahModel.studentID" ManuallyRouted="false" />
         <AssociationConnector Association="ekahModel.withStudent" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ekahModel.discussion" Width="1.5" PointX="6" PointY="9" />
+        <AssociationConnector Association="ekahModel.assignDiscuss" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

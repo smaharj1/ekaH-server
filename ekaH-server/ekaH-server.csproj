@@ -201,6 +201,9 @@
     <Compile Include="App_DBHandler\cours.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="App_DBHandler\discussion.cs">
+      <DependentUpon>ekahModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_DBHandler\ekahModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -255,6 +258,7 @@
     <Compile Include="Controllers\authController.cs" />
     <Compile Include="Controllers\Bot\MessageController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
+    <Compile Include="Controllers\DiscussionController.cs" />
     <Compile Include="Controllers\StudentCourseController.cs" />
     <Compile Include="Controllers\facultyController.cs" />
     <Compile Include="Controllers\StudentController.cs" />

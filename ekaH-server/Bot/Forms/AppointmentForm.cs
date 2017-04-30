@@ -74,16 +74,19 @@ namespace ekaH_server.Bot.Forms
             {
                 result.IsValid = false;
                 result.Feedback = "The date must be less than 2 weeks to make an appointment";
+                return Task.FromResult(result);
             }
             else if ((DateTime) response < DateTime.Today)
             {
                 result.IsValid = false;
                 result.Feedback = "I know I am a bot but I can't time travel for you";
+                return Task.FromResult(result);
             }
-            
+
             if (TwoWeekSchedule.Count == 0)
             {
-                TwoWeekSchedule = appointmentsController.getTwoWeekSchedule(state.ProfessorEmail);
+                appointmentsController controller = new appointmentsController();
+                TwoWeekSchedule = controller.getTwoWeekSchedule(state.ProfessorEmail);
             }
 
             if (!DateExists(TwoWeekSchedule, (DateTime) response))

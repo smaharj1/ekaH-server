@@ -18,6 +18,7 @@ namespace ekaH_server.App_DBHandler
         public assignment()
         {
             this.submissions = new HashSet<submission>();
+            this.discussions = new HashSet<discussion>();
         }
     
         public long id { get; set; }
@@ -32,5 +33,7 @@ namespace ekaH_server.App_DBHandler
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<submission> submissions { get; set; }
         public virtual cours cours { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<discussion> discussions { get; set; }
     }
 }

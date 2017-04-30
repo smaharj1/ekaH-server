@@ -35,5 +35,6 @@ namespace ekaH_server.App_DBHandler
         public virtual DbSet<student_info> student_info { get; set; }
         public virtual DbSet<studentcourse> studentcourses { get; set; }
         public virtual DbSet<submission> submissions { get; set; }
+        public virtual DbSet<discussion> discussions { get; set; }
     }
 }

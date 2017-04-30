@@ -46,6 +46,14 @@
     <Property Name="courseName" Type="varchar" MaxLength="45" />
     <Property Name="courseDescription" Type="mediumtext" />
   </EntityType>
+  <EntityType Name="discussion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uint" Nullable="false" />
+    <Property Name="assignmentID" Type="uint" />
+    <Property Name="content" Type="longtext" />
+  </EntityType>
   <EntityType Name="member_type">
     <Key>
       <PropertyRef Name="email" />
@@ -117,6 +125,20 @@
     <Property Name="submissionDateTime" Type="datetime" Precision="0" />
     <Property Name="submissionFileName" Type="varchar" MaxLength="60" />
   </EntityType>
+  <Association Name="assignDiscuss">
+    <End Role="assignment" Type="Self.assignment" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="discussion" Type="Self.discussion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="assignment">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="discussion">
+        <PropertyRef Name="assignmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="assignmentID">
     <End Role="assignment" Type="Self.assignment" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -244,12 +266,17 @@
     <EntitySet Name="assignment" EntityType="Self.assignment" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="authentication" EntityType="Self.authentication" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="courses" EntityType="Self.courses" Schema="ekah" store:Type="Tables" />
+    <EntitySet Name="discussion" EntityType="Self.discussion" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="member_type" EntityType="Self.member_type" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="officehours" EntityType="Self.officehours" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="professor_info" EntityType="Self.professor_info" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="student_info" EntityType="Self.student_info" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="studentcourse" EntityType="Self.studentcourse" Schema="ekah" store:Type="Tables" />
     <EntitySet Name="submission" EntityType="Self.submission" Schema="ekah" store:Type="Tables" />
+    <AssociationSet Name="assignDiscuss" Association="Self.assignDiscuss">
+      <End Role="assignment" EntitySet="assignment" />
+      <End Role="discussion" EntitySet="discussion" />
+    </AssociationSet>
     <AssociationSet Name="assignmentID" Association="Self.assignmentID">
       <End Role="assignment" EntitySet="assignment" />
       <End Role="submission" EntitySet="submission" />

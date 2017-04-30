@@ -15,8 +15,12 @@ namespace ekaH_server.Bot.Dialogs
         
         public async Task StartAsync(IDialogContext context)
         {
+            var userName = String.Empty;
             //Greet the user
-            await context.PostAsync("Before we begin, we would like to know who we are talking to?");
+            if (!context.UserData.TryGetValue<string>("Name", out userName))
+            {
+                await context.PostAsync("Before we begin, we would like to know who we are talking to?");
+            }
             //call the respond method below
             await Respond(context);
             //call context.Wait and set the callback method

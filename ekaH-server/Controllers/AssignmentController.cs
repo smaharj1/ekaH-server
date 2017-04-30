@@ -49,8 +49,8 @@ namespace ekaH_server.Controllers
                 return StatusCode(HttpStatusCode.Conflict);
             }
 
-            db.assignments.Add(assgn);
-
+            assignment updated = db.assignments.Add(assgn);
+            
             try
             {
                 db.SaveChanges();
@@ -59,6 +59,7 @@ namespace ekaH_server.Controllers
             {
                 return InternalServerError();
             }
+            
 
             return Ok();
         }

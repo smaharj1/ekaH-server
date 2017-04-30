@@ -24,7 +24,8 @@ namespace ekaH_server.Bot.Models
                 classes.Semester = "S";
             }
 
-            List<string> courses = CourseController.GetCoursesByParametersInString(classes.ProfEmail, classes.Semester, (short)classes.Year);
+            CourseController controller = new CourseController();
+            List<string> courses = controller.GetCoursesByParametersInString(classes.ProfEmail, classes.Semester, (short)classes.Year);
             IMessageActivity message = context.MakeMessage();
 
             if (courses.Count > 0)
