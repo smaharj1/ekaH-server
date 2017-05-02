@@ -11,31 +11,45 @@ using ekaH_server.Bot.Models;
 
 namespace ekaH_server.Bot.Dialogs
 {
+    /// <summary>
+    /// This class handles the jokes intent for the user. 
+    /// If the user wants to hear the jokes, it handles the situation.
+    /// </summary>
     [Serializable]
     public class JokeDialog: IDialog<IMessageActivity>
     {
-        
-
-        public async Task StartAsync(IDialogContext context)
+        /// <summary>
+        /// This function starts the joke handling process.
+        /// </summary>
+        /// <param name="a_context">It holds the context of the user.</param>
+        /// <returns></returns>
+        public async Task StartAsync(IDialogContext a_context)
         {
-            await context.PostAsync("You called it!");
+            await a_context.PostAsync("You called it!");
 
-            string joke = GetChuckJoke(context);
+            /// Gets the chuck norris joke by making an API call.
+            string joke = GetChuckJoke(a_context);
 
-            await context.PostAsync(joke);
+            await a_context.PostAsync(joke);
 
-            context.Done<IMessageActivity>(null);
+            a_context.Done<IMessageActivity>(null);
         }
 
-        private string GetChuckJoke(IDialogContext context)
+        /// <summary>
+        /// This function gets the chuck norris joke from the web api.
+        /// </summary>
+        /// <param name="a_context">It holds the context of the user.</param>
+        /// <returns>Returns a single joke of chuck norris.</returns>
+        private string GetChuckJoke(IDialogContext a_context)
         {
+            /// It is the external URL to make call to get the joke.
             string URL = "http://api.icndb.com/jokes/";
             const string urlParameters = "random";
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(URL);
 
-            // Add an Accept header for JSON format.
+            /// Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -43,6 +57,7 @@ namespace ekaH_server.Bot.Dialogs
             {
                 var res = client.GetAsync(urlParameters).Result;
 
+                /// Returns the joke.
                 if (res.IsSuccessStatusCode)
                 {
                     Joke dataObjects = res.Content.ReadAsAsync<Joke>().Result;
@@ -54,8 +69,6 @@ namespace ekaH_server.Bot.Dialogs
             {
                 return "Chuck Norris is sleeping right now. Jokes will be later!";
             }
-
-            
         }
     }
 }

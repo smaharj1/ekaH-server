@@ -90,13 +90,13 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            db.Entry(professor).State = EntityState.Modified;
+            db.Entry(professor).State = EntityState.Modified; 
 
             try
             {
                 db.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (Exception ex)
             {
                 if (!professorExists(id))
                 {

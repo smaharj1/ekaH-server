@@ -231,7 +231,6 @@
     <Compile Include="App_DBHandler\studentcourse.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_DBHandler\DBConnection.cs" />
     <Compile Include="App_DBHandler\student_info.cs">
       <DependentUpon>ekahModel.tt</DependentUpon>
     </Compile>
@@ -245,12 +244,10 @@
     <Compile Include="Bot\Dialogs\UserInfoDialog.cs" />
     <Compile Include="Bot\Dialogs\WeatherDialog.cs" />
     <Compile Include="Bot\Forms\AppointmentForm.cs" />
-    <Compile Include="Bot\Forms\ReservationForm.cs" />
     <Compile Include="Bot\Forms\ViewClassForm.cs" />
     <Compile Include="Bot\Models\BotAppointment.cs" />
     <Compile Include="Bot\Models\CompletionActions.cs" />
     <Compile Include="Bot\Models\Joke.cs" />
-    <Compile Include="Bot\Models\Reservation.cs" />
     <Compile Include="Bot\Models\ViewClass.cs" />
     <Compile Include="Bot\Models\Weather.cs" />
     <Compile Include="Controllers\appointmentsController.cs" />

@@ -55,7 +55,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="uint" Nullable="false" />
+          <Property Name="id" Type="uint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="assignmentID" Type="uint" />
           <Property Name="content" Type="longtext" />
         </EntityType>

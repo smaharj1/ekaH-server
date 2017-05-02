@@ -16,221 +16,225 @@ using ekaH_server.Models;
 
 namespace ekaH_server.Bot.Dialogs
 {
+    /// <summary>
+    /// This class is an initial gateway to connect and handle the desired bot requests.
+    /// It is also connected with the Microsoft LUIS model which gives the desired intent
+    /// by parsing through user's sentences. Then, it sends the intent to this class based
+    /// on the model built in LUIS.
+    /// </summary>
     [Serializable]
     [LuisModel("5ffdc213-ee58-449f-8f66-194cf3a86c83", "a1c360ac2dc04fd2b266f14a57f41169")]
     public class RootDialog : LuisDialog<object>
     {
+        /// <summary>
+        /// This function handles an empty intent. It is when the bot does not contain the 
+        /// functionality that the user wants.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
         [LuisIntent("")]
         [LuisIntent("None")]
-        public async Task None(IDialogContext context, LuisResult result)
+        public async Task None(IDialogContext a_context, LuisResult a_result)
         {
-            string message = $"Sorry, I did not understand '{result.Query}'";
-            await context.PostAsync(message);
-            context.Wait(MessageReceived);
+            /// Gives a sorry message to the user saying the bot did not understand the query.
+            string message = $"Sorry, I did not understand '{a_result.Query}'";
+            await a_context.PostAsync(message);
+            a_context.Wait(MessageReceived);
         }
 
+        /// <summary>
+        /// This function tells a joke to the user if the user is feeling low or asks the bot
+        /// to tell a joke.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
         [LuisIntent("Joke")]
-        public async Task TellAJoke(IDialogContext context, LuisResult result)
+        public async Task TellAJoke(IDialogContext a_context, LuisResult a_result)
         {
-            context.Call(new JokeDialog(), ResumeAfterOptionDialog);
+            a_context.Call(new JokeDialog(), ResumeAfterOptionDialog);
         }
 
+        /// <summary>
+        /// This functions gets the weather update to the user as prompted by the user.
+        /// If the user prompts if its rainy or sunny, it handles it accordingly by
+        /// getting the information from LuisResult.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
         [LuisIntent("Weather")]
-        public async Task GetWeatherReport(IDialogContext context, LuisResult result)
+        public async Task GetWeatherReport(IDialogContext a_context, LuisResult a_result)
         {
-            context.Call(new WeatherDialog(result), ResumeAfterOptionDialog);
+            a_context.Call(new WeatherDialog(a_result), ResumeAfterOptionDialog);
         }
 
+        /// <summary>
+        /// This function sets an appointment of the user with their professor. This feature is
+        /// dependent on ekah's core application even though bot works independent for most often.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
         [LuisIntent("SetAppointment")]
-        public async Task SetAppointment(IDialogContext context, LuisResult result)
+        public async Task SetAppointment(IDialogContext a_context, LuisResult a_result)
         {
             try
             {
-                await context.PostAsync("Alright! Let's get you started!");
+                /// Initiates the form to ask required information from the user and
+                /// then sets the appointment.
+                await a_context.PostAsync("Alright! Let's get you started!");
                 var form = new FormDialog<BotAppointment>(
-                    new BotAppointment(result),
+                    new BotAppointment(a_result),
                     AppointmentForm.BuildForm,
                     FormOptions.PromptInStart
                     );
 
-                context.Call(form, OnAppointmentCompletion);
+                a_context.Call(form, OnAppointmentCompletion);
             }
             catch (Exception ex)
             {
-                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
-                context.Wait(MessageReceived);
+                await a_context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                a_context.Wait(MessageReceived);
             }
         }
 
+        /// <summary>
+        /// This function returns all the classes that the professor is teaching for the year/semester 
+        /// that the user wants to know about.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
         [LuisIntent("ViewClasses")]
-        public async Task GetClasses(IDialogContext context, LuisResult result)
+        public async Task GetClasses(IDialogContext a_context, LuisResult a_result)
         {
             try
             {
-                await context.PostAsync("Let's get you started!");
+                /// Initiates a form to get the information about the year/time user wants to 
+                /// know about.
+                await a_context.PostAsync("Let's get you started!");
                 var form = new FormDialog<ViewClass>(
                     new ViewClass(),
                     ViewClassForm.BuildForm,
                     FormOptions.PromptInStart
                     );
 
-                context.Call(form, OnViewClassCompletion);
+                a_context.Call(form, OnViewClassCompletion);
             }
             catch(Exception ex)
             {
-                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
-                context.Wait(MessageReceived);
+                await a_context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                a_context.Wait(MessageReceived);
             }
         }
 
-        [LuisIntent("ReserveATable")]
-        public async Task ReserveATable(IDialogContext context, LuisResult result)
-        {
-            try
-            {
-                await context.PostAsync("Great, lets book a table for you. You will need to provide a few details.");
-                var form = new FormDialog<Reservation>(
-                new Reservation(context.UserData.Get<String>("Name")),
-                ReservationForm.BuildForm,
-                FormOptions.PromptInStart,
-                null);
-
-                context.Call(form, this.ReservationFormComplete);
-            }
-            catch (Exception ex)
-            {
-
-                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
-                context.Wait(MessageReceived);
-            }
-        }
-
+        /// <summary>
+        /// This function is triggered when the user says hello to the bot in various ways.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
         [LuisIntent("SayHello")]
-        public async Task SayHello(IDialogContext context, LuisResult result)
+        public async Task SayHello(IDialogContext a_context, LuisResult a_result)
         {
-            context.Call(new UserInfoDialog(), this.ResumeAfterOptionDialog);
+            a_context.Call(new UserInfoDialog(), this.ResumeAfterOptionDialog);
         }
 
-        [LuisIntent("Help")]
-        public async Task Help(IDialogContext context, LuisResult result)
-        {
-            await context.PostAsync("Insert Help Dialog here");
-            context.Wait(MessageReceived);
-        }
-
-
-        private async Task ReservationFormComplete(IDialogContext context, IAwaitable<Reservation> result)
+        /// <summary>
+        /// This is a callback function when the user's request for getting the classes offered is done.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
+        private async Task OnViewClassCompletion(IDialogContext a_context, IAwaitable<ViewClass> a_result)
         {
             try
             {
-                var reservation = await result;
-                await context.PostAsync("Thanks for the using Dinner Bot.");
-                //use a card for showing their data
-                var resultMessage = context.MakeMessage();
-                //resultMessage.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                resultMessage.Attachments = new List<Attachment>();
-                string ThankYouMessage;
-                
-                if (reservation.SpecialOccasion == Reservation.SpecialOccasionOptions.none)
-                {
-                    ThankYouMessage = reservation.Name + ", thank you for joining us for dinner, we look forward to having you and your guests.";
-                }
-                else
-                {
-                    ThankYouMessage = reservation.Name + ", thank you for joining us for dinner, we look forward to having you and your guests for the " + reservation.SpecialOccasion;
-                }
-                ThumbnailCard thumbnailCard = new ThumbnailCard()
-                {
+                /// Prepares a message to be displayed.
+                ViewClass classes = await a_result;
 
-                    Title = String.Format("Dinner Reservations on {0}", reservation.ReservationDate.ToString("MM/dd/yyyy")),
-                    Subtitle = String.Format("at {1} for {0} people", reservation.NumberOfDinners, reservation.ReservationTime.ToString("hh:mm")),
-                    Text = ThankYouMessage,
-                    Images = new List<CardImage>()
-        {
-            new CardImage() { Url = "https://upload.wikimedia.org/wikipedia/en/e/ee/Unknown-person.gif" }
-        },
-                };
-
-                resultMessage.Attachments.Add(thumbnailCard.ToAttachment());
-                await context.PostAsync(resultMessage);
-            }
-            catch (FormCanceledException)
-            {
-                await context.PostAsync("You canceled the transaction, ok. ");
-            }
-            catch (Exception ex)
-            {
-                var exDetail = ex;
-                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
-            }
-            finally
-            {
-                context.Wait(MessageReceived);
-            }
-        }
-
-        private async Task OnViewClassCompletion(IDialogContext context, IAwaitable<ViewClass> result)
-        {
-            try
-            {
-                ViewClass classes = await result;
-
-                IMessageActivity message = CompletionActions.OnViewClassCompleted(context, classes);
-                await context.PostAsync(message);
+                IMessageActivity message = CompletionActions.OnViewClassCompleted(a_context, classes);
+                await a_context.PostAsync(message);
 
             }
             catch (FormCanceledException)
             {
-                await context.PostAsync("You canceled the transaction, ok. ");
+                await a_context.PostAsync("You canceled the transaction, ok. ");
             }
             catch (Exception ex)
             {
                 var exDetail = ex;
-                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                await a_context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
             }
             finally
             {
-                context.Wait(MessageReceived);
+                a_context.Wait(MessageReceived);
             }
         }
 
-        private async Task OnAppointmentCompletion(IDialogContext context, IAwaitable<BotAppointment> result)
+        /// <summary>
+        /// This is a callback function when setting an appointment is complete. It then gives the user with 
+        /// desired result.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
+        private async Task OnAppointmentCompletion(IDialogContext a_context, IAwaitable<BotAppointment> a_result)
         {
             try
             {
-                BotAppointment appointment = await result;
+                /// Prepares the message to be displayed to the user.
+                BotAppointment appointment = await a_result;
 
-                IMessageActivity message = CompletionActions.OnAppointmentCompleted(context, appointment);
-                await context.PostAsync(message);
+                IMessageActivity message = CompletionActions.OnAppointmentCompleted(a_context, appointment);
+                await a_context.PostAsync(message);
             }
             catch (FormCanceledException)
             {
-                await context.PostAsync("You canceled the transaction, ok. ");
+                await a_context.PostAsync("You canceled the transaction, ok. ");
             }
             catch (Exception ex)
             {
                 var exDetail = ex;
-                await context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
+                await a_context.PostAsync("Something really bad happened. You can try again later meanwhile I'll check what went wrong.");
             }
             finally
             {
-                context.Wait(MessageReceived);
+                a_context.Wait(MessageReceived);
             }
         }
 
-        private async Task ResumeAfterOptionDialog(IDialogContext context, IAwaitable<object> result)
+        /// <summary>
+        /// This is a general call back function when nothing needs to be done once the user's request 
+        /// is complete.
+        /// </summary>
+        /// <param name="a_context">It holds the current context of the user.</param>
+        /// <param name="a_result">It holds the LUIS result that has more information
+        /// on the intents and utterances by the user.</param>
+        /// <returns></returns>
+        private async Task ResumeAfterOptionDialog(IDialogContext a_context, IAwaitable<object> a_result)
         {
             try
             {
-                var message = await result;
+                var message = await a_result;
             }
             catch (Exception ex)
             {
-                await context.PostAsync($"Failed with message: {ex.Message}");
+                await a_context.PostAsync($"Failed with message: {ex.Message}");
             }
             finally
             {
-                context.Wait(MessageReceived);
+                a_context.Wait(MessageReceived);
             }
         }
 
