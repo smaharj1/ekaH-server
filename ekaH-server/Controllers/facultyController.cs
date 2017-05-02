@@ -13,15 +13,21 @@ namespace ekaH_server.Controllers
 {
     public class facultyController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        /// <summary>
+        /// It holds the entity for db connection
+        /// </summary>
+        private ekahEntities11 m_db = new ekahEntities11();
 
-        // GET: ekah/faculties/{id}
-        // Returns the information of the user from user info database. 
-        // Todo: Also returns the next thing in the list. Either courses or appointments.
+        /// <summary>
+        /// GET: ekah/faculties/{id}
+        /// This function returns the information of the user from user info database. 
+        /// </summary>
+        /// <param name="id">It holds the email of professor.</param>
+        /// <returns>Returns the faculty's information.</returns>
         [HttpGet]
         public IHttpActionResult Get(string id)
         {
-            professor_info professor = db.professor_info.Find(id);
+            professor_info professor = m_db.professor_info.Find(id);
 
             if (professor == null)
             {
@@ -29,75 +35,38 @@ namespace ekaH_server.Controllers
             }
 
             return Ok(professor);
-
-            /*
-            IHttpActionResult result;
-
-            bool isStudent = true; 
-            try
-            {
-                isStudent = UserAuthentication.getUserType(id);
-            }
-            catch(Exception)
-            {
-                return InternalServerError();
-            }
-
-            if (isStudent) return BadRequest();
-
-            try
-            {
-                FacultyInfo faculty = FacultyDBHandler.executeFacultyInfoQuery(id);
-
-                if (faculty == null)
-                {
-                    result = NotFound();
-                }
-                else
-                {
-                    result = Ok(faculty);
-                }
-            }
-            catch (Exception)
-            {
-                result = InternalServerError();
-            }
-                
-            
-
-            return result;*/
         }
 
-        // POST: api/faculties/{id}
-        // Posts the information updated like name and things. We don't need this currently since PUT does its work.
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT: ekah/faculties/{id}
+        /// <summary>
+        /// PUT: ekah/faculties/{id}
+        /// This function modifies the current information of the professor.
+        /// </summary>
+        /// <param name="id">It holds the email of the professor.</param>
+        /// <param name="a_professor"></param>
+        /// <returns>Returns the status of modification.</returns>
         [HttpPut]
-        public IHttpActionResult Put(string id, [FromBody] professor_info professor)
+        public IHttpActionResult Put(string id, [FromBody] professor_info a_professor)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != professor.email)
+            if (id != a_professor.email)
             {
                 return BadRequest();
             }
 
-            db.Entry(professor).State = EntityState.Modified; 
+            /// Modifies the existing value.
+            m_db.Entry(a_professor).State = EntityState.Modified; 
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch (Exception ex)
             {
-                if (!professorExists(id))
+                if (!ProfessorExists(id))
                 {
                     return NotFound();
                 }
@@ -108,43 +77,16 @@ namespace ekaH_server.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
-
-            /*
-            IHttpActionResult response;
-
-            bool isStudent = true;
-            try
-            {
-                isStudent = UserAuthentication.getUserType(id);
-            }
-            catch (Exception)
-            {
-                return InternalServerError();
-            }
-
-            if (isStudent) return BadRequest();
-
-            FacultyInfo faculty = professor;
-            faculty.Email = id;
-            bool result = FacultyDBHandler.executePutFacultyInfo(faculty);
-
-            if (result)
-            {
-                // Return true since the table has been updated. Else, return false because there has been an error.
-                response =  Ok();
-            }
-            else
-            {
-                // The error indicates that the database found an error.
-                response = InternalServerError();
-            }
-            
-            return response;*/
         }
 
-        private bool professorExists(string id)
+        /// <summary>
+        /// This function checks if the professor exists.
+        /// </summary>
+        /// <param name="a_email">It holds the email of professor.</param>
+        /// <returns></returns>
+        private bool ProfessorExists(string a_email)
         {
-            return db.professor_info.Count(e => e.email == id) > 0;
+            return m_db.professor_info.Count(e => e.email == a_email) > 0;
         }
 
 

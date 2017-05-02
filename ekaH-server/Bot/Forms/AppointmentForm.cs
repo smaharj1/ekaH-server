@@ -124,7 +124,7 @@ namespace ekaH_server.Bot.Forms
             if (m_twoWeekSchedule.Count == 0)
             {
                 appointmentsController controller = new appointmentsController();
-                m_twoWeekSchedule = controller.getTwoWeekSchedule(a_state.m_professorEmail);
+                m_twoWeekSchedule = controller.GetTwoWeekSchedule(a_state.m_professorEmail);
             }
 
             /// Checks with the professor's schedule if the date exists. 

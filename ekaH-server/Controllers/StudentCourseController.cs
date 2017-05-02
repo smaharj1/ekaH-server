@@ -11,22 +11,32 @@ using System.Web.Http;
 
 namespace ekaH_server.Controllers
 {
-    // It is a controller for handling the courses functions for students. 
-    // For example, get all the courses taken by the students, add course and drop course for students.
+    /// <summary>
+    /// It is a controller for handling the courses functions for students. 
+    /// For example, get all the courses taken by the students, add course and drop course for students.
+    /// </summary>
     public class StudentCourseController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        /// <summary>
+        /// It holds the entity for db connection
+        /// </summary>
+        private ekahEntities11 m_db = new ekahEntities11();
 
-        // GET: ekah/students/{id}/courses
-        // Returns all the courses taken by the student
+        /// <summary>
+        /// GET: ekah/students/{id}/courses
+        /// This function returns all the courses taken by the student.
+        /// </summary>
+        /// <param name="id">It holds the email of the student.</param>
+        /// <returns>Returns all the courses taken by the student.</returns>
         public IHttpActionResult Get(string id)
         {
             if (!(new EmailAddressAttribute().IsValid(id)))
             {
                 return BadRequest();
             }
-            student_info student = db.student_info.Find(id);
+            student_info student = m_db.student_info.Find(id);
 
+            /// Gets all the courses taken by the student.
             List<studentcourse> studentCour = student.studentcourses.ToList();
 
             if (studentCour == null) { return NotFound(); }
@@ -37,13 +47,18 @@ namespace ekaH_server.Controllers
                 courses.Add(sc.cours);
             }
 
+            /// Returns the courses.
             return Ok(courses);
             
         }
-              
 
-        // POST: ekah/students/{id}/courses/{cid}
-        // Adds one student to a course at a time.
+        /// <summary>
+        /// POST: ekah/students/{id}/courses/{cid}
+        /// This function adds one student to a course at a time.
+        /// </summary>
+        /// <param name="id">It holds the student id.</param>
+        /// <param name="cid">It holds the course id.</param>
+        /// <returns>Returns the status after adding.</returns>
         public IHttpActionResult Post(string id, string cid)
         {
             if (!(new EmailAddressAttribute().IsValid(id)))
@@ -56,13 +71,13 @@ namespace ekaH_server.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!courseExists(cid))
+            if (!CourseExists(cid))
             {
                 return NotFound();
             }
 
-            
-            List<studentcourse> stdCourse = db.studentcourses.Where(sc=> sc.courseID == cid && sc.studentID == id).ToList();
+            /// Gets the courses by the student to check if the student is already enrolled.
+            List<studentcourse> stdCourse = m_db.studentcourses.Where(sc=> sc.courseID == cid && sc.studentID == id).ToList();
 
             if (stdCourse.Count != 0)
             {
@@ -73,11 +88,12 @@ namespace ekaH_server.Controllers
             sCourse.courseID = cid;
             sCourse.studentID = id;
 
-            db.studentcourses.Add(sCourse);
+            /// Adds the student to the course.
+            m_db.studentcourses.Add(sCourse);
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch(Exception )
             {
@@ -88,14 +104,14 @@ namespace ekaH_server.Controllers
             
         }
 
-        // PUT: ekah/courses/{cid}/students
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: ekah/students/{id}/courses/{cid}
-        // Returns bad request if email is not valid, returns not found if course id is not found.
-        // Delete returns ok even if the student doesn't exist.
+        /// <summary>
+        /// DELETE: ekah/students/{id}/courses/{cid}
+        /// This function returns bad request if email is not valid, returns not found if course id is not found.
+        /// Delete returns ok even if the student doesn't exist.
+        /// </summary>
+        /// <param name="id">It holds the email id.</param>
+        /// <param name="cid">It holds the course id.</param>
+        /// <returns>Returns the status of deletion.</returns>
         public IHttpActionResult Delete(string id, string cid)
         {
             if (!(new EmailAddressAttribute().IsValid(id)))
@@ -103,29 +119,33 @@ namespace ekaH_server.Controllers
                 return BadRequest();
             }
 
-            if (!courseExists(cid))
+            if (!CourseExists(cid))
             {
                 return NotFound();
             }
 
-            List<studentcourse> found = db.studentcourses.Where(sc => sc.courseID == cid && sc.studentID == id).ToList();
+            List<studentcourse> found = m_db.studentcourses.Where(sc => sc.courseID == cid && sc.studentID == id).ToList();
 
             if (found.Count == 0 )
             {
                 return NotFound();
             }
 
-            db.studentcourses.Remove(found[0]);
-            db.SaveChanges();
+            /// Removes the student from the course.
+            m_db.studentcourses.Remove(found[0]);
+            m_db.SaveChanges();
 
             return Ok();
-            
         }
 
-        private bool courseExists(string cid)
+        /// <summary>
+        /// This function checks if the course exists in the database.
+        /// </summary>
+        /// <param name="a_cid">It represents the course id.</param>
+        /// <returns>Returns true if course exists.</returns>
+        private bool CourseExists(string a_cid)
         {
-            return db.courses.Count(e => e.courseID == cid) > 0;
-
+            return m_db.courses.Count(e => e.courseID == a_cid) > 0;
         }
     }
 }

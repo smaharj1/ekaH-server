@@ -15,17 +15,27 @@ using System.Data.Entity;
 
 namespace ekaH_server.Controllers
 {
+    /// <summary>
+    /// This class handles all the modification/creation functionalities of a course.
+    /// </summary>
     public class CourseController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        /// <summary>
+        /// It holds the entity for the databse.
+        /// </summary>
+        private ekahEntities11 m_db = new ekahEntities11();
 
-        // GET: "ekah/courses/{cid}/{action}
-        // It returns the details of a single course by the given id
+        /// <summary>
+        /// GET: "ekah/courses/{cid}/{action}
+        /// This function returns the details of a single course by the given id
+        /// </summary>
+        /// <param name="cid">It holds the course id.</param>
+        /// <returns>Returns the course with the given id.</returns>
         [HttpGet]
         [ActionName("single")]
         public IHttpActionResult Get(string cid)
         {
-            cours course = db.courses.Find(cid);
+            cours course = m_db.courses.Find(cid);
 
             if (course == null)
             {
@@ -33,17 +43,20 @@ namespace ekaH_server.Controllers
             }
 
             return Ok(course);
-            
         }
 
 
-        // GET: "Ekah/courses/{cid}/{action}
-        // Returns the list of students enrolled in a course.
+        /// <summary>
+        /// GET: "Ekah/courses/{cid}/{action}
+        /// This function returns the list of students enrolled in a course.
+        /// </summary>
+        /// <param name="cid">It holds the course id.</param>
+        /// <returns>Returns all the students enrolled in the course.</returns>
         [HttpGet]
         [ActionName("students")]
         public IHttpActionResult GetStudentsInCourse(string cid)
         {
-            List<studentcourse> allRecords = db.studentcourses.Where(e => e.courseID == cid).ToList();
+            List<studentcourse> allRecords = m_db.studentcourses.Where(e => e.courseID == cid).ToList();
             
             if (allRecords.Count == 0)
             {
@@ -51,25 +64,26 @@ namespace ekaH_server.Controllers
             }
 
             return Ok(allRecords);
-
-            
-
         }
 
-        // GET: "ekah/courses/{cid}/{action}
-        // Including one extra functionality for faculty. Get all the courses 
-        // that the faculty teaches.
+        /// <summary>
+        /// GET: "ekah/courses/{cid}/{action}
+        /// This function gets all the courses 
+        /// that the faculty teaches.
+        /// </summary>
+        /// <param name="cid">It holds the faculty's email address.</param>
+        /// <returns>Returns all the courses taught by the faculty.</returns>
         [HttpGet]
         [ActionName("faculty")]
         public IHttpActionResult GetCourseTaughtByFaculty(string cid)
         {
-            // cid actually refers to the faculty email address in this scenario.
+            // Cid actually refers to the faculty email address in this scenario.
             if (!(new EmailAddressAttribute().IsValid(cid)))
             {
                 return BadRequest();
             }
 
-            List<cours> allCoursesByFaculty = db.courses.Where(entry => entry.professorID == cid).ToList();
+            List<cours> allCoursesByFaculty = m_db.courses.Where(entry => entry.professorID == cid).ToList();
 
             if (allCoursesByFaculty == null)
             {
@@ -80,11 +94,15 @@ namespace ekaH_server.Controllers
             
         }
 
-        // POST: "ekah/courses/{id}
-        // This methods helps create a course for certain professor.
-        public IHttpActionResult Post([FromBody]cours course)
+        /// <summary>
+        /// POST: "ekah/courses/{id}
+        /// This methods helps create a course for certain professor.
+        /// </summary>
+        /// <param name="a_course">It holds the course.</param>
+        /// <returns>Returns the result of posting the course.</returns>
+        public IHttpActionResult Post([FromBody]cours a_course)
         {
-            if (!(new EmailAddressAttribute().IsValid(course.professorID)))
+            if (!(new EmailAddressAttribute().IsValid(a_course.professorID)))
             {
                 return BadRequest();
             }
@@ -94,17 +112,19 @@ namespace ekaH_server.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (courseExists(course.courseID))
+            /// Checks if the course already exists.
+            if (CourseExists(a_course.courseID))
             {
                 return StatusCode(HttpStatusCode.Conflict);
             }
 
-            Course.FixCourseObject(ref course);
-            db.courses.Add(course);
+            /// Fixes the course object before posting it.
+            Course.FixCourseObject(ref a_course);
+            m_db.courses.Add(a_course);
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -115,13 +135,17 @@ namespace ekaH_server.Controllers
             
         }
 
-        // PUT: "ekah/courses/{id}
-        // Helps change the information of the faculty for the courses they have already added.
+        // 
+        /// <summary>
+        /// PUT: "ekah/courses/{id}
+        /// This function helps change the information of the faculty for the courses they have already added.
+        /// </summary>
+        /// <param name="a_course">It holds the course.</param>
+        /// <returns>Returns the modification value.</returns>
         [HttpPut]
-        public IHttpActionResult Put([FromBody]cours course)
+        public IHttpActionResult Put([FromBody]cours a_course)
         {
-            // TODO: Modify is currently under review since primary key is course ID that we generated.
-            if (!(new EmailAddressAttribute().IsValid(course.professorID)))
+            if (!(new EmailAddressAttribute().IsValid(a_course.professorID)))
             {
                 return BadRequest();
             }
@@ -131,19 +155,20 @@ namespace ekaH_server.Controllers
                 return BadRequest(ModelState);
             }
 
-            this.Delete(course.courseID);
-            Course.FixCourseObject(ref course);
-            // The id for this course is generated through an algorithm. So, it cannot be directly modified.
-            //db.Entry(course).State = EntityState.Modified;
-            db.courses.Add(course);
+            this.Delete(a_course.courseID);
+            Course.FixCourseObject(ref a_course);
+
+            /// The id for this course is generated through an algorithm. 
+            /// So, it cannot be directly modified.
+            m_db.courses.Add(a_course);
             
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch (DbUpdateException ex)
             {
-                if (!courseExists(course.courseID))
+                if (!CourseExists(a_course.courseID))
                 {
                     return NotFound();
                 }
@@ -156,39 +181,59 @@ namespace ekaH_server.Controllers
             return Ok();
                         
         }
-
-        // DELETE: ekah/courses/{cid}
-        // It deletes the course from the database. 
-        // It does need two parameters for ids since delete does not take in any body while following strict http protocol.
+        
+        /// <summary>
+        /// DELETE: ekah/courses/{cid}
+        /// It deletes the course from the database. 
+        /// It does need two parameters for ids since delete does not take in any body while following strict http protocol.
+        /// </summary>
+        /// <param name="cid">It holds the course id.</param>
+        /// <returns>Returns the result after deletion.</returns>
         public IHttpActionResult Delete(string cid)
         {
-            if (!courseExists(cid))
+            if (!CourseExists(cid))
             {
                 return NotFound();
             }
 
-            cours course = db.courses.Find(cid);
-            db.courses.Remove(course);
+            cours course = m_db.courses.Find(cid);
+            m_db.courses.Remove(course);
 
-            db.SaveChanges();
+            m_db.SaveChanges();
 
             return Ok();
-
         }
 
-        public List<cours> GetCoursesByParameters(string email, string semester, short yr)
+        /// <summary>
+        /// This function gets all the courses according to the given parameters like
+        /// email, semester and eyar.
+        /// </summary>
+        /// <param name="a_email">It holds the email.</param>
+        /// <param name="a_semester">It holds the semester to look for.</param>
+        /// <param name="a_year">It holds the year to look for.</param>
+        /// <returns>Returns the list of courses.</returns>
+        public List<cours> GetCoursesByParameters(string a_email, string a_semester, short a_year)
         {
-            List<cours> allCoursesByFaculty = db.courses.Where(cr => cr.professorID == email && cr.semester == semester && cr.year == yr).ToList();
+            List<cours> allCoursesByFaculty = m_db.courses.Where(cr => cr.professorID == a_email && cr.semester == a_semester && cr.year == a_year).ToList();
 
             return allCoursesByFaculty;   
         }
 
-        public List<string> GetCoursesByParametersInString(string email, string semester, short yr)
+        /// <summary>
+        /// This function returns the string representation of courses in the database.
+        /// </summary>
+        /// <param name="a_email">It holds professor's email.</param>
+        /// <param name="a_semester">It holds semester value.</param>
+        /// <param name="a_year">It holds the year value.</param>
+        /// <returns>Returns the list of strings of course that are user friendly.</returns>
+        public List<string> GetCoursesByParametersInString(string a_email, string a_semester, short a_year)
         {
-            List<cours> courses = GetCoursesByParameters(email, semester, yr);
+            /// Gets the list of courses.
+            List<cours> courses = GetCoursesByParameters(a_email, a_semester, a_year);
 
             List<string> result = new List<string>();
 
+            /// Parses the course information to user readable format in string.
             foreach(cours course in courses)
             {
                 DateTime start = DateTime.Today + course.startTime;
@@ -199,9 +244,14 @@ namespace ekaH_server.Controllers
             return result;
         }
 
-        private bool courseExists(string cid)
+        /// <summary>
+        /// This function checks if the course exists.
+        /// </summary>
+        /// <param name="a_cid">It holds the course id.</param>
+        /// <returns>Returns true if the course exists.</returns>
+        private bool CourseExists(string a_cid)
         {
-            return db.courses.Count(e => e.courseID == cid) > 0;
+            return m_db.courses.Count(e => e.courseID == a_cid) > 0;
 
         }
     }

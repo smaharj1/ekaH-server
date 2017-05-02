@@ -22,26 +22,25 @@ namespace ekaH_server.Controllers
             return null;
         }
 
-        
-        // GET: api/ekaH/person
-
-        /*
-         * POST: api/ekaH/login
-         * It handles if the user tries to log in. If it is true, it should return true. Else,
-         * return the error message.
-         * */
+        /// <summary>
+        /// POST: api/ekaH/login
+        /// This function handles if the user tries to log in. If it is true, it should return true. Else,
+        /// return the error message.
+        /// </summary>
+        /// <param name="a_providedInfo">It holds the information provided by the user.</param>
+        /// <returns>Returns if the login information provided is correct.</returns>
         [ActionName("login")]
-        public IHttpActionResult Post([FromBody] authentication providedInfo)
+        public IHttpActionResult Post([FromBody] authentication a_providedInfo)
         {
-            authentication result = db.authentications.Find(providedInfo.email);
+            authentication result = db.authentications.Find(a_providedInfo.email);
 
             if (result != null)
             {
-               
-                if (Hashing.ValidatePassword(providedInfo.pswd, result.pswd))
+                /// Validates the hashed password.
+                if (Hashing.ValidatePassword(a_providedInfo.pswd, result.pswd))
                 {
-                    // If it is student, the data should be in student profile as well.
-                    if (providedInfo.member_type == result.member_type) return Ok();
+                    /// If it is student, the data should be in student profile as well.
+                    if (a_providedInfo.member_type == result.member_type) return Ok();
                     else return NotFound();
                 }
                 else
@@ -52,50 +51,57 @@ namespace ekaH_server.Controllers
             }
 
             return NotFound();
-
-            
         }
 
+        /// <summary>
+        /// This function registers the user to the database for the application.
+        /// </summary>
+        /// <param name="a_providedInfo">It holds the information provided by the user.</param>
+        /// <returns>Returns ok if the user is registered.</returns>
         [HttpPost]
         [ActionName("register")]
-        public IHttpActionResult registerUser([FromBody] RegisterInfo providedInfo)
+        public IHttpActionResult registerUser([FromBody] RegisterInfo a_providedInfo)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            bool isStudent = providedInfo.isStudent;
+            bool isStudent = a_providedInfo.isStudent;
 
-            if (userExists(providedInfo.userEmail))
+            /// Checks if the user already exists in the database.
+            if (userExists(a_providedInfo.userEmail))
             {
                 return Conflict();
             }
+
+            /// Hashes the password.
             authentication authTemp = new authentication();
-            authTemp.email = providedInfo.userEmail;
-            authTemp.member_type = (sbyte)(providedInfo.isStudent ? 1 : 0);
+            authTemp.email = a_providedInfo.userEmail;
+            authTemp.member_type = (sbyte)(a_providedInfo.isStudent ? 1 : 0);
             
-            authTemp.pswd = Hashing.HashPassword(providedInfo.pswd);
+            authTemp.pswd = Hashing.HashPassword(a_providedInfo.pswd);
 
             db.authentications.Add(authTemp);
             
+            /// Stores the information in the designated table for students/faculty.
             if (isStudent)
             {
                 student_info student = new student_info();
-                student.firstName = providedInfo.firstName;
-                student.lastName = providedInfo.lastName;
-                student.email = providedInfo.userEmail;
-                student.graduationYear = int.Parse(providedInfo.extraInfo);
+                student.firstName = a_providedInfo.firstName;
+                student.lastName = a_providedInfo.lastName;
+                student.email = a_providedInfo.userEmail;
+                student.graduationYear = int.Parse(a_providedInfo.extraInfo);
 
                 db.student_info.Add(student);
             }
             else
             {
                 professor_info professor = new professor_info();
-                professor.firstName = providedInfo.firstName;
-                professor.lastName = providedInfo.lastName;
-                professor.email = providedInfo.userEmail;
-                professor.department = providedInfo.extraInfo;
+                professor.firstName = a_providedInfo.firstName;
+                professor.lastName = a_providedInfo.lastName;
+                professor.email = a_providedInfo.userEmail;
+                professor.department = a_providedInfo.extraInfo;
                 db.professor_info.Add(professor);
             }
             
@@ -111,19 +117,14 @@ namespace ekaH_server.Controllers
             return Ok();
         }
 
-        // PUT: api/ekaH/5
-        public void Put(int id, [FromBody]string value)
+        /// <summary>
+        /// This function checks if the user exists.
+        /// </summary>
+        /// <param name="a_id">It holds the id of the user.</param>
+        /// <returns>Returns true if the user exists.</returns>
+        private bool userExists(string a_id)
         {
-        }
-
-        // DELETE: api/ekaH/5
-        public void Delete(int id)
-        {
-        }
-
-        private bool userExists(string id)
-        {
-            return db.authentications.Count(e => e.email == id) > 0;
+            return db.authentications.Count(e => e.email == a_id) > 0;
         }
     }
 }

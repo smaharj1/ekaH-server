@@ -13,23 +13,35 @@ using System.Web.Http;
 
 namespace ekaH_server.Controllers
 {
+    /// <summary>
+    /// This class handles all the functionalities of modifying/creating appointments.
+    /// </summary>
     public class appointmentsController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        /// <summary>
+        /// It holds the entity for the database connection.
+        /// </summary>
+        private ekahEntities11 m_db = new ekahEntities11();
 
 
-        // GET: ekah/appointments/{action}/{id}
-        // action: facultySchedule, id = Optional
-        // Returns the weekly schedule of a professor mentioned in id.
+        /// <summary>
+        /// GET: ekah/appointments/{action}/{id}
+        /// action: facultySchedule, id = Optional
+        /// This function returns the weekly schedule fo a professor mentioned in id.
+        /// </summary>
+        /// <param name="id">It holds the email id of the professor.</param>
+        /// <returns>Returns the weekly schedule of a professor mentioned in id.</returns>
         [HttpGet]
         [ActionName("facultySchedule")]
         public IHttpActionResult GetSchedule(string id)
         {
+            /// Initializes the dates to find the schedule for.
             Schedule schedule = new Schedule();
             DateTime currentDate = DateTime.Now;
             DateTime futureDate = currentDate.AddDays(7);
 
-            List<officehour> officehours = db.officehours.Where(oh => oh.startDTime <= currentDate
+            /// Gets all the office hours by the professor for a week.
+            List<officehour> officehours = m_db.officehours.Where(oh => oh.startDTime <= currentDate
                 && oh.endDTime <= futureDate && oh.professorID == id).ToList();
 
             schedule.StartDate = currentDate;
@@ -37,6 +49,7 @@ namespace ekaH_server.Controllers
             schedule.ProfessorID = id;
             List<DayInfo> days = new List<DayInfo>();
 
+            /// Parses the office hours into the days.
             foreach( officehour oneEntry in officehours)
             {
                 DayInfo tempDay = new DayInfo();
@@ -56,39 +69,46 @@ namespace ekaH_server.Controllers
 
         }
 
-        
 
-        // GET: ekah/appointments/{action}/{id}
-        // action: appointment, id = Optional
-        // Returns all the available appointment times information of a professor mentioned in id.
+        /// <summary>
+        /// GET: ekah/appointments/{action}/{id}
+        /// action: appointment, id = Optional
+        /// It returns all the available appointment times information of a professor mentioned in id.
+        /// </summary>
+        /// <param name="id">It holds the professor's email id.</param>
+        /// <returns>Returns all the available appointment times information of a professor mentioned in id.</returns>
         [HttpGet]
         [ActionName("schedules")]
         public IHttpActionResult GetSchedules(string id)
         {
-            List<appointment> appointments = getTwoWeekSchedule(id);
+            List<appointment> appointments = GetTwoWeekSchedule(id);
 
             return Ok(appointments);
-
         }
 
-
-        // Gets all the available two weeks appointments where the user can book.
-        public List<appointment> getTwoWeekSchedule(string email)
+        /// <summary>
+        /// This function returns all the available appointments for the next two weeks.
+        /// </summary>
+        /// <param name="a_email">It holds the email of the professor.</param>
+        /// <returns>Returns the available appointments for next two weeks.</returns>
+        public List<appointment> GetTwoWeekSchedule(string a_email)
         {
             DateTime currentDate = DateTime.Now;
             DateTime futureDate = currentDate.AddDays(14);
 
-            List<officehour> officeHours = db.officehours.Where(oh => oh.startDTime >= currentDate && 
-                oh.startDTime <= futureDate && oh.professorID == email).ToList();
+            /// Gets all the office hours for 2 weeks.
+            List<officehour> officeHours = m_db.officehours.Where(oh => oh.startDTime >= currentDate && 
+                oh.startDTime <= futureDate && oh.professorID == a_email).ToList();
 
             List<appointment> generatedApps = new List<appointment>();
             List<int> scheduleIDs = new List<int>();
 
+            /// Goes through the office hours and parses it into appointments of 30 minute intervals.
             foreach (officehour singleEntry in officeHours)
             {
                 scheduleIDs.Add(singleEntry.id);
                 SingleSchedule sch = new SingleSchedule();
-                sch.ProfessorID = email;
+                sch.ProfessorID = a_email;
                 sch.ScheduleID = singleEntry.id;
                 sch.StartDTime = singleEntry.startDTime;
                 sch.EndDTime = singleEntry.endDTime;
@@ -96,10 +116,11 @@ namespace ekaH_server.Controllers
                 generatedApps.AddRange(sch.divideToAppointments());
             }
 
-            List<appointment> reservedApps = db.appointments.Where(app => scheduleIDs.Contains(app.scheduleID) ).ToList();
+            List<appointment> reservedApps = m_db.appointments.Where(app => scheduleIDs.Contains(app.scheduleID) ).ToList();
             
             List<appointment> result = new List<appointment>();
 
+            /// Separates the reserved appointment times so that it is not sent.
             foreach (appointment apps in generatedApps)
             {
                 bool contains = false;
@@ -119,50 +140,48 @@ namespace ekaH_server.Controllers
 
             return result;
         }
-        
 
-        // POST: ekah/appointments/{action}/{id}
-        // action: schedule
-        // Posts the schedule of a given professor for the given times
+
+        /// <summary>
+        /// POST: ekah/appointments/{action}/{id}
+        /// action: schedule
+        /// This function posts the schedule of a given professor for the given times
+        /// </summary>
+        /// <param name="a_schedule">It holds the schedule to be posted.</param>
+        /// <returns>Returns the result of posting.</returns>
         [HttpPost]
         [ActionName("schedule")]
-        public IHttpActionResult PostSchedule([FromBody] Schedule schedule)
+        public IHttpActionResult PostSchedule([FromBody] Schedule a_schedule)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return postScheduleToDB(schedule);
-            
+            return PostScheduleToDB(a_schedule);
         }
 
-
-        // PUT: api/Appointment/5
-        // TODO: Do it in later times.
-        [HttpPut]
-        [ActionName("schedule")]
-        public void ModifySchedule([FromBody]Schedule schedule)
-        {
-        }
-
-        // DELETE: ekah/appointments/{action}/{id}
+        /// <summary>
+        /// This function deletes the schedule from the database.
+        /// </summary>
+        /// <param name="id">It holds the schedule ID.</param>
+        /// <returns>Returns the result of deletion.</returns>
         [HttpDelete]
         [ActionName("schedule")]
         public IHttpActionResult DeleteSchedule(int id)
         {
-            officehour officeHour = db.officehours.Find(id);
+            officehour officeHour = m_db.officehours.Find(id);
 
             if (officeHour == null)
             {
                 return NotFound();
             }
 
-            db.officehours.Remove(officeHour);
-            db.SaveChanges();
+            /// Removes it from the database.
+            m_db.officehours.Remove(officeHour);
+            m_db.SaveChanges();
 
             return Ok();
-            
         }
 
 
@@ -170,27 +189,33 @@ namespace ekaH_server.Controllers
         // --------------- APPOINTMENT PART-----------------------------------
         // -------------------------------------------------------------------
 
-        // POST: ekah/appointments/{action}/{id}
-        // Action: app
+        /// <summary>
+        /// POST: ekah/appointments/{action}/{id}
+        /// Action: app
+        /// This function adds an appointment to the database.
+        /// </summary>
+        /// <param name="a_appointment">It holds the appointment to be added.</param>
+        /// <returns>Returns the result of addition.</returns>
         [HttpPost]
         [ActionName("app")]
-        public IHttpActionResult AddAppointment([FromBody]appointment appointment)
+        public IHttpActionResult AddAppointment([FromBody]appointment a_appointment)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (appointmentExists(appointment))
+            /// Checks if appointment already exists.
+            if (AppointmentExists(a_appointment))
             {
                 return Conflict();
             }
 
-            db.appointments.Add(appointment);
+            m_db.appointments.Add(a_appointment);
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch(Exception)
             {
@@ -201,13 +226,17 @@ namespace ekaH_server.Controllers
 
         }
 
-        
-
-        // POST: ekah/appointments/{action}/{id}
-        // Action: app
+        /// <summary>
+        /// POST: ekah/appointments/{action}/{id}
+        /// Action: app
+        /// This function modifies the current appointment.
+        /// </summary>
+        /// <param name="id">It holds the id of the appointment.</param>
+        /// <param name="a_appointment">It holds the appointment.</param>
+        /// <returns>Returns the result of modification.</returns>
         [HttpPut]
         [ActionName("app")]
-        public IHttpActionResult ModifyAppointment(int id, [FromBody]appointment appointment)
+        public IHttpActionResult ModifyAppointment(int id, [FromBody]appointment a_appointment)
         {
 
             if (!ModelState.IsValid)
@@ -215,21 +244,22 @@ namespace ekaH_server.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != appointment.id)
+            if (id != a_appointment.id)
             {
                 return BadRequest();
             }
 
-            if (!appointmentExists(id))
+            /// Checks if appointment exists. For modification, appointment needs to exist.
+            if (!AppointmentExists(id))
             {
                 return NotFound();
             }
 
-            db.Entry(appointment).State = EntityState.Modified;
+            m_db.Entry(a_appointment).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -237,27 +267,31 @@ namespace ekaH_server.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
-
-           
         }
 
-        // GET: ekah/appointments/{action}/{id}
-        // action: schedule, id = Optional
-        // Returns the full schedule (Schedule and professor info)
+        /// <summary>
+        /// GET: ekah/appointments/{action}/{id}
+        /// action: schedule, id = Optional
+        /// This function returns the full schedule (Schedule and professor info)
+        /// </summary>
+        /// <param name="id">It holds the id.</param>
+        /// <returns>Returns the full schedule information.</returns>
         [HttpGet]
         [ActionName("appFull")]
         public IHttpActionResult GetFullInfo(int id)
         {
-            appointment app = db.appointments.Find(id);
+            appointment app = m_db.appointments.Find(id);
 
             if (app == null)
             {
                 return NotFound();
             }
+
+            /// Gets the student's and professor's information.
             student_info student = app.student_info;
             officehour oHour = app.officehour;
 
-            professor_info professor = db.professor_info.Find(oHour.professor_info.email);
+            professor_info professor = m_db.professor_info.Find(oHour.professor_info.email);
 
             FullAppointmentInfo fullInfo = new FullAppointmentInfo();
             fullInfo.Appointment= app;
@@ -273,28 +307,35 @@ namespace ekaH_server.Controllers
 
         }
 
-        // GET: ekah/appointments/{action}/
-        // Action: app. This gets all the appointments in the database. For admin purposes.
+        /// <summary>
+        /// GET: ekah/appointments/{action}/
+        /// Action: app. This gets all the appointments in the database. For admin purposes.
+        /// </summary>
+        /// <returns>Returns all the appointments.</returns>
         [HttpGet]
         [ActionName("app")]
         public IHttpActionResult GetAllAppointments()
         {
-            List<appointment> app = db.appointments.ToList();
+            List<appointment> app = m_db.appointments.ToList();
 
             return Ok(app);
             
         }
 
-        // DELETE: ekah/appointments/{action}/{id}
-        // Action: app. Deletes the appointment with the given ID
+        /// <summary>
+        /// DELETE: ekah/appointments/{action}/{id}
+        /// Action: app. Deletes the appointment with the given ID
+        /// </summary>
+        /// <param name="id">It holds the appointment id.</param>
+        /// <returns>Returns the result after deletion.</returns>
         [HttpDelete]
         [ActionName("app")]
         public IHttpActionResult DeleteAppointment(int id)
         {
-            appointment app = db.appointments.Find(id);
+            appointment app = m_db.appointments.Find(id);
 
-            db.appointments.Remove(app);
-            db.SaveChanges();
+            m_db.appointments.Remove(app);
+            m_db.SaveChanges();
 
             return Ok();
 
@@ -304,49 +345,60 @@ namespace ekaH_server.Controllers
         // --------------- STUDENT/FACULTY APPOINTMENT PART---------------------------
         // -------------------------------------------------------------------
 
-        // GET: ekah/appointments/{action}/{id}
-        // Action: students. Gets all the appointments currently held by a student.
-        // id represents the email address of a student
+        /// <summary>
+        /// GET: ekah/appointments/{action}/{id}
+        /// Action: students. Gets all the appointments currently held by a student.
+        /// id represents the email address of a student
+        /// </summary>
+        /// <param name="id"> It holds the email address of the student.</param>
+        /// <returns>Returns all the existing student appointments.</returns>
         [HttpGet]
         [ActionName("students")]
         public IHttpActionResult GetStudentAppointments(string id)
         {
-            List<appointment> apps = db.appointments.Where(appointment => appointment.attendeeID == id).ToList();
+            List<appointment> apps = m_db.appointments.Where(appointment => appointment.attendeeID == id).ToList();
 
             return Ok(apps);
-
-            
         }
 
-        // GET: ekah/appointments/{action}/{id}
-        // Action: app. Default GET accepts id as EMAIL of professor
+        /// <summary>
+        /// GET: ekah/appointments/{action}/{id}
+        /// Action: app. Default GET accepts id as EMAIL of professor
+        /// </summary>
+        /// <param name="id">It holds the email address of professor.</param>
+        /// <returns>Returns all the appointments of the professor.</returns>
         [HttpGet]
         [ActionName("faculties")]
         public IHttpActionResult GetAppointments(string id)
         {
+            /// Gets all the appointments for next 2 weeks.
             DateTime currentDate = DateTime.Now;
             DateTime futureDate = currentDate.AddDays(14);
-            List<officehour> officeHours = db.officehours.Where(oh => oh.startDTime >= currentDate && oh.startDTime <= futureDate && oh.professorID == id).ToList();
+            List<officehour> officeHours = m_db.officehours.Where(oh => oh.startDTime >= currentDate && oh.startDTime <= futureDate && oh.professorID == id).ToList();
             List<int> officeHourIds = new List<int>();
             foreach(officehour temp in officeHours)
             {
                 officeHourIds.Add(temp.id);
             }
 
-            List<appointment> appointments = db.appointments.Where(app => officeHourIds.Contains(app.scheduleID)).ToList();
+            List<appointment> appointments = m_db.appointments.Where(app => officeHourIds.Contains(app.scheduleID)).ToList();
 
             return Ok(appointments);
             
         }
 
         // Posts the schedule to the database.
-        public IHttpActionResult postScheduleToDB(Schedule schedule)
+        /// <summary>
+        /// This function posts the schedule to the database.
+        /// </summary>
+        /// <param name="a_schedule">It holds the schedule to be posted.</param>
+        /// <returns>Returns the result after posting.</returns>
+        public IHttpActionResult PostScheduleToDB([FromBody] Schedule a_schedule)
         {
-            string requestQuery = "";
-
-            for (DateTime tempDate = schedule.StartDate; tempDate < schedule.EndDate; tempDate = tempDate.AddDays(1))
+            /// Adds the schedule in the day by day format that represents a single time frame for an entry.
+            for (DateTime tempDate = a_schedule.StartDate; tempDate < a_schedule.EndDate; tempDate = tempDate.AddDays(1))
             {
-                foreach (DayInfo singleDay in schedule.Days)
+                foreach (DayInfo singleDay in a_schedule.Days)
                 {
                     if (tempDate.DayOfWeek == singleDay.Day)
                     {
@@ -357,18 +409,17 @@ namespace ekaH_server.Controllers
                         endDTime = endDTime.Date + singleDay.endTime;
 
                         officehour single = new officehour();
-                        single.professorID = schedule.ProfessorID;
+                        single.professorID = a_schedule.ProfessorID;
                         single.startDTime = startDTime;
                         single.endDTime = endDTime;
 
-                        db.officehours.Add(single);
+                        m_db.officehours.Add(single);
                     }
                 }
             }
-
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch (Exception)
             {
@@ -376,20 +427,30 @@ namespace ekaH_server.Controllers
             }
 
             return Ok();
-
-
         }
 
-        private bool appointmentExists(appointment app)
+        /// <summary>
+        /// This function checks if the appointment exists in the database.
+        /// </summary>
+        /// <param name="a_app">It holds if the appointment exists.</param>
+        /// <returns>Returns true if appointment exists.</returns>
+        private bool AppointmentExists(appointment a_app)
         {
-            bool isConfirmed = Convert.ToBoolean(app.confirmed);
-            return db.appointments.Count(a => a.scheduleID == app.scheduleID &&
-            a.startTime == app.startTime && isConfirmed == true) != 0;
+            /// Checks if the existing appointment is already confirmed. 
+            /// If it is confirmed, then only appointment is said to exist.
+            bool isConfirmed = Convert.ToBoolean(a_app.confirmed);
+            return m_db.appointments.Count(a => a.scheduleID == a_app.scheduleID &&
+            a.startTime == a_app.startTime && isConfirmed == true) != 0;
         }
 
-        private bool appointmentExists(int id)
+        /// <summary>
+        /// This function checks if the appointment exists given the appointment id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool AppointmentExists(int id)
         {
-            return db.appointments.Count(app => app.id == id) > 0;
+            return m_db.appointments.Count(app => app.id == id) > 0;
         }
 
     }

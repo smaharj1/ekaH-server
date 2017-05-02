@@ -12,13 +12,20 @@ namespace ekaH_server.Controllers
 {
     public class StudentController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        /// <summary>
+        /// It holds the entity for db connection
+        /// </summary>
+        private ekahEntities11 m_db = new ekahEntities11();
 
-        // GET: api/Student/{id}
-        // Returns the studentinfo object
+        /// <summary>
+        /// GET: api/Student/{id}
+        /// This function returns the studentinfo object.
+        /// </summary>
+        /// <param name="id">It holds student's email.</param>
+        /// <returns>Returns the information of student.</returns>
         public IHttpActionResult Get(string id)
         {
-            student_info student = db.student_info.Find(id);
+            student_info student = m_db.student_info.Find(id);
 
             if (student == null)
             {
@@ -28,35 +35,35 @@ namespace ekaH_server.Controllers
             return Ok(student);
         }
 
-        // POST: api/Student
-        // Since we already will have the students registered, we won't need post request here.
-        // This is handled by PUT.
-        public void Post([FromBody]string value)
-        {
-        }
-
         // PUT: api/Student/email@email.com
-        public IHttpActionResult Put(string id, [FromBody]student_info student)
+        /// <summary>
+        /// This function modifies the current user information.
+        /// </summary>
+        /// <param name="id">It holds the email address of the student.</param>
+        /// <param name="a_student">It holds the modified values of the student.</param>
+        /// <returns>Returns the status of modification.</returns>
+        public IHttpActionResult Put(string id, [FromBody]student_info a_student)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != student.email)
+            if (id != a_student.email)
             {
                 return BadRequest();
             }
 
-            db.Entry(student).State = EntityState.Modified;
+            /// Modifies the values.
+            m_db.Entry(a_student).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (!studentExists(id))
+                if (!StudentExists(id))
                 {
                     return NotFound();
                 }
@@ -69,15 +76,15 @@ namespace ekaH_server.Controllers
             return StatusCode(HttpStatusCode.NoContent);
             
         }
-
-        // DELETE: api/Student/5
-        public void Delete(int id)
+        
+        /// <summary>
+        /// This function checks if the student exists in the database.
+        /// </summary>
+        /// <param name="a_email">It holds the email address of student.</param>
+        /// <returns>Returns true if student exists.</returns>
+        private bool StudentExists(string a_email)
         {
-        }
-
-        private bool studentExists(string id)
-        {
-            return db.student_info.Count(e => e.email == id) > 0;
+            return m_db.student_info.Count(e => e.email == a_email) > 0;
         }
         
 

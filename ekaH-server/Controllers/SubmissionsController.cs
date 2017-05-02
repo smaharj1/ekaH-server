@@ -13,15 +13,22 @@ namespace ekaH_server.Controllers
 {
     public class SubmissionsController : ApiController
     {
-        private ekahEntities11 db = new ekahEntities11();
+        /// <summary>
+        /// It holds the entity for db connection
+        /// </summary>
+        private ekahEntities11 m_db = new ekahEntities11();
 
-        // GET: ekah/submissions/submit/id
-        // Gets all assignment solutions submitted.
+        /// <summary>
+        /// GET: ekah/submissions/submit/id
+        /// This function gets all assignment solutions submitted.
+        /// </summary>
+        /// <param name="id">It holds the submission id.</param>
+        /// <returns>Returns all the submission for the submission id..</returns>
         [HttpGet]
         [ActionName("submit")]
         public IHttpActionResult GetSubmission(int id)
         {
-            submission submission = db.submissions.Find(id);
+            submission submission = m_db.submissions.Find(id);
 
             if (submission == null)
             {
@@ -29,78 +36,78 @@ namespace ekaH_server.Controllers
             }
 
             return Ok(submission);
-
-            /*
-            try
-            {
-                Submission sub = AssignmentDB.getSubmissionByID(id);
-                if (sub != null) return Ok(sub);
-                else return NotFound();
-            }catch(Exception ex)
-            {
-                return InternalServerError(ex);
-            }*/
+            
         }
         
         /// <summary>
-        /// Gets the submission made by the student for the particular project
+        /// This function gets the submission made by the student for the particular project
         /// </summary>
         /// <param name="aid">It represents the assignment id.</param>
         /// <param name="sid">It represents the student email</param>
-        /// <returns></returns>
+        /// <returns>Returns the submission made by a student.</returns>
         [HttpGet]
         [ActionName("submit")]
         public IHttpActionResult GetSubmission(int aid, string sid)
         {
-            List<submission> submission = db.submissions.Where(sub => sub.assignmentID == aid && sub.studentID == sid).ToList();
+            List<submission> submission = m_db.submissions.Where(sub => sub.assignmentID == aid && sub.studentID == sid).ToList();
 
             return Ok(submission);
         }
 
+        /// <summary>
+        /// This function gets the submissions for an assignment.
+        /// </summary>
+        /// <param name="id">It holds the assignment id.</param>
+        /// <returns>Returns all the submissions for an assignment.</returns>
         [HttpGet]
         [ActionName("assignments")]
         public IHttpActionResult GetSubmissionByAssgnID(int id)
         {
-            List<submission> allSubs = db.submissions.Where(sub => sub.assignmentID == id).ToList();
+            List<submission> allSubs = m_db.submissions.Where(sub => sub.assignmentID == id).ToList();
 
             return Ok(allSubs);
         }
 
 
-
-        // POST & PUT: ekah/submissions/submit/
-        // Posts the submission of the student to the database.
+        /// <summary>
+        /// POST & PUT: ekah/submissions/submit/
+        /// This function posts the submission of the student to the database.
+        /// </summary>
+        /// <param name="a_submitted">It holds the file to be submitted.</param>
+        /// <returns>Returns the status after submission.</returns>
         [HttpPost]
         [ActionName("submit")]
-        public IHttpActionResult PostSubmissionByStudent([FromBody] submission submitted)
+        public IHttpActionResult PostSubmissionByStudent([FromBody] submission a_submitted)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            submitted.grade = -1;
-            assignment assign = db.assignments.Find(submitted.assignmentID);
+            a_submitted.grade = -1;
+            assignment assign = m_db.assignments.Find(a_submitted.assignmentID);
 
-            // Checks if the date is already passed.
+            /// Checks if the date is already passed.
             if (assign.deadline < DateTime.Now)
             {
                 return StatusCode(HttpStatusCode.Forbidden);
             }
             
-            db.submissions.Add(submitted);
+            /// Adds the submission to the database.
+            m_db.submissions.Add(a_submitted);
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch(Exception)
             {
-                if (submissionExists(submitted.id))
+                if (SubmissionExists(a_submitted.id))
                 {
-                    db.Entry(submitted).State = EntityState.Modified;
+                    /// If the submission already exists, it simply modifies it.
+                    m_db.Entry(a_submitted).State = EntityState.Modified;
 
-                    db.SaveChanges();
+                    m_db.SaveChanges();
                 }
                 else
                 {
@@ -109,82 +116,63 @@ namespace ekaH_server.Controllers
             }
 
             return Ok();
-
-            /*
-            // temp
-            string hey = "hey world";
-            submitted.RawContent = Encoding.ASCII.GetBytes(hey);
-            try
-            {
-                if (AssignmentDB.storeAssignment(submitted, true))
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return StatusCode(HttpStatusCode.Forbidden);
-                }
-            }catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }*/
+            
         }
 
-        // Delete: ekah/submissions/student/id
-        // Deletes the submission given by submission ID
+        /// <summary>
+        /// Delete: ekah/submissions/student/id
+        /// This function deletes the submission given by submission ID
+        /// </summary>
+        /// <param name="id">It holds the id of submission.</param>
+        /// <returns>Returns the status of deletion.</returns>
         [HttpDelete]
         [ActionName("submit")]
         public IHttpActionResult DeleteSubmission(int id)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            submission sub = db.submissions.Find(id);
+            submission sub = m_db.submissions.Find(id);
             if (sub==null)
             {
                 return NotFound();
             }
 
-            db.submissions.Remove(sub);
-            db.SaveChanges();
+            m_db.submissions.Remove(sub);
+            m_db.SaveChanges();
 
             return Ok();
-            /*
-            try
-            {
-                AssignmentDB.deleteSubmission(id);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-            return Ok();*/
         }
 
-        // PUT: ekah/submissions/faculty/
-        // This is for changing the functionalities by professor like Grading.
+        /// <summary>
+        /// PUT: ekah/submissions/faculty/
+        /// This function is for changing the functionalities by professor like Grading.
+        /// </summary>
+        /// <param name="id">It holds the submission id.</param>
+        /// <param name="a_submitted">It holds the modified submission.</param>
+        /// <returns>Returns the status of modification.</returns>
         [HttpPut]
         [ActionName("faculty")]
-        public IHttpActionResult PutSubmissionByFaculty(long id, [FromBody] submission submitted)
+        public IHttpActionResult PutSubmissionByFaculty(long id, [FromBody] submission a_submitted)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!submissionExists(id))
+            if (!SubmissionExists(id))
             {
                 return NotFound();
             }
 
-            db.Entry(submitted).State = EntityState.Modified;
+            /// Modifies the submission.
+            m_db.Entry(a_submitted).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                m_db.SaveChanges();
             }
             catch(Exception)
             {
@@ -192,28 +180,16 @@ namespace ekaH_server.Controllers
             }
 
             return Ok();
-
-            /*
-            try
-            {
-                if (AssignmentDB.storeAssignment(submitted, false))
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return StatusCode(HttpStatusCode.Forbidden);
-                }
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }*/
         }
 
-        private bool submissionExists(long id)
+        /// <summary>
+        /// This function checks if the submission exists.
+        /// </summary>
+        /// <param name="id">It holds the id.</param>
+        /// <returns>Returns true if the submission already exists.</returns>
+        private bool SubmissionExists(long id)
         {
-            return db.submissions.Count(sub => sub.id == id) > 0;
+            return m_db.submissions.Count(sub => sub.id == id) > 0;
         }
     }
 }
