@@ -5,42 +5,51 @@ using System.Web;
 using System.Text;
 using MySql.Data.MySqlClient;
 using System.Collections;
-using ekaH_server.Models.UserModels;
 using ekaH_server.App_DBHandler;
 
 namespace ekaH_server.Models
 {
-    public class Course : Object
+    /// <summary>
+    /// This class handles various functionalities to fix and generate course ids.
+    /// </summary>
+    public class Course 
     {
-        public static void fixCourseObject(ref cours course)
+        /// <summary>
+        /// This function fixes the course object according the rules.
+        /// </summary>
+        /// <param name="a_course">It holds the course object.</param>
+        public static void FixCourseObject(ref cours a_course)
         {
-            // Some of them would be strict. So, they don't need fixing like year.
-            course.semester = course.semester.ToUpper();
-            course.days = course.days.ToUpper();
+            /// Some of them would be strict. So, they don't need fixing like year.
+            a_course.semester = a_course.semester.ToUpper();
+            a_course.days = a_course.days.ToUpper();
 
-            course.courseName= course.courseName == null ? "" : course.courseName;
-            course.courseDescription= course.courseDescription== null ? "" : course.courseDescription;
+            a_course.courseName= a_course.courseName == null ? "" : a_course.courseName;
+            a_course.courseDescription= a_course.courseDescription== null ? "" : a_course.courseDescription;
 
-            generateUniqueCourseID(ref course);
+            /// It generates a unique id from the course details provided.
+            generateUniqueCourseID(ref a_course);
         }
 
-        private static void generateUniqueCourseID(ref cours course)
+        /// <summary>
+        /// This function generates a unique course id.
+        /// </summary>
+        /// <param name="a_course">It holds the course data structure.</param>
+        private static void generateUniqueCourseID(ref cours a_course)
         {
-            // At this point we are assuming that the Course object provided will have all upper case.
+            /// At this point we are assuming that the Course object provided will have all upper case.
             StringBuilder uniqueID = new StringBuilder("CRS-");
 
-            uniqueID.Append(course.semester);
-            uniqueID.Append(course.year);
-            string[] username = course.professorID.Split('@');
+            uniqueID.Append(a_course.semester);
+            uniqueID.Append(a_course.year);
+            string[] username = a_course.professorID.Split('@');
             uniqueID.Append(username[0]);
 
-            uniqueID.Append(course.startTime.Hours);
-            uniqueID.Append(course.endTime.Minutes);
-            uniqueID.Append(course.days);
+            uniqueID.Append(a_course.startTime.Hours);
+            uniqueID.Append(a_course.endTime.Minutes);
+            uniqueID.Append(a_course.days);
 
-            course.courseID = uniqueID.ToString();
-
+            a_course.courseID = uniqueID.ToString();
         }
-        
     }
 }

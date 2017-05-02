@@ -9,7 +9,6 @@ using MySql.Data.MySqlClient;
 using System.ComponentModel.DataAnnotations;
 using ekaH_server.Models;
 using System.Collections;
-using ekaH_server.Models.UserModels;
 using System.Windows.Forms;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
@@ -100,7 +99,7 @@ namespace ekaH_server.Controllers
                 return StatusCode(HttpStatusCode.Conflict);
             }
 
-            Course.fixCourseObject(ref course);
+            Course.FixCourseObject(ref course);
             db.courses.Add(course);
 
             try
@@ -133,7 +132,7 @@ namespace ekaH_server.Controllers
             }
 
             this.Delete(course.courseID);
-            Course.fixCourseObject(ref course);
+            Course.FixCourseObject(ref course);
             // The id for this course is generated through an algorithm. So, it cannot be directly modified.
             //db.Entry(course).State = EntityState.Modified;
             db.courses.Add(course);
